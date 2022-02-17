@@ -1,0 +1,8 @@
+#!/bin/sh
+
+cd $(dirname $0)
+
+jar cvf cycling.jar -C bin .
+jar uvf cycling.jar -C src .
+jar uvf cycling.jar doc
+jar uvf cycling.jar res

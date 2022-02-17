@@ -1,0 +1,6 @@
+#!/bin/sh
+
+cd $(dirname $0)
+
+javac -cp .:cycling.jar src/CyclingPortalInterfaceTestApp.java
+java -cp .:cycling.jar src/CyclingPortalInterfaceTestApp.java
