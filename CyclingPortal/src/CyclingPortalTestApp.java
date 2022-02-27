@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Nested;
 import cycling.CyclingPortal;
 import cycling.IllegalNameException;
 import cycling.InvalidNameException;
+import cycling.IDNotRecognisedException;
+import java.lang.IllegalArgumentException;
 // !! DO NOT SUBMIT: Doesn't start with java.
 
 class CyclingPortalTestApp {
@@ -56,6 +58,18 @@ class CyclingPortalTestApp {
 				portal.createTeam("Team A", "Description");
 				portal.createTeam("Team A", "Repeated Team Name");
 			});
+		}
+	}
+
+	@Nested
+	class RiderTests {
+		@Test
+		public void returnsID() {
+			try {
+				assertEquals(portal.createRider(0, "John Snow", 2000),0);
+			} catch (IDNotRecognisedException | IllegalArgumentException e){
+				e.printStackTrace();
+			}
 		}
 	}
 }

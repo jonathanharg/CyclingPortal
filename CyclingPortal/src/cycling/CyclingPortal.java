@@ -124,8 +124,8 @@ public class CyclingPortal implements CyclingPortalInterface {
 	@Override
 	public int createRider(int teamID, String name, int yearOfBirth)
 			throws IDNotRecognisedException, IllegalArgumentException {
-		// TODO Auto-generated method stub
-		return 0;
+		Rider rider = new Rider(teamID, name, yearOfBirth);
+		return rider.getID();
 	}
 
 	@Override
