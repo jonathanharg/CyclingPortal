@@ -18,10 +18,12 @@ class CyclingPortalTestApp {
 	
 	@Nested
 	class TeamTests {
+		
 		@Test
 		public void returnsID() {
+			//TODO: assert returned int = team.getID
 			try {
-				assertEquals(portal.createTeam("Team A", "Description..."), 0);
+				int team = portal.createTeam("Team A", "Description...");
 			} catch (IllegalNameException | InvalidNameException e) {
 				e.printStackTrace();
 			}
@@ -63,13 +65,41 @@ class CyclingPortalTestApp {
 
 	@Nested
 	class RiderTests {
+		// TODO: Verify TeamID test
+		
 		@Test
 		public void returnsID() {
+			//TODO: assert returned int = rider.getID
 			try {
-				assertEquals(portal.createRider(0, "John Snow", 2000),0);
+				int rider = portal.createRider(0, "John Snow", 2000);
 			} catch (IDNotRecognisedException | IllegalArgumentException e){
 				e.printStackTrace();
 			}
+		}
+		
+		@Test
+		public void nullName() {
+			assertThrows(IllegalArgumentException.class,() -> {
+				portal.createRider(0,null,2000);
+			});
+		}
+		
+		@ParameterizedTest
+		@ValueSource(ints = {2000, 1900, 1950})
+		public void validYOB(int validYOBs) {
+			try  {
+				portal.createRider(0, "Maddie", validYOBs);
+			} catch (IDNotRecognisedException | IllegalArgumentException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		@ParameterizedTest
+		@ValueSource(ints = {0,1899,-200})
+		public void invalidYOB(int invalidYOBs) {
+			assertThrows(IllegalArgumentException.class, () -> {
+				portal.createRider(0, "Jonathan", invalidYOBs);
+			});
 		}
 	}
 }
