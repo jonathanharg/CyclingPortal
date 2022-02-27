@@ -4,6 +4,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 
 import cycling.CyclingPortal;
@@ -14,7 +15,12 @@ import java.lang.IllegalArgumentException;
 // !! DO NOT SUBMIT: Doesn't start with java.
 
 class CyclingPortalTestApp {
-	CyclingPortal portal = new CyclingPortal();
+	CyclingPortal portal;
+	
+	@BeforeEach
+	public void initEach() {
+		portal = new CyclingPortal();
+	}
 	
 	@Nested
 	class TeamTests {
@@ -63,10 +69,9 @@ class CyclingPortalTestApp {
 		}
 	}
 
+	// TODO: Verify TeamID test
 	@Nested
 	class RiderTests {
-		// TODO: Verify TeamID test
-		
 		@Test
 		public void returnsID() {
 			//TODO: assert returned int = rider.getID
@@ -100,6 +105,24 @@ class CyclingPortalTestApp {
 			assertThrows(IllegalArgumentException.class, () -> {
 				portal.createRider(0, "Jonathan", invalidYOBs);
 			});
+		}
+	}
+
+	@Nested
+	class cyclingPortalTests {
+		@Test
+		public void testGetTeams() {
+			assertEquals(portal.getTeams().length, 0);
+			try {
+				portal.createTeam("Steve", "Just your average guy.");
+				assertEquals(portal.getTeams().length,1);
+				portal.createTeam("Bobo", "Hey, I'm using Whatsapp!");
+				portal.createTeam("Philip", "Single");
+				assertEquals(portal.getTeams().length,3);
+//				TODO: !!! test with removing team too
+			} catch (IllegalNameException | InvalidNameException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }

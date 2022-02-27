@@ -7,8 +7,8 @@ import java.util.ArrayList;
 
 public class CyclingPortal implements CyclingPortalInterface {
 	
-	private ArrayList<Team> teams;
-	private ArrayList<Rider> riders;
+	private ArrayList<Team> teams = new ArrayList<Team>();
+	private ArrayList<Rider> riders = new ArrayList<Rider>();
 
 	@Override
 	public int[] getRaceIds() {
@@ -102,6 +102,7 @@ public class CyclingPortal implements CyclingPortalInterface {
 	@Override
 	public int createTeam(String name, String description) throws IllegalNameException, InvalidNameException {
 		Team team = new Team(name, description);
+		teams.add(team);
 		// TODO: add to a global list of team?
 		// ?: Do we need to worry about error?
 		return team.getId();
@@ -114,10 +115,13 @@ public class CyclingPortal implements CyclingPortalInterface {
 	}
 
 	@Override
-	// !!!
 	public int[] getTeams() {
-		// TODO Auto-generated method stub
-		return null;
+		int teamIDs[] = new int[teams.size()];
+		for (int i = 0; i < teams.size(); i++) {
+			Team team = teams.get(i);
+			teamIDs[i] = team.getId();
+		}
+		return teamIDs;
 	}
 
 	@Override
@@ -131,6 +135,7 @@ public class CyclingPortal implements CyclingPortalInterface {
 	public int createRider(int teamID, String name, int yearOfBirth)
 			throws IDNotRecognisedException, IllegalArgumentException {
 		Rider rider = new Rider(teamID, name, yearOfBirth);
+		riders.add(rider);
 		return rider.getID();
 	}
 
