@@ -3,8 +3,12 @@ package cycling;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 
 public class CyclingPortal implements CyclingPortalInterface {
+	
+	private ArrayList<Team> teams;
+	private ArrayList<Rider> riders;
 
 	@Override
 	public int[] getRaceIds() {
@@ -110,12 +114,14 @@ public class CyclingPortal implements CyclingPortalInterface {
 	}
 
 	@Override
+	// !!!
 	public int[] getTeams() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
+	// !!!
 	public int[] getTeamRiders(int teamId) throws IDNotRecognisedException {
 		// TODO Auto-generated method stub
 		return null;
