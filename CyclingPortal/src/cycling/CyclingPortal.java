@@ -6,9 +6,18 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 
 public class CyclingPortal implements CyclingPortalInterface {
-	
-	private ArrayList<Team> teams = new ArrayList<Team>();
-	private ArrayList<Rider> riders = new ArrayList<Rider>();
+
+	private ArrayList<Team> teams = new ArrayList<>();
+	private ArrayList<Rider> riders = new ArrayList<>();
+
+	public Team getTeamByID(int ID) throws IDNotRecognisedException {
+		for (Team team : teams) {
+			if (team.getId() == ID) {
+				return team;
+			}
+		}
+		throw new IDNotRecognisedException("Team ID not found.");
+	}
 
 	@Override
 	public int[] getRaceIds() {
@@ -125,16 +134,24 @@ public class CyclingPortal implements CyclingPortalInterface {
 	}
 
 	@Override
-	// !!!
+	// TODO: NEXT TIME: Add rider to Teams ArrayList when a new rider is created
+	// make tests for this
 	public int[] getTeamRiders(int teamId) throws IDNotRecognisedException {
 		// TODO Auto-generated method stub
-		return null;
+		Team team = getTeamByID(teamId);
+		Rider[] teamRiders = team.getRiders();
+		int[] teamRiderIds = new int[teamRiders.length];
+		for (int i=0; i < teamRiderIds.length; i++) {
+			teamRiderIds[i] = teamRiders[i].getID();
+		}
+		return teamRiderIds;
 	}
 
 	@Override
 	public int createRider(int teamID, String name, int yearOfBirth)
 			throws IDNotRecognisedException, IllegalArgumentException {
 		Rider rider = new Rider(teamID, name, yearOfBirth);
+
 		riders.add(rider);
 		return rider.getID();
 	}
@@ -254,5 +271,7 @@ public class CyclingPortal implements CyclingPortalInterface {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+
 
 }

@@ -8,7 +8,7 @@ public class Team {
 	private String name;
 	private String description;
 	
-	private ArrayList<Rider> riders;
+	private ArrayList<Rider> riders = new ArrayList<Rider>();
 	private static int count = 0;
 	private int id;
 	
@@ -28,6 +28,10 @@ public class Team {
 	
 	public int getId() {
 		return id;
+	}
+	
+	public Rider[] getRiders() {
+		return (Rider[]) riders.toArray();
 	}
 
 }
