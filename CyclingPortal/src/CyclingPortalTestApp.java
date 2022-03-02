@@ -4,6 +4,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 
@@ -71,12 +72,14 @@ class CyclingPortalTestApp {
 
 	// TODO: Verify TeamID test
 	@Nested
-	class RiderTests {
+	class RiderTests {		
 		@Test
 		public void returnsID() {
-			//TODO: assert returned int = rider.getID
 			try {
-				int rider = portal.createRider(0, "John Snow", 2000);
+				int id = portal.createTeam("Team 0", "Test team");
+				int rider = portal.createRider(id, "John Snow", 2000);
+			} catch (IllegalNameException | InvalidNameException e1) {
+				e1.printStackTrace();
 			} catch (IDNotRecognisedException | IllegalArgumentException e){
 				e.printStackTrace();
 			}
@@ -85,7 +88,8 @@ class CyclingPortalTestApp {
 		@Test
 		public void nullName() {
 			assertThrows(IllegalArgumentException.class,() -> {
-				portal.createRider(0,null,2000);
+				int id = portal.createTeam("Team 0", "Test team");
+				portal.createRider(id,null,2000);
 			});
 		}
 		
@@ -93,8 +97,11 @@ class CyclingPortalTestApp {
 		@ValueSource(ints = {2000, 1900, 1950})
 		public void validYOB(int validYOBs) {
 			try  {
-				portal.createRider(0, "Maddie", validYOBs);
+				int id = portal.createTeam("Team 0", "Test team");
+				portal.createRider(id, "Maddie", validYOBs);
 			} catch (IDNotRecognisedException | IllegalArgumentException e) {
+				e.printStackTrace();
+			} catch (IllegalNameException | InvalidNameException e) {
 				e.printStackTrace();
 			}
 		}
@@ -103,7 +110,8 @@ class CyclingPortalTestApp {
 		@ValueSource(ints = {0,1899,-200})
 		public void invalidYOB(int invalidYOBs) {
 			assertThrows(IllegalArgumentException.class, () -> {
-				portal.createRider(0, "Jonathan", invalidYOBs);
+				int id = portal.createTeam("Team 0", "Test team");
+				portal.createRider(id, "Jonathan", invalidYOBs);
 			});
 		}
 	}
@@ -122,6 +130,20 @@ class CyclingPortalTestApp {
 //				TODO: !!! test with removing team too
 			} catch (IllegalNameException | InvalidNameException e) {
 				e.printStackTrace();
+			}
+		}
+		
+		@Test
+		public void testGetTeamRiders() {
+			try {
+				int teamId = portal.createTeam("Test Team", "Team");
+				int r1 = portal.createRider(teamId, "rider 1", 1999);
+				int r2 = portal.createRider(teamId, "rider 1", 1999);
+				int r3 = portal.createRider(teamId, "rider 1", 1999);
+				int[] riderIds = {r1, r2, r3};
+				assertEquals(portal.getTeamRiders(teamId),riderIds);
+			} catch (Exception e) {
+				
 			}
 		}
 	}

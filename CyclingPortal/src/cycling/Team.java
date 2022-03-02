@@ -2,9 +2,7 @@ package cycling;
 
 import java.util.ArrayList;
 
-public class Team {
-	// TODO: ID, Check if team with same name already exists, check name & desc are valid, add to a global list of teams?,
-	
+public class Team {	
 	private String name;
 	private String description;
 	
@@ -16,9 +14,6 @@ public class Team {
 	public Team(String name, String description) throws InvalidNameException {
 		if (name == null || name.isEmpty() || name.length() > 30) {
 			throw new InvalidNameException("Team name cannot be null, empty or have more than 30 characters.");
-			// TODO
-//		} else if (name already exists in portal) {
-//			do this later
 		} else {
 			this.name = name;
 		}
@@ -26,12 +21,45 @@ public class Team {
 		this.id = this.count++;
 	}
 	
+	public String getName() {
+		return name;
+	}
+	
 	public int getId() {
 		return id;
+	}
+	
+	public boolean hasRider(int riderID) {
+		for (final Rider rider: riders) {
+			if (rider.getID() == riderID) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public Rider getRiderByID(int ID) throws IDNotRecognisedException {
+		for (Rider rider : riders) {
+			if (rider.getID() == ID) {
+				return rider;
+			}
+		}
+		throw new IDNotRecognisedException("Rider ID not found.");
+	}
+	
+	public void removeRider(Rider rider) {
+		riders.remove(rider);
+	}
+	
+	public ArrayList<Rider> getRidersArrayList() {
+		return riders;
 	}
 	
 	public Rider[] getRiders() {
 		return (Rider[]) riders.toArray();
 	}
 
+	public void addRider(Rider rider) {
+		riders.add(rider);
+	}
 }

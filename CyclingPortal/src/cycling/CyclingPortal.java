@@ -4,11 +4,11 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class CyclingPortal implements CyclingPortalInterface {
 
 	private ArrayList<Team> teams = new ArrayList<>();
-	private ArrayList<Rider> riders = new ArrayList<>();
 
 	public Team getTeamByID(int ID) throws IDNotRecognisedException {
 		for (Team team : teams) {
@@ -17,6 +17,24 @@ public class CyclingPortal implements CyclingPortalInterface {
 			}
 		}
 		throw new IDNotRecognisedException("Team ID not found.");
+	}
+	
+	public boolean verifyTeamExists(int ID) {
+		for (final int i: getTeams()) {
+			if (i == ID) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public Team getRidersTeam(Rider rider) throws IDNotRecognisedException{
+		for (final Team team: teams) {
+			if (team.getRidersArrayList().contains(rider)) {
+				return team;
+			}
+		}
+		throw new IDNotRecognisedException("Rider ID does not exist on the system");
 	}
 
 	@Override
@@ -110,17 +128,28 @@ public class CyclingPortal implements CyclingPortalInterface {
 
 	@Override
 	public int createTeam(String name, String description) throws IllegalNameException, InvalidNameException {
+		boolean nameExistsAlready = false;
+		for (final Team team: teams) {
+			if(team.getName().equals(name)) {
+				nameExistsAlready = true;
+			}
+		}
+		if (nameExistsAlready) {
+			throw new IllegalNameException("A Team with the name " + name + " already exists.");
+		}
 		Team team = new Team(name, description);
 		teams.add(team);
-		// TODO: add to a global list of team?
-		// ?: Do we need to worry about error?
 		return team.getId();
 	}
 
 	@Override
 	public void removeTeam(int teamId) throws IDNotRecognisedException {
-		// TODO Auto-generated method stub
-
+		if (verifyTeamExists(teamId) == false) {
+			throw new IDNotRecognisedException("Team ID does not exist on the system.");
+		}
+		teams.remove(getTeamByID(teamId));
+		// TODO: Test
+		// TODO: Remove team statistics in the future??
 	}
 
 	@Override
@@ -134,10 +163,7 @@ public class CyclingPortal implements CyclingPortalInterface {
 	}
 
 	@Override
-	// TODO: NEXT TIME: Add rider to Teams ArrayList when a new rider is created
-	// make tests for this
 	public int[] getTeamRiders(int teamId) throws IDNotRecognisedException {
-		// TODO Auto-generated method stub
 		Team team = getTeamByID(teamId);
 		Rider[] teamRiders = team.getRiders();
 		int[] teamRiderIds = new int[teamRiders.length];
@@ -150,16 +176,17 @@ public class CyclingPortal implements CyclingPortalInterface {
 	@Override
 	public int createRider(int teamID, String name, int yearOfBirth)
 			throws IDNotRecognisedException, IllegalArgumentException {
+		if (verifyTeamExists(teamID) == false) {
+			throw new IDNotRecognisedException("Team ID does not exist on the system.");
+		}
 		Rider rider = new Rider(teamID, name, yearOfBirth);
-
-		riders.add(rider);
+		getTeamByID(teamID).addRider(rider);
 		return rider.getID();
 	}
 
 	@Override
 	public void removeRider(int riderId) throws IDNotRecognisedException {
-		// TODO Auto-generated method stub
-
+//		getRidersTeam(null)
 	}
 
 	@Override
@@ -271,7 +298,4 @@ public class CyclingPortal implements CyclingPortalInterface {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-
-
 }
