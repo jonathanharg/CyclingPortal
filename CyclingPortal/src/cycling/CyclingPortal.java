@@ -4,12 +4,12 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class CyclingPortal implements CyclingPortalInterface {
 
 	private ArrayList<Team> teams = new ArrayList<>();
-
+	private ArrayList<Race> races = new ArrayList<>();
+	
 	public Team getTeamByID(int ID) throws IDNotRecognisedException {
 		for (Team team : teams) {
 			if (team.getId() == ID) {
@@ -37,16 +37,31 @@ public class CyclingPortal implements CyclingPortalInterface {
 		throw new IDNotRecognisedException("Rider ID does not exist on the system");
 	}
 
+	//TODO: Create parent class for Rider, Team & Race w/ name, illegal name, etc.
 	@Override
 	public int[] getRaceIds() {
-		// TODO Auto-generated method stub
-		return null;
+		int raceIDs[] = new int[races.size()];
+		for (int i = 0; i < races.size(); i++) {
+			Race race = races.get(i);
+			raceIDs[i] = race.getId();
+		}
+		return raceIDs;
 	}
 
 	@Override
 	public int createRace(String name, String description) throws IllegalNameException, InvalidNameException {
-		// TODO Auto-generated method stub
-		return 0;
+		boolean nameExistsAlready = false;
+		for (final Race race: races) {
+			if(race.getName().equals(name)) {
+				nameExistsAlready = true;
+			}
+		}
+		if (nameExistsAlready) {
+			throw new IllegalNameException("A Race with the name " + name + " already exists.");
+		}
+		Race race = new Race(name,description);
+		races.add(race);
+		return race.getId();
 	}
 
 	@Override
