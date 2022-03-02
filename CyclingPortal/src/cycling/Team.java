@@ -14,9 +14,8 @@ public class Team {
 	public Team(String name, String description) throws InvalidNameException {
 		if (name == null || name.isEmpty() || name.length() > 30) {
 			throw new InvalidNameException("Team name cannot be null, empty or have more than 30 characters.");
-		} else {
-			this.name = name;
 		}
+		this.name = name;
 		this.description = description;
 		this.id = this.count++;
 	}
