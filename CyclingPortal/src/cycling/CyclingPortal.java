@@ -5,6 +5,14 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 
+//TODO:
+//		- Asserts
+//		- Inheritance -> IDable class? getId, invalid name etc?
+//		- Code Formatting
+//		- Documentation/Comments
+//		- Testing
+
+
 public class CyclingPortal implements CyclingPortalInterface {
 
 	private ArrayList<Team> teams = new ArrayList<>();
