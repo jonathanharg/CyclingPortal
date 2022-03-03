@@ -2,13 +2,14 @@ package cycling;
 
 public class Rider {
 	private int teamID;
+	private Team team;
 	private String name;
 	private int yearOfBirth;
 	
 	private static int count = 0;
 	private int id;
 	
-	public Rider(int teamID, String name, int yearOfBirth) throws IllegalArgumentException{
+	public Rider(int teamID, Team team, String name, int yearOfBirth) throws IllegalArgumentException{
 		if (name == null) {
 			throw new java.lang.IllegalArgumentException("The rider's name cannot be null.");
 		}
@@ -17,13 +18,21 @@ public class Rider {
 		}
 
 		this.teamID = teamID;
+		this.team = team;
 		this.name = name;
 		this.yearOfBirth = yearOfBirth;
 		this.id = this.count++;
 	}
 	
-	public int getID() {
+	public int getId() {
 		return id;
 	}
 	
+	public int getTeamId() {
+		return teamID;
+	}
+	
+	public Team getTeam() {
+		return team;
+	}
 }

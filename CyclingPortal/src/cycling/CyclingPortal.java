@@ -20,14 +20,15 @@ public class CyclingPortal implements CyclingPortalInterface {
 		throw new IDNotRecognisedException("Team ID not found.");
 	}
 	
-	public Team getRidersTeam(Rider rider) throws IDNotRecognisedException{
-		for (final Team team: teams) {
-			if (team.getRiders().contains(rider)) {
-				return team;
+	public Rider getRiderById(int ID) throws IDNotRecognisedException {
+		for (Rider rider : riders) {
+			if (rider.getId() == ID) {
+				return rider;
 			}
 		}
-		throw new IDNotRecognisedException("Rider ID does not exist on the system");
+		throw new IDNotRecognisedException("Team ID not found.");
 	}
+	
 
 	//TODO: Create parent class for Rider, Team & Race w/ name, illegal name, etc.
 	@Override
@@ -151,7 +152,11 @@ public class CyclingPortal implements CyclingPortalInterface {
 
 	@Override
 	public void removeTeam(int teamId) throws IDNotRecognisedException {
-		teams.remove(getTeamByID(teamId));
+		Team team = getTeamByID(teamId);
+		for (final Rider rider:team.getRiders()) {
+			riders.remove(rider);
+		}
+		teams.remove(team);
 		// TODO: Test
 		// TODO: Remove team statistics in the future??
 	}
@@ -172,7 +177,7 @@ public class CyclingPortal implements CyclingPortalInterface {
 		ArrayList<Rider> teamRiders = team.getRiders();
 		int[] teamRiderIds = new int[teamRiders.size()];
 		for (int i=0; i < teamRiderIds.length; i++) {
-			teamRiderIds[i] = teamRiders.get(i).getID();
+			teamRiderIds[i] = teamRiders.get(i).getId();
 		}
 		return teamRiderIds;
 	}
@@ -181,14 +186,17 @@ public class CyclingPortal implements CyclingPortalInterface {
 	public int createRider(int teamID, String name, int yearOfBirth)
 			throws IDNotRecognisedException, IllegalArgumentException {
 		Team team = getTeamByID(teamID);
-		Rider rider = new Rider(teamID, name, yearOfBirth);
+		Rider rider = new Rider(teamID, team, name, yearOfBirth);
 		team.addRider(rider);
-		return rider.getID();
+		riders.add(rider);
+		return rider.getId();
 	}
 
 	@Override
 	public void removeRider(int riderId) throws IDNotRecognisedException {
-//		getRidersTeam(null)
+		Rider rider = getRiderById(riderId);
+		rider.getTeam().removeRider(rider);
+		riders.remove(rider);
 	}
 
 	@Override

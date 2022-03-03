@@ -30,7 +30,7 @@ public class Team {
 	
 	public Rider getRiderByID(int ID) throws IDNotRecognisedException {
 		for (Rider rider : riders) {
-			if (rider.getID() == ID) {
+			if (rider.getId() == ID) {
 				return rider;
 			}
 		}
