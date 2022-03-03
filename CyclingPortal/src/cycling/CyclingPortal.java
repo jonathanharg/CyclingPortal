@@ -10,6 +10,7 @@ public class CyclingPortal implements CyclingPortalInterface {
 	private ArrayList<Team> teams = new ArrayList<>();
 	private ArrayList<Rider> riders = new ArrayList<>();
 	private ArrayList<Race> races = new ArrayList<>();
+	private ArrayList<Stage> stages = new ArrayList<>();
 	
 	public Team getTeamByID(int ID) throws IDNotRecognisedException {
 		for (Team team : teams) {
@@ -38,6 +39,15 @@ public class CyclingPortal implements CyclingPortalInterface {
 		throw new IDNotRecognisedException("Race ID not found.");
 	}
 	
+	public Stage getStageById(int ID) throws IDNotRecognisedException {
+		for (Stage stage : stages) {
+			if (stage.getId() == ID) {
+				return stage;
+			}
+		}
+		throw new IDNotRecognisedException("Stage ID not found.");
+	}
+	
 
 	//TODO: Create parent class for Rider, Team & Race w/ name, illegal name, etc.
 	@Override
@@ -52,14 +62,10 @@ public class CyclingPortal implements CyclingPortalInterface {
 
 	@Override
 	public int createRace(String name, String description) throws IllegalNameException, InvalidNameException {
-		boolean nameExistsAlready = false;
 		for (final Race race: races) {
 			if(race.getName().equals(name)) {
-				nameExistsAlready = true;
+				throw new IllegalNameException("A Race with the name " + name + " already exists.");
 			}
-		}
-		if (nameExistsAlready) {
-			throw new IllegalNameException("A Race with the name " + name + " already exists.");
 		}
 		Race race = new Race(name,description);
 		races.add(race);
@@ -68,47 +74,68 @@ public class CyclingPortal implements CyclingPortalInterface {
 
 	@Override
 	public String viewRaceDetails(int raceId) throws IDNotRecognisedException {
-		// TODO Auto-generated method stub
-		return null;
+		Race race = getRaceById(raceId);
+		return race.getDetails();
 	}
 
 	@Override
 	public void removeRaceById(int raceId) throws IDNotRecognisedException {
 		Race race = getRaceById(raceId);
+		for (final Stage stage: race.getStages()) {
+			stages.remove(stage);
+		}
 		races.remove(race);
 		//TODO: test, remove stats
 	}
 
 	@Override
 	public int getNumberOfStages(int raceId) throws IDNotRecognisedException {
-		// TODO Auto-generated method stub
-		return 0;
+		Race race = getRaceById(raceId);
+		return race.getStages().size();
 	}
 
 	@Override
 	public int addStageToRace(int raceId, String stageName, String description, double length, LocalDateTime startTime,
 			StageType type)
 			throws IDNotRecognisedException, IllegalNameException, InvalidNameException, InvalidLengthException {
-		// TODO Auto-generated method stub
-		return 0;
+		Race race = getRaceById(raceId);
+		for (final Stage stage : stages) {
+			if (stage.getName().equals(stageName)) {
+				throw new IllegalNameException("A stage with the name "+ stageName +" already exists.");
+			}
+		}
+		Stage stage = new Stage(raceId, race, description, description, length, startTime, type);
+		stages.add(stage);
+		race.addStage(stage);
+		return stage.getId();
 	}
 
 	@Override
 	public int[] getRaceStages(int raceId) throws IDNotRecognisedException {
-		// TODO Auto-generated method stub
-		return null;
+		Race race = getRaceById(raceId);
+		ArrayList<Stage> raceStages = race.getStages();
+		int raceStagesId[] = new int[raceStages.size()];
+		for (int i =0; i<raceStages.size();i++) {
+			Stage stage = stages.get(i);
+			raceStagesId[i] = stage.getId();
+		}
+		return raceStagesId;
+		//TODO: test
 	}
 
 	@Override
 	public double getStageLength(int stageId) throws IDNotRecognisedException {
-		// TODO Auto-generated method stub
-		return 0;
+		Stage stage = getStageById(stageId);
+		return stage.getLength();
 	}
 
 	@Override
 	public void removeStageById(int stageId) throws IDNotRecognisedException {
-		// TODO Auto-generated method stub
-
+		Stage stage = getStageById(stageId);
+		Race race = stage.getRace();
+		race.removeStage(stage);
+		stages.remove(stage);
+		//TODO:remove results n segments
 	}
 
 	@Override
@@ -146,14 +173,10 @@ public class CyclingPortal implements CyclingPortalInterface {
 
 	@Override
 	public int createTeam(String name, String description) throws IllegalNameException, InvalidNameException {
-		boolean nameExistsAlready = false;
 		for (final Team team: teams) {
-			if(team.getName().equals(name)) {
-				nameExistsAlready = true;
+			if (team.getName().equals(name)) {
+				throw new IllegalNameException("A Team with the name " + name + " already exists.");
 			}
-		}
-		if (nameExistsAlready) {
-			throw new IllegalNameException("A Team with the name " + name + " already exists.");
 		}
 		Team team = new Team(name, description);
 		teams.add(team);
@@ -279,8 +302,13 @@ public class CyclingPortal implements CyclingPortalInterface {
 
 	@Override
 	public void removeRaceByName(String name) throws NameNotRecognisedException {
-		// TODO Auto-generated method stub
-
+		for (final Race race: races) {
+			if (race.getName().equals(name)) {
+				races.remove(race);
+				return;
+			}
+		}
+		throw new NameNotRecognisedException("Race name is not in the system.");
 	}
 
 	@Override

@@ -1,9 +1,12 @@
 package cycling;
+import java.util.ArrayList;
 
 public class Race {
 	
 	private String name;
 	private String description;
+	
+	private ArrayList<Stage> stages = new ArrayList<>();
 	
 	private static int count = 0;
 	private int id;
@@ -23,6 +26,31 @@ public class Race {
 
 	public String getName() {
 		return name;
+	}
+	
+	public void addStage(Stage stage) {
+		stages.add(stage);
+	}
+	
+	public ArrayList<Stage> getStages(){
+		return stages;
+	}
+	
+	public void removeStage(Stage stage) {
+		stages.remove(stage);
+	}
+	
+	public String getDetails() {
+		double currentLength = 0;
+		for (final Stage stage: stages) {
+			currentLength = currentLength + stage.getLength();
+		}
+		String details = ("Race ID: " + id + System.lineSeparator() 
+		+ "Name: " +name + System.lineSeparator() 
+		+ "Description: " + description  + System.lineSeparator() 
+		+ "Number of Stages: " + stages.size() + System.lineSeparator() 
+		+ "Total length: " + currentLength);
+		return details;
 	}
 
 }
