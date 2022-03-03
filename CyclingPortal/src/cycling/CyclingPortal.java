@@ -8,6 +8,7 @@ import java.util.ArrayList;
 public class CyclingPortal implements CyclingPortalInterface {
 
 	private ArrayList<Team> teams = new ArrayList<>();
+	private ArrayList<Rider> riders = new ArrayList<>();
 	private ArrayList<Race> races = new ArrayList<>();
 	
 	public Team getTeamByID(int ID) throws IDNotRecognisedException {
@@ -19,18 +20,9 @@ public class CyclingPortal implements CyclingPortalInterface {
 		throw new IDNotRecognisedException("Team ID not found.");
 	}
 	
-	public boolean verifyTeamExists(int ID) {
-		for (final int i: getTeams()) {
-			if (i == ID) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
 	public Team getRidersTeam(Rider rider) throws IDNotRecognisedException{
 		for (final Team team: teams) {
-			if (team.getRidersArrayList().contains(rider)) {
+			if (team.getRiders().contains(rider)) {
 				return team;
 			}
 		}
@@ -159,9 +151,6 @@ public class CyclingPortal implements CyclingPortalInterface {
 
 	@Override
 	public void removeTeam(int teamId) throws IDNotRecognisedException {
-		if (verifyTeamExists(teamId) == false) {
-			throw new IDNotRecognisedException("Team ID does not exist on the system.");
-		}
 		teams.remove(getTeamByID(teamId));
 		// TODO: Test
 		// TODO: Remove team statistics in the future??
@@ -180,10 +169,10 @@ public class CyclingPortal implements CyclingPortalInterface {
 	@Override
 	public int[] getTeamRiders(int teamId) throws IDNotRecognisedException {
 		Team team = getTeamByID(teamId);
-		Rider[] teamRiders = team.getRiders();
-		int[] teamRiderIds = new int[teamRiders.length];
+		ArrayList<Rider> teamRiders = team.getRiders();
+		int[] teamRiderIds = new int[teamRiders.size()];
 		for (int i=0; i < teamRiderIds.length; i++) {
-			teamRiderIds[i] = teamRiders[i].getID();
+			teamRiderIds[i] = teamRiders.get(i).getID();
 		}
 		return teamRiderIds;
 	}
@@ -191,11 +180,9 @@ public class CyclingPortal implements CyclingPortalInterface {
 	@Override
 	public int createRider(int teamID, String name, int yearOfBirth)
 			throws IDNotRecognisedException, IllegalArgumentException {
-		if (verifyTeamExists(teamID) == false) {
-			throw new IDNotRecognisedException("Team ID does not exist on the system.");
-		}
+		Team team = getTeamByID(teamID);
 		Rider rider = new Rider(teamID, name, yearOfBirth);
-		getTeamByID(teamID).addRider(rider);
+		team.addRider(rider);
 		return rider.getID();
 	}
 

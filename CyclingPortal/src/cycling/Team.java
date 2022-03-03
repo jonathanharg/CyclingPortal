@@ -28,15 +28,6 @@ public class Team {
 		return id;
 	}
 	
-	public boolean hasRider(int riderID) {
-		for (final Rider rider: riders) {
-			if (rider.getID() == riderID) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
 	public Rider getRiderByID(int ID) throws IDNotRecognisedException {
 		for (Rider rider : riders) {
 			if (rider.getID() == ID) {
@@ -50,12 +41,8 @@ public class Team {
 		riders.remove(rider);
 	}
 	
-	public ArrayList<Rider> getRidersArrayList() {
+	public ArrayList<Rider> getRiders() {
 		return riders;
-	}
-	
-	public Rider[] getRiders() {
-		return (Rider[]) riders.toArray();
 	}
 
 	public void addRider(Rider rider) {
