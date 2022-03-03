@@ -26,7 +26,16 @@ public class CyclingPortal implements CyclingPortalInterface {
 				return rider;
 			}
 		}
-		throw new IDNotRecognisedException("Team ID not found.");
+		throw new IDNotRecognisedException("Racer ID not found.");
+	}
+	
+	public Race getRaceById(int ID) throws IDNotRecognisedException {
+		for (Race race : races) {
+			if (race.getId() == ID) {
+				return race;
+			}
+		}
+		throw new IDNotRecognisedException("Race ID not found.");
 	}
 	
 
@@ -65,8 +74,9 @@ public class CyclingPortal implements CyclingPortalInterface {
 
 	@Override
 	public void removeRaceById(int raceId) throws IDNotRecognisedException {
-		// TODO Auto-generated method stub
-
+		Race race = getRaceById(raceId);
+		races.remove(race);
+		//TODO: test, remove stats
 	}
 
 	@Override
