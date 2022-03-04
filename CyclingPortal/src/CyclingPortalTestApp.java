@@ -35,7 +35,7 @@ class CyclingPortalTestApp {
 				e.printStackTrace();
 			}
 		}
-		
+
 		@ParameterizedTest
 		@ValueSource(strings = { "Steve", "aLongButLegalNameAAAAAAAAAAAAA" })
 		public void legalNames(String legalName) {
@@ -140,7 +140,7 @@ class CyclingPortalTestApp {
 				int r1 = portal.createRider(teamId, "rider 1", 1999);
 				int r2 = portal.createRider(teamId, "rider 1", 1999);
 				int r3 = portal.createRider(teamId, "rider 1", 1999);
-				int[] riderIds = { r1, r2, r3};
+				int[] riderIds = { r1, r2, r3 };
 				assertEquals(portal.getTeamRiders(teamId), riderIds);
 			} catch (Exception e) {
 
@@ -158,7 +158,7 @@ class CyclingPortalTestApp {
 				e1.printStackTrace();
 			}
 		}
-		
+
 		@Test
 		public void existingName() {
 			assertThrows(IllegalNameException.class, () -> {
@@ -166,7 +166,7 @@ class CyclingPortalTestApp {
 				portal.createRace("Race A", "Repeated Race Descripton");
 			});
 		}
-		
+
 		@ParameterizedTest
 		@ValueSource(strings = { "Steve", "aLongButLegalNameAAAAAAAAAAAAA" })
 		public void legalNames(String legalName) {
@@ -176,14 +176,14 @@ class CyclingPortalTestApp {
 				e.printStackTrace();
 			}
 		}
-		
+
 		@Test
 		public void nullName() {
 			assertThrows(InvalidNameException.class, () -> {
 				portal.createRace(null, null);
 			});
 		}
-		
+
 		@ParameterizedTest
 		@ValueSource(strings = { "", "aVeryLongNameAAAAAAAAAAAAAAAAAA" })
 		public void invalidNames(String invalidName) {
@@ -191,8 +191,6 @@ class CyclingPortalTestApp {
 				portal.createRace(invalidName, null);
 			});
 		}
-		
-		
-		
+
 	}
 }

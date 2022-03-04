@@ -12,15 +12,14 @@ import java.util.ArrayList;
 //		- Documentation/Comments
 //		- Testing
 
-
 public class CyclingPortal implements CyclingPortalInterface {
 
 	private ArrayList<Team> teams = new ArrayList<>();
 	private ArrayList<Rider> riders = new ArrayList<>();
 	private ArrayList<Race> races = new ArrayList<>();
 	private ArrayList<Stage> stages = new ArrayList<>();
-	
-	public Team getTeamByID(int ID) throws IDNotRecognisedException {
+
+	public Team getTeamById(int ID) throws IDNotRecognisedException {
 		for (Team team : teams) {
 			if (team.getId() == ID) {
 				return team;
@@ -28,7 +27,7 @@ public class CyclingPortal implements CyclingPortalInterface {
 		}
 		throw new IDNotRecognisedException("Team ID not found.");
 	}
-	
+
 	public Rider getRiderById(int ID) throws IDNotRecognisedException {
 		for (Rider rider : riders) {
 			if (rider.getId() == ID) {
@@ -37,7 +36,7 @@ public class CyclingPortal implements CyclingPortalInterface {
 		}
 		throw new IDNotRecognisedException("Racer ID not found.");
 	}
-	
+
 	public Race getRaceById(int ID) throws IDNotRecognisedException {
 		for (Race race : races) {
 			if (race.getId() == ID) {
@@ -46,7 +45,7 @@ public class CyclingPortal implements CyclingPortalInterface {
 		}
 		throw new IDNotRecognisedException("Race ID not found.");
 	}
-	
+
 	public Stage getStageById(int ID) throws IDNotRecognisedException {
 		for (Stage stage : stages) {
 			if (stage.getId() == ID) {
@@ -55,9 +54,8 @@ public class CyclingPortal implements CyclingPortalInterface {
 		}
 		throw new IDNotRecognisedException("Stage ID not found.");
 	}
-	
 
-	//TODO: Create parent class for Rider, Team & Race w/ name, illegal name, etc.
+	// TODO: Create parent class for Rider, Team & Race w/ name, illegal name, etc.
 	@Override
 	public int[] getRaceIds() {
 		int raceIDs[] = new int[races.size()];
@@ -70,12 +68,12 @@ public class CyclingPortal implements CyclingPortalInterface {
 
 	@Override
 	public int createRace(String name, String description) throws IllegalNameException, InvalidNameException {
-		for (final Race race: races) {
-			if(race.getName().equals(name)) {
+		for (final Race race : races) {
+			if (race.getName().equals(name)) {
 				throw new IllegalNameException("A Race with the name " + name + " already exists.");
 			}
 		}
-		Race race = new Race(name,description);
+		Race race = new Race(name, description);
 		races.add(race);
 		return race.getId();
 	}
@@ -89,11 +87,11 @@ public class CyclingPortal implements CyclingPortalInterface {
 	@Override
 	public void removeRaceById(int raceId) throws IDNotRecognisedException {
 		Race race = getRaceById(raceId);
-		for (final Stage stage: race.getStages()) {
+		for (final Stage stage : race.getStages()) {
 			stages.remove(stage);
 		}
 		races.remove(race);
-		//TODO: test, remove stats
+		// TODO: test, remove stats
 	}
 
 	@Override
@@ -109,7 +107,7 @@ public class CyclingPortal implements CyclingPortalInterface {
 		Race race = getRaceById(raceId);
 		for (final Stage stage : stages) {
 			if (stage.getName().equals(stageName)) {
-				throw new IllegalNameException("A stage with the name "+ stageName +" already exists.");
+				throw new IllegalNameException("A stage with the name " + stageName + " already exists.");
 			}
 		}
 		Stage stage = new Stage(raceId, race, description, description, length, startTime, type);
@@ -123,12 +121,12 @@ public class CyclingPortal implements CyclingPortalInterface {
 		Race race = getRaceById(raceId);
 		ArrayList<Stage> raceStages = race.getStages();
 		int raceStagesId[] = new int[raceStages.size()];
-		for (int i =0; i<raceStages.size();i++) {
+		for (int i = 0; i < raceStages.size(); i++) {
 			Stage stage = stages.get(i);
 			raceStagesId[i] = stage.getId();
 		}
 		return raceStagesId;
-		//TODO: test
+		// TODO: test
 	}
 
 	@Override
@@ -143,7 +141,7 @@ public class CyclingPortal implements CyclingPortalInterface {
 		Race race = stage.getRace();
 		race.removeStage(stage);
 		stages.remove(stage);
-		//TODO:remove results n segments
+		// TODO:remove results n segments
 	}
 
 	@Override
@@ -181,7 +179,7 @@ public class CyclingPortal implements CyclingPortalInterface {
 
 	@Override
 	public int createTeam(String name, String description) throws IllegalNameException, InvalidNameException {
-		for (final Team team: teams) {
+		for (final Team team : teams) {
 			if (team.getName().equals(name)) {
 				throw new IllegalNameException("A Team with the name " + name + " already exists.");
 			}
@@ -193,8 +191,8 @@ public class CyclingPortal implements CyclingPortalInterface {
 
 	@Override
 	public void removeTeam(int teamId) throws IDNotRecognisedException {
-		Team team = getTeamByID(teamId);
-		for (final Rider rider:team.getRiders()) {
+		Team team = getTeamById(teamId);
+		for (final Rider rider : team.getRiders()) {
 			riders.remove(rider);
 		}
 		teams.remove(team);
@@ -214,10 +212,10 @@ public class CyclingPortal implements CyclingPortalInterface {
 
 	@Override
 	public int[] getTeamRiders(int teamId) throws IDNotRecognisedException {
-		Team team = getTeamByID(teamId);
+		Team team = getTeamById(teamId);
 		ArrayList<Rider> teamRiders = team.getRiders();
 		int[] teamRiderIds = new int[teamRiders.size()];
-		for (int i=0; i < teamRiderIds.length; i++) {
+		for (int i = 0; i < teamRiderIds.length; i++) {
 			teamRiderIds[i] = teamRiders.get(i).getId();
 		}
 		return teamRiderIds;
@@ -226,7 +224,7 @@ public class CyclingPortal implements CyclingPortalInterface {
 	@Override
 	public int createRider(int teamID, String name, int yearOfBirth)
 			throws IDNotRecognisedException, IllegalArgumentException {
-		Team team = getTeamByID(teamID);
+		Team team = getTeamById(teamID);
 		Rider rider = new Rider(teamID, team, name, yearOfBirth);
 		team.addRider(rider);
 		riders.add(rider);
@@ -310,7 +308,7 @@ public class CyclingPortal implements CyclingPortalInterface {
 
 	@Override
 	public void removeRaceByName(String name) throws NameNotRecognisedException {
-		for (final Race race: races) {
+		for (final Race race : races) {
 			if (race.getName().equals(name)) {
 				races.remove(race);
 				return;
