@@ -18,6 +18,7 @@ public class CyclingPortal implements CyclingPortalInterface {
 	private ArrayList<Rider> riders = new ArrayList<>();
 	private ArrayList<Race> races = new ArrayList<>();
 	private ArrayList<Stage> stages = new ArrayList<>();
+	private ArrayList<Segment> segments = new ArrayList<>();
 
 	public Team getTeamById(int ID) throws IDNotRecognisedException {
 		for (Team team : teams) {
@@ -148,17 +149,24 @@ public class CyclingPortal implements CyclingPortalInterface {
 	public int addCategorizedClimbToStage(int stageId, Double location, SegmentType type, Double averageGradient,
 			Double length) throws IDNotRecognisedException, InvalidLocationException, InvalidStageStateException,
 			InvalidStageTypeException {
-		// TODO Auto-generated method stub
-		return 0;
+		Stage stage = getStageById(stageId);
+		CategorizedClimb climb = new CategorizedClimb(stageId, stage, location, type, averageGradient, length);
+		segments.add(climb);
+		stage.addSegment(climb);
+		return climb.getId();
 	}
 
 	@Override
 	public int addIntermediateSprintToStage(int stageId, double location) throws IDNotRecognisedException,
 			InvalidLocationException, InvalidStageStateException, InvalidStageTypeException {
-		// TODO Auto-generated method stub
-		return 0;
+		Stage stage = getStageById(stageId);
+		IntermediateSprint sprint = new IntermediateSprint(stageId, stage, location);
+		segments.add(sprint);
+		stage.addSegment(sprint);
+		return sprint.getId();
 	}
 
+	// TODO: NEXT TIME
 	@Override
 	public void removeSegment(int segmentId) throws IDNotRecognisedException, InvalidStageStateException {
 		// TODO Auto-generated method stub
@@ -170,7 +178,8 @@ public class CyclingPortal implements CyclingPortalInterface {
 		// TODO Auto-generated method stub
 
 	}
-
+	
+	// TODO: NEXT
 	@Override
 	public int[] getStageSegments(int stageId) throws IDNotRecognisedException {
 		// TODO Auto-generated method stub

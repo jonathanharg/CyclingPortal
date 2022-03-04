@@ -1,5 +1,6 @@
 package cycling;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 public class Stage {
 
@@ -12,6 +13,7 @@ public class Stage {
 	private StageType type;
 	private int id;
 	private static int count = 0;
+	private ArrayList<Segment> segments = new ArrayList<>();
 	
 	public Stage(int raceId, Race race,String name, String description, double length, LocalDateTime startTime, StageType type) throws InvalidNameException, InvalidLengthException {
 		if (name == null || name.isEmpty() || name.length() > 30) {
@@ -44,6 +46,18 @@ public class Stage {
 	
 	public Race getRace() {
 		return race;
+	}
+	
+	public StageType getType() {
+		return type;
+	}
+	
+	public void addSegment(Segment segment) {
+		segments.add(segment);
+	}
+	
+	public void removeSegment(Segment segment) {
+		segments.remove(segment);
 	}
 	
 }
