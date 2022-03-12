@@ -141,7 +141,7 @@ class CyclingPortalTestApp {
 				int r2 = portal.createRider(teamId, "rider 1", 1999);
 				int r3 = portal.createRider(teamId, "rider 1", 1999);
 				int[] riderIds = { r1, r2, r3 };
-				assertEquals(portal.getTeamRiders(teamId), riderIds);
+				assertArrayEquals(portal.getTeamRiders(teamId), riderIds);
 			} catch (Exception e) {
 
 			}

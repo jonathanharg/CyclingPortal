@@ -11,6 +11,36 @@ import java.util.ArrayList;
 //		- Code Formatting
 //		- Documentation/Comments
 //		- Testing
+//		- test all removes are removing everything associated with that thing
+
+//	REMAINING FUNCTIONS:
+//	---- Segments ---
+//	removeSegment
+//	getStageSegments
+//	concludeStagePreparation???
+//	
+//	
+//	---- Results ----
+//	registerRiderResultsInStage
+//	getRiderResultsInStage
+//	getRiderAdjustedElapsedTimeInStage
+//	deleteRiderResultsInStage
+//	getRidersRankInStage
+//	getRankedAdjustedElapsedTimesInStage
+//	getRidersPointsInStage
+//	getRidersMountainPointsInStage
+//	getRidersGeneralClassificationRank
+//	getGeneralClassificationTimesInRace
+//	getRidersPointsInRace
+//	getRidersMountainPointsInRace
+//	getRidersPointClassificationRank
+//	getRidersMountainPointClassificationRank
+//	
+//	
+//	---- Saving/Loading ---- 
+//	eraseCyclingPortal
+//	saveCyclingPortal
+//	loadCyclingPortal
 
 public class CyclingPortal implements CyclingPortalInterface {
 
