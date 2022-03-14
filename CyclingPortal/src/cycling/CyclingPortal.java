@@ -15,8 +15,6 @@ import java.util.ArrayList;
 
 //	REMAINING FUNCTIONS:
 //	---- Segments ---
-//	removeSegment
-//	getStageSegments
 //	concludeStagePreparation???
 //	
 //	
@@ -84,6 +82,15 @@ public class CyclingPortal implements CyclingPortalInterface {
 			}
 		}
 		throw new IDNotRecognisedException("Stage ID not found.");
+	}
+	
+	public Segment getSegmentById(int ID) throws IDNotRecognisedException {
+		for (Segment segment : segments) {
+			if (segment.getId() == ID) {
+				return segment;
+			}
+		}
+		throw new IDNotRecognisedException("Segment ID not found.");
 	}
 
 	// TODO: Create parent class for Rider, Team & Race w/ name, illegal name, etc.
@@ -196,11 +203,14 @@ public class CyclingPortal implements CyclingPortalInterface {
 		return sprint.getId();
 	}
 
-	// TODO: NEXT TIME
 	@Override
 	public void removeSegment(int segmentId) throws IDNotRecognisedException, InvalidStageStateException {
-		// TODO Auto-generated method stub
-
+		Segment segment = getSegmentById(segmentId);
+		Stage stage = segment.getStage();
+		stage.removeSegment(segment);
+		segments.remove(segment);
+		// TODO: Remove results?
+		// TODO: InvalidStageStateException - If the stage is "waiting for results".
 	}
 
 	@Override
@@ -209,11 +219,16 @@ public class CyclingPortal implements CyclingPortalInterface {
 
 	}
 	
-	// TODO: NEXT
 	@Override
 	public int[] getStageSegments(int stageId) throws IDNotRecognisedException {
-		// TODO Auto-generated method stub
-		return null;
+		Stage stage = getStageById(stageId);
+		ArrayList<Segment> stageSegments = stage.getSegments();
+		int stageSegmentsId[] = new int[stageSegments.size()];
+		for (int i = 0; i < stageSegments.size(); i++) {
+			Segment segment = segments.get(i);
+			stageSegmentsId[i] = segment.getId();
+		}
+		return stageSegmentsId;
 	}
 
 	@Override

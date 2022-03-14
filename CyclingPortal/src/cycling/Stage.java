@@ -52,6 +52,10 @@ public class Stage {
 		return type;
 	}
 	
+	public ArrayList<Segment> getSegments(){
+		return segments;
+	}
+	
 	public void addSegment(Segment segment) {
 		segments.add(segment);
 	}
