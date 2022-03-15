@@ -14,15 +14,8 @@ import java.util.ArrayList;
 //		- test all removes are removing everything associated with that thing
 
 //	REMAINING FUNCTIONS:
-//	---- Segments ---
-//	concludeStagePreparation???
-//	
-//	
 //	---- Results ----
-//	registerRiderResultsInStage
-//	getRiderResultsInStage
 //	getRiderAdjustedElapsedTimeInStage
-//	deleteRiderResultsInStage
 //	getRidersRankInStage
 //	getRankedAdjustedElapsedTimesInStage
 //	getRidersPointsInStage
@@ -303,8 +296,15 @@ public class CyclingPortal implements CyclingPortalInterface {
 
 	@Override
 	public LocalTime[] getRiderResultsInStage(int stageId, int riderId) throws IDNotRecognisedException {
-		// TODO Auto-generated method stub
-		return null;
+		Stage stage = getStageById(stageId);
+		Rider rider = getRiderById(riderId);
+		LocalTime[] results = stage.getRiderResults(rider);
+		if (results == null) {
+			LocalTime emptyArray[] = {};
+			return emptyArray;
+		} else {
+			return results;
+		}
 	}
 
 	@Override
@@ -315,8 +315,9 @@ public class CyclingPortal implements CyclingPortalInterface {
 
 	@Override
 	public void deleteRiderResultsInStage(int stageId, int riderId) throws IDNotRecognisedException {
-		// TODO Auto-generated method stub
-
+		Stage stage = getStageById(stageId);
+		Rider rider  = getRiderById(riderId);
+		stage.deleteRiderResults(rider);
 	}
 
 	@Override

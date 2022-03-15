@@ -92,4 +92,12 @@ public class Stage {
 		return waitingForResults;
 	}
 	
+	public LocalTime[] getRiderResults(Rider rider) {
+		return results.get(rider);
+	}
+	
+	public void deleteRiderResults(Rider rider) {
+		results.remove(rider);
+	}
+	
 }
