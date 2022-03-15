@@ -13,7 +13,7 @@ public class Segment {
 			throw new InvalidLocationException("The location is out of bounds of the stage length.");
 		}
 		// TODO: Fix this with results
-		if (false) {
+		if (stage.isWaitingForResults()) {
 			throw new InvalidStageStateException("The stage is waiting for results.");
 		}
 		if (stage.getType().equals(StageType.TT)) {

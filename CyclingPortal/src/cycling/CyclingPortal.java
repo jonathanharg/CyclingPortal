@@ -215,8 +215,8 @@ public class CyclingPortal implements CyclingPortalInterface {
 
 	@Override
 	public void concludeStagePreparation(int stageId) throws IDNotRecognisedException, InvalidStageStateException {
-		// TODO Auto-generated method stub
-
+		Stage stage = getStageById(stageId);
+		stage.concludePreparation();
 	}
 	
 	@Override
@@ -296,8 +296,9 @@ public class CyclingPortal implements CyclingPortalInterface {
 	public void registerRiderResultsInStage(int stageId, int riderId, LocalTime... checkpoints)
 			throws IDNotRecognisedException, DuplicatedResultException, InvalidCheckpointsException,
 			InvalidStageStateException {
-		// TODO Auto-generated method stub
-
+		Stage stage = getStageById(stageId);
+		Rider rider = getRiderById(riderId);
+		stage.registerResult(rider,checkpoints);
 	}
 
 	@Override

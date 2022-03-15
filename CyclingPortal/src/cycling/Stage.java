@@ -1,6 +1,8 @@
 package cycling;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Hashtable;
 
 public class Stage {
 
@@ -14,6 +16,8 @@ public class Stage {
 	private int id;
 	private static int count = 0;
 	private ArrayList<Segment> segments = new ArrayList<>();
+	private Hashtable<Rider, LocalTime[]> results = new Hashtable<Rider, LocalTime[]>();
+	private boolean waitingForResults = false;
 	
 	public Stage(int raceId, Race race,String name, String description, double length, LocalDateTime startTime, StageType type) throws InvalidNameException, InvalidLengthException {
 		if (name == null || name.isEmpty() || name.length() > 30) {
@@ -62,6 +66,30 @@ public class Stage {
 	
 	public void removeSegment(Segment segment) {
 		segments.remove(segment);
+	}
+	
+	public void registerResult(Rider rider, LocalTime[] checkpoints) throws InvalidStageStateException, DuplicatedResultException, InvalidCheckpointsException {
+		if (waitingForResults == false) {
+			throw new InvalidStageStateException("Results can only be added to a stage while it is waiting for results.");
+		}
+		if (results.containsKey(rider)) {
+			throw new DuplicatedResultException("Each rider can only have one result per Stage.");
+		}
+		if (checkpoints.length != segments.size() + 2) {
+			throw new InvalidCheckpointsException("The length of the checkpoint must equal number of Segments in the Stage + 2.");
+		}
+		results.put(rider,checkpoints);
+	}
+	
+	public void concludePreparation() throws InvalidStageStateException {
+		if (waitingForResults) {
+			throw new InvalidStageStateException("Stage is already waiting for results.");
+		}
+		waitingForResults = true;
+	}
+	
+	public boolean isWaitingForResults() {
+		return waitingForResults;
 	}
 	
 }
