@@ -1,6 +1,7 @@
 package cycling;
 
 import java.util.ArrayList;
+import java.time.LocalDateTime;
 
 public class Race {
 
@@ -13,8 +14,10 @@ public class Race {
 	private int id;
 
 	public Race(String name, String description) throws InvalidNameException {
+		// TODO: Check for whitespace!!!
 		if (name == null || name.isEmpty() || name.length() > 30) {
-			throw new InvalidNameException("Race name cannot be null, empty or have more than 30 characters.");
+			throw new InvalidNameException(
+					"The name cannot be null, empty, have more than 30 characters, or have white spaces.");
 		}
 		this.name = name;
 		this.description = description;
@@ -30,6 +33,14 @@ public class Race {
 	}
 
 	public void addStage(Stage stage) {
+		// TODO: TEST!!!!
+		for (int i = 0; i < stages.size(); i++) {
+			LocalDateTime iStartTime = stages.get(i).getStartTime();
+			if (stage.getStartTime().isBefore(iStartTime)) {
+				stages.add(i, stage);
+				return;
+			}
+		}
 		stages.add(stage);
 	}
 

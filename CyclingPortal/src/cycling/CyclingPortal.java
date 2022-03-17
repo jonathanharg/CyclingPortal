@@ -16,17 +16,20 @@ import java.util.ArrayList;
 //	REMAINING FUNCTIONS:
 //	---- Results ----
 //	getRiderAdjustedElapsedTimeInStage
-//	getRidersRankInStage
 //	getRankedAdjustedElapsedTimesInStage
+
 //	getRidersPointsInStage
+//	getRidersPointsInRace - after stage
+
+//	getRidersRankInStage - Ez
+//	getRidersGeneralClassificationRank - last
+
 //	getRidersMountainPointsInStage
-//	getRidersGeneralClassificationRank
-//	getGeneralClassificationTimesInRace
-//	getRidersPointsInRace
 //	getRidersMountainPointsInRace
-//	getRidersPointClassificationRank
 //	getRidersMountainPointClassificationRank
-//	
+
+//	getRidersPointClassificationRank
+//	getGeneralClassificationTimesInRace - last
 //	
 //	---- Saving/Loading ---- 
 //	eraseCyclingPortal
@@ -76,7 +79,7 @@ public class CyclingPortal implements CyclingPortalInterface {
 		}
 		throw new IDNotRecognisedException("Stage ID not found.");
 	}
-	
+
 	public Segment getSegmentById(int ID) throws IDNotRecognisedException {
 		for (Segment segment : segments) {
 			if (segment.getId() == ID) {
@@ -141,7 +144,7 @@ public class CyclingPortal implements CyclingPortalInterface {
 				throw new IllegalNameException("A stage with the name " + stageName + " already exists.");
 			}
 		}
-		Stage stage = new Stage(raceId, race, description, description, length, startTime, type);
+		Stage stage = new Stage(raceId, race, stageName, description, length, startTime, type);
 		stages.add(stage);
 		race.addStage(stage);
 		return stage.getId();
@@ -211,7 +214,7 @@ public class CyclingPortal implements CyclingPortalInterface {
 		Stage stage = getStageById(stageId);
 		stage.concludePreparation();
 	}
-	
+
 	@Override
 	public int[] getStageSegments(int stageId) throws IDNotRecognisedException {
 		Stage stage = getStageById(stageId);
@@ -291,20 +294,21 @@ public class CyclingPortal implements CyclingPortalInterface {
 			InvalidStageStateException {
 		Stage stage = getStageById(stageId);
 		Rider rider = getRiderById(riderId);
-		stage.registerResult(rider,checkpoints);
+		stage.registerResult(rider, checkpoints);
 	}
 
 	@Override
 	public LocalTime[] getRiderResultsInStage(int stageId, int riderId) throws IDNotRecognisedException {
-		Stage stage = getStageById(stageId);
-		Rider rider = getRiderById(riderId);
-		LocalTime[] results = stage.getRiderResults(rider);
-		if (results == null) {
-			LocalTime emptyArray[] = {};
-			return emptyArray;
-		} else {
-			return results;
-		}
+		// Stage stage = getStageById(stageId);
+		// Rider rider = getRiderById(riderId);
+		// LocalTime[] results = stage.getRiderResults(rider);
+		// if (results == null) {
+		// LocalTime emptyArray[] = {};
+		// return emptyArray;
+		// } else {
+		// return results;
+		// }
+		return null;
 	}
 
 	@Override
@@ -316,7 +320,7 @@ public class CyclingPortal implements CyclingPortalInterface {
 	@Override
 	public void deleteRiderResultsInStage(int stageId, int riderId) throws IDNotRecognisedException {
 		Stage stage = getStageById(stageId);
-		Rider rider  = getRiderById(riderId);
+		Rider rider = getRiderById(riderId);
 		stage.deleteRiderResults(rider);
 	}
 

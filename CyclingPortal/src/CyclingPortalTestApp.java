@@ -10,9 +10,14 @@ import org.junit.jupiter.api.Nested;
 
 import cycling.CyclingPortal;
 import cycling.IllegalNameException;
+import cycling.InvalidLengthException;
 import cycling.InvalidNameException;
+import cycling.SegmentType;
+import cycling.StageType;
 import cycling.IDNotRecognisedException;
 import java.lang.IllegalArgumentException;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 // !! DO NOT SUBMIT: Doesn't start with java.
 
 class CyclingPortalTestApp {
@@ -127,7 +132,7 @@ class CyclingPortalTestApp {
 				portal.createTeam("Bobo", "Hey, I'm using Whatsapp!");
 				portal.createTeam("Philip", "Single");
 				assertEquals(portal.getTeams().length, 3);
-//				TODO: !!! test with removing team too
+				// TODO: !!! test with removing team too
 			} catch (IllegalNameException | InvalidNameException e) {
 				e.printStackTrace();
 			}
@@ -192,5 +197,27 @@ class CyclingPortalTestApp {
 			});
 		}
 
+	}
+
+	@Nested
+	class ResultsTests {
+		@Test
+		public void basicResultsTest() {
+			try {
+				int teamId = portal.createTeam("Blue Team", null);
+				int riderId = portal.createRider(teamId, "Steve", 1999);
+				int raceId = portal.createRace("BasicRace", null);
+				int stageId = portal.addStageToRace(raceId, "BasicStage", null, 10, LocalDateTime.now(),
+						StageType.FLAT);
+				int sprintId = portal.addIntermediateSprintToStage(stageId, 2);
+				int mountId = portal.addCategorizedClimbToStage(stageId, 7.0, SegmentType.HC, 5.2, 2.0);
+				portal.concludeStagePreparation(stageId);
+				portal.registerRiderResultsInStage(stageId, riderId, LocalTime.of(10, 00, 00), LocalTime.of(10, 10, 00),
+						LocalTime.of(10, 15, 00), LocalTime.of(10, 21, 00));
+				System.out.println("Done");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
 }
