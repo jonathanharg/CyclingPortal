@@ -299,7 +299,10 @@ public class CyclingPortal implements CyclingPortalInterface {
 
 	@Override
 	public LocalTime[] getRiderResultsInStage(int stageId, int riderId) throws IDNotRecognisedException {
-		// Stage stage = getStageById(stageId);
+		 Stage stage = getStageById(stageId);
+//		 DEBUG
+		 stage.debugPrintResults();
+//		 DEBUG
 		// Rider rider = getRiderById(riderId);
 		// LocalTime[] results = stage.getRiderResults(rider);
 		// if (results == null) {

@@ -205,16 +205,30 @@ class CyclingPortalTestApp {
 		public void basicResultsTest() {
 			try {
 				int teamId = portal.createTeam("Blue Team", null);
-				int riderId = portal.createRider(teamId, "Steve", 1999);
+				int rider1Id = portal.createRider(teamId, "Andrew", 1999);
+				int rider2Id = portal.createRider(teamId, "Bart", 1999);
+				int rider3Id = portal.createRider(teamId, "Charlie", 1999);
+				int rider4Id = portal.createRider(teamId, "Doug", 1999);
+				int rider5Id = portal.createRider(teamId, "Earnie", 1999);
+
 				int raceId = portal.createRace("BasicRace", null);
 				int stageId = portal.addStageToRace(raceId, "BasicStage", null, 10, LocalDateTime.now(),
 						StageType.FLAT);
-				int sprintId = portal.addIntermediateSprintToStage(stageId, 2);
+				int sprintId = portal.addIntermediateSprintToStage(stageId, 2.0);
 				int mountId = portal.addCategorizedClimbToStage(stageId, 7.0, SegmentType.HC, 5.2, 2.0);
 				portal.concludeStagePreparation(stageId);
-				portal.registerRiderResultsInStage(stageId, riderId, LocalTime.of(10, 00, 00), LocalTime.of(10, 10, 00),
-						LocalTime.of(10, 15, 00), LocalTime.of(10, 21, 00));
-				System.out.println("Done");
+				portal.registerRiderResultsInStage(stageId, rider1Id, LocalTime.of(0, 10, 00, 00), LocalTime.of(0, 10, 17, 00),
+						LocalTime.of(0, 10, 21, 00), LocalTime.of(0, 10, 28, 59));
+				portal.registerRiderResultsInStage(stageId, rider2Id, LocalTime.of(0, 10, 00, 00), LocalTime.of(0, 10, 14, 00),
+						LocalTime.of(0, 10, 20, 00), LocalTime.of(0, 10, 28, 00));
+				portal.registerRiderResultsInStage(stageId, rider3Id, LocalTime.of(0, 10, 00, 00), LocalTime.of(0, 10, 13, 00),
+						LocalTime.of(0, 10, 18, 00), LocalTime.of(0, 10, 27, 00));
+				portal.registerRiderResultsInStage(stageId, rider4Id, LocalTime.of(0, 10, 00, 00), LocalTime.of(0, 10, 11, 00),
+						LocalTime.of(0, 10, 17, 00), LocalTime.of(0, 10, 24, 00));
+				portal.registerRiderResultsInStage(stageId, rider5Id, LocalTime.of(0, 10, 00, 00), LocalTime.of(0, 10, 10, 00),
+						LocalTime.of(0, 10, 15, 00), LocalTime.of(0, 10, 26, 00));
+				
+				portal.getRiderResultsInStage(stageId, rider1Id);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

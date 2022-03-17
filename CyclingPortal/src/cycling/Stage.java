@@ -6,8 +6,11 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Stage {
 
@@ -23,8 +26,14 @@ public class Stage {
 	private ArrayList<Segment> segments = new ArrayList<>();
 	private HashMap<Rider, StageResult> results = new HashMap<Rider, StageResult>();
 	private boolean waitingForResults = false;
+	
+	private static final int[] FLAT_POINTS = {50,30,20,18,16,14,12,10,8,7,6,5,4,3,2};
+	private static final int[] MEDIUM_POINTS = {30,25,22,19,17,15,13,11,9,7,6,5,4,3,2};
+	private static final int[] HIGH_POINTS = {20,17,15,13,11,10,9,8,7,6,5,4,3,2,1};
+	private static final int[] TT_POINTS = {20,17,15,13,11,10,9,8,7,6,5,4,3,2,1};
 
-	private static Comparator<StageResult> byElapsedTime = (StageResult result1, StageResult result2) -> result1
+
+	private static Comparator<StageResult> sortByElapsedTime = (StageResult result1, StageResult result2) -> result1
 			.getElapsedTime().compareTo(result2.getElapsedTime());
 
 	public Stage(int raceId, Race race, String name, String description, double length, LocalDateTime startTime,
@@ -102,7 +111,7 @@ public class Stage {
 					"The length of the checkpoint must equal number of Segments in the Stage + 2.");
 		}
 
-		StageResult result = new StageResult(checkpoints);
+		StageResult result = new StageResult(checkpoints);		
 		results.put(rider, result);
 
 		for (int i = 0; i < segments.size(); i++) {
@@ -130,9 +139,70 @@ public class Stage {
 		results.remove(rider);
 	}
 
-	private void generateElapsedTime() {
-		results.entrySet().stream().sorted(Comparator.comparing(Map.Entry::getValue, byElapsedTime));
-		results.entrySet().stream().sorted().map(Map.Entry::getKey).collect(Collectors.toList());
+	private List<Rider> generateElapsedTime() {
+		List<Rider> ridersByElapsedTime = results.entrySet()
+				.stream()
+				.sorted(Comparator.comparing(Map.Entry::getValue, sortByElapsedTime))
+				.map(Map.Entry::getKey)
+				.collect(Collectors.toList());
+		return ridersByElapsedTime;
 	}
 
+	private void generateStatistics() {
+		List<Rider> riders = generateElapsedTime();
+		
+		for(int i = 0; i < results.size(); i++) {
+			Rider rider = riders.get(i);
+			StageResult result = results.get(rider);
+			result.setPosition(i + 1);
+			result.setStageSprintersPoints(getPoints(i));
+			
+			if(i == 0) {
+				result.setAdjustedElapsedTime(result.getElapsedTime());
+			} else {
+				Rider prevRider = riders.get(i - 1);
+				Duration prevTime = results.get(prevRider).getElapsedTime();
+				Duration time = results.get(rider).getElapsedTime();
+				
+				int timeDiff = time.minus(prevTime).compareTo(Duration.ofSeconds(1));
+				if(timeDiff <= 0) {
+//					Close Finish Condition
+					Duration prevAdjustedTime = results.get(prevRider).getAdjustedElapsedTime();
+					results.get(rider).setAdjustedElapsedTime(prevAdjustedTime);
+				} else {
+//					Far Finish Condition
+					results.get(rider).setAdjustedElapsedTime(time);
+				}
+			}
+			
+		}
+	}
+	
+	public void debugPrintResults() {
+		generateStatistics();
+		generateElapsedTime().forEach(rider -> {
+			StageResult riderResults = results.get(rider);
+			System.out.println(rider.getName() + " finished in " + riderResults.getPosition() + "th.");
+			System.out.println("ET: " + riderResults.getElapsedTime() + " AET: " + riderResults.getAdjustedElapsedTime() + " SP: " + riderResults.getStageSprintersPoints());
+		});
+	}
+	
+	private int getPoints(int index) {
+		int[] points = {};
+		switch(type) {
+			case FLAT:
+				points = FLAT_POINTS;
+			case MEDIUM_MOUNTAIN:
+				points = MEDIUM_POINTS;
+			case HIGH_MOUNTAIN:
+				points = HIGH_POINTS;
+			case TT:
+				points = TT_POINTS;
+		}
+		if ((index) > points.length) {
+			return 0;
+		} else {
+			return points[index];
+		}
+	}
 }

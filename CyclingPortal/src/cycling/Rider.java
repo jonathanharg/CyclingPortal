@@ -36,4 +36,8 @@ public class Rider {
 	public Team getTeam() {
 		return team;
 	}
+
+	public String getName() {
+		return name;
+	}
 }
