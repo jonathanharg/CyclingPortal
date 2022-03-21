@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.List;
 
 //TODO:
 //		- Asserts
@@ -43,6 +44,11 @@ public class CyclingPortal implements CyclingPortalInterface {
 	private ArrayList<Race> races = new ArrayList<>();
 	private ArrayList<Stage> stages = new ArrayList<>();
 	private ArrayList<Segment> segments = new ArrayList<>();
+	
+	public void testResults(int stageId) throws IDNotRecognisedException {
+		Stage stage = getStageById(stageId);
+		stage.debugPrintResults();
+	}
 
 	public Team getTeamById(int ID) throws IDNotRecognisedException {
 		for (Team team : teams) {
@@ -300,10 +306,10 @@ public class CyclingPortal implements CyclingPortalInterface {
 	@Override
 	public LocalTime[] getRiderResultsInStage(int stageId, int riderId) throws IDNotRecognisedException {
 		 Stage stage = getStageById(stageId);
-//		 DEBUG
-		 stage.debugPrintResults();
-//		 DEBUG
-		// Rider rider = getRiderById(riderId);
+		 Rider rider = getRiderById(riderId);
+		 
+//		 TODO: THE JAVADOC FOR THIS MAKES NO SENSE!!!
+		 
 		// LocalTime[] results = stage.getRiderResults(rider);
 		// if (results == null) {
 		// LocalTime emptyArray[] = {};
@@ -316,12 +322,17 @@ public class CyclingPortal implements CyclingPortalInterface {
 
 	@Override
 	public LocalTime getRiderAdjustedElapsedTimeInStage(int stageId, int riderId) throws IDNotRecognisedException {
-		// TODO Auto-generated method stub
-		return null;
+		Stage stage = getStageById(stageId);
+		Rider rider = getRiderById(riderId);
+		LocalTime adjustedElapsedTime = stage.getResults()
+				.get(rider)
+				.getAdjustedElapsedLocalTime();
+		return adjustedElapsedTime;
 	}
 
 	@Override
 	public void deleteRiderResultsInStage(int stageId, int riderId) throws IDNotRecognisedException {
+//		TODO: does this still work?
 		Stage stage = getStageById(stageId);
 		Rider rider = getRiderById(riderId);
 		stage.deleteRiderResults(rider);
@@ -329,14 +340,25 @@ public class CyclingPortal implements CyclingPortalInterface {
 
 	@Override
 	public int[] getRidersRankInStage(int stageId) throws IDNotRecognisedException {
-		// TODO Auto-generated method stub
-		return null;
+		Stage stage = getStageById(stageId);
+		List<Rider> riders = stage.getRidersByElapsedTime();
+		int[] riderIds = new int[riders.size()];
+		for (int i = 0; i < riders.size(); i++) {
+			riderIds[i] = riders.get(i).getId();
+		}
+		return riderIds;
 	}
 
 	@Override
 	public LocalTime[] getRankedAdjustedElapsedTimesInStage(int stageId) throws IDNotRecognisedException {
-		// TODO Auto-generated method stub
-		return null;
+		Stage stage = getStageById(stageId);
+		List<Rider> riders = stage.getRidersByElapsedTime();
+		LocalTime[] riderAETs = new LocalTime[riders.size()];
+		for (int i = 0; i < riders.size(); i++) {
+			Rider rider = riders.get(i);
+			riderAETs[i] = stage.getResults().get(rider).getAdjustedElapsedLocalTime();
+		}
+		return riderAETs;
 	}
 
 	@Override

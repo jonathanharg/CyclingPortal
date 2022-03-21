@@ -7,6 +7,7 @@ public class StageResult {
 	private LocalTime[] checkpointTimes;
 	private Duration elapsedTime;
 	private Duration adjustedElapsedTime;
+	private LocalTime adjustedElapsedLocalTime;
 	private int position;
 	private int stageSprintersPoints;
 	private int stageMountainPoints;
@@ -26,6 +27,7 @@ public class StageResult {
 	
 	public void setAdjustedElapsedTime(Duration adjustedElapsedTime) {
 		this.adjustedElapsedTime = adjustedElapsedTime;
+		this.adjustedElapsedLocalTime = checkpointTimes[0].plus(adjustedElapsedTime);
 	}
 	
 	public int getPosition() {
@@ -34,6 +36,10 @@ public class StageResult {
 	
 	public Duration getAdjustedElapsedTime() {
 		return adjustedElapsedTime;
+	}
+	
+	public LocalTime getAdjustedElapsedLocalTime() {
+		return adjustedElapsedLocalTime;
 	}
 	
 	public void setStageSprintersPoints(int points) {

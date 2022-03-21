@@ -26,6 +26,7 @@ public class Stage {
 	private ArrayList<Segment> segments = new ArrayList<>();
 	private HashMap<Rider, StageResult> results = new HashMap<Rider, StageResult>();
 	private boolean waitingForResults = false;
+	private boolean updatedStatisticsCalculated = false; //TODO:DO WE NEED THIS??
 	
 	private static final int[] FLAT_POINTS = {50,30,20,18,16,14,12,10,8,7,6,5,4,3,2};
 	private static final int[] MEDIUM_POINTS = {30,25,22,19,17,15,13,11,9,7,6,5,4,3,2};
@@ -115,8 +116,10 @@ public class Stage {
 		results.put(rider, result);
 
 		for (int i = 0; i < segments.size(); i++) {
+//			TODO: INCLUDE START TIME??
 			segments.get(i).registerResults(rider, checkpoints[i + 1]);
 		}
+		updatedStatisticsCalculated = false;
 	}
 
 	public void concludePreparation() throws InvalidStageStateException {
@@ -130,16 +133,16 @@ public class Stage {
 		return waitingForResults;
 	}
 
-	public LocalTime[] getRiderResults(Rider rider) {
-		// return results.get(rider);
-		return null;
+	public HashMap<Rider, StageResult> getResults() {
+		return results;
 	}
 
 	public void deleteRiderResults(Rider rider) {
 		results.remove(rider);
+		updatedStatisticsCalculated = false;
 	}
 
-	private List<Rider> generateElapsedTime() {
+	public List<Rider> getRidersByElapsedTime() {
 		List<Rider> ridersByElapsedTime = results.entrySet()
 				.stream()
 				.sorted(Comparator.comparing(Map.Entry::getValue, sortByElapsedTime))
@@ -149,7 +152,7 @@ public class Stage {
 	}
 
 	private void generateStatistics() {
-		List<Rider> riders = generateElapsedTime();
+		List<Rider> riders = getRidersByElapsedTime();
 		
 		for(int i = 0; i < results.size(); i++) {
 			Rider rider = riders.get(i);
@@ -176,18 +179,19 @@ public class Stage {
 			}
 			
 		}
+		updatedStatisticsCalculated = true;
 	}
 	
 	public void debugPrintResults() {
 		generateStatistics();
-		generateElapsedTime().forEach(rider -> {
+		getRidersByElapsedTime().forEach(rider -> {
 			StageResult riderResults = results.get(rider);
 			System.out.println(rider.getName() + " finished in " + riderResults.getPosition() + "th.");
 			System.out.println("ET: " + riderResults.getElapsedTime() + " AET: " + riderResults.getAdjustedElapsedTime() + " SP: " + riderResults.getStageSprintersPoints());
 		});
 	}
 	
-	private int getPoints(int index) {
+	private int getPoints(int position) {
 		int[] points = {};
 		switch(type) {
 			case FLAT:
@@ -199,10 +203,10 @@ public class Stage {
 			case TT:
 				points = TT_POINTS;
 		}
-		if ((index) > points.length) {
+		if ((position) > points.length) {
 			return 0;
 		} else {
-			return points[index];
+			return points[position];
 		}
 	}
 }

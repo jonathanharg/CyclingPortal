@@ -12,6 +12,14 @@ public class Segment {
 	private SegmentType type;
 	private double location;
 	private HashMap<Rider, SegmentResult> results = new HashMap<Rider, SegmentResult>();
+	
+	private static final int[] SPRINT_POINTS = {20,17,15,13,11,10,9,8,7,6,5,4,3,2,1};
+	private static final int[] HC_POINTS = {20,15,12,10,8,6,4,2};
+	private static final int[] C1_POINTS = {10,8,6,4,2,1};
+	private static final int[] C2_POINTS = {5,3,2,1};
+	private static final int[] C3_POINTS = {2,1};
+	private static final int[] C4_POINTS = {1};
+
 
 	public Segment(int stageId, Stage stage, SegmentType type, double location)
 			throws InvalidLocationException, InvalidStageStateException, InvalidStageTypeException {
@@ -46,5 +54,28 @@ public class Segment {
 	public void registerResults(Rider rider, LocalTime checkpoint) {
 		SegmentResult result = new SegmentResult(checkpoint);
 		results.put(rider, result);
+	}
+	
+	private int getPoints(int position) {
+		int[] points = {};
+		switch(type) {
+			case HC:
+				points = HC_POINTS;
+			case C1:
+				points = C1_POINTS;
+			case C2:
+				points = C2_POINTS;
+			case C3:
+				points = C3_POINTS;
+			case C4:
+				points = C4_POINTS;
+			case SPRINT:
+				points = SPRINT_POINTS;
+		}
+		if ((position) > points.length) {
+			return 0;
+		} else {
+			return points[position];
+		}
 	}
 }
