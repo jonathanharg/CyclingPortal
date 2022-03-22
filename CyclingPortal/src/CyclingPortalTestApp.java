@@ -354,7 +354,7 @@ class CyclingPortalTestApp {
 				
 				
 				//addCategorizedClimbToStage
-	
+				
 				
 				
 				
