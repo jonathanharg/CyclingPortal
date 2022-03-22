@@ -22,7 +22,7 @@ public class Rider {
 		this.team = team;
 		this.name = name;
 		this.yearOfBirth = yearOfBirth;
-		this.id = this.count++;
+		this.id = Rider.count++;
 	}
 
 	public int getId() {

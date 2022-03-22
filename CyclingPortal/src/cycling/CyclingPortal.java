@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 //TODO:
-//		- Asserts
+//		- Asserts !!!!
 //		- Inheritance -> IDable class? getId, invalid name etc?
 //		- Code Formatting
 //		- Documentation/Comments
@@ -150,7 +150,7 @@ public class CyclingPortal implements CyclingPortalInterface {
 				throw new IllegalNameException("A stage with the name " + stageName + " already exists.");
 			}
 		}
-		Stage stage = new Stage(raceId, race, stageName, description, length, startTime, type);
+		Stage stage = new Stage(race, stageName, description, length, startTime, type);
 		stages.add(stage);
 		race.addStage(stage);
 		return stage.getId();
@@ -189,7 +189,7 @@ public class CyclingPortal implements CyclingPortalInterface {
 			Double length) throws IDNotRecognisedException, InvalidLocationException, InvalidStageStateException,
 			InvalidStageTypeException {
 		Stage stage = getStageById(stageId);
-		CategorizedClimb climb = new CategorizedClimb(stageId, stage, location, type, averageGradient, length);
+		CategorizedClimb climb = new CategorizedClimb(stage, location, type, averageGradient, length);
 		segments.add(climb);
 		stage.addSegment(climb);
 		return climb.getId();
@@ -199,7 +199,7 @@ public class CyclingPortal implements CyclingPortalInterface {
 	public int addIntermediateSprintToStage(int stageId, double location) throws IDNotRecognisedException,
 			InvalidLocationException, InvalidStageStateException, InvalidStageTypeException {
 		Stage stage = getStageById(stageId);
-		IntermediateSprint sprint = new IntermediateSprint(stageId, stage, location);
+		IntermediateSprint sprint = new IntermediateSprint(stage, location);
 		segments.add(sprint);
 		stage.addSegment(sprint);
 		return sprint.getId();
@@ -363,14 +363,26 @@ public class CyclingPortal implements CyclingPortalInterface {
 
 	@Override
 	public int[] getRidersPointsInStage(int stageId) throws IDNotRecognisedException {
-		// TODO Auto-generated method stub
-		return null;
+		Stage stage = getStageById(stageId);
+		List<Rider> riders = stage.getRidersByElapsedTime();
+		int[] riderSprinterPoints = new int[riders.size()];
+		for (int i = 0; i < riders.size(); i++) {
+			Rider rider = riders.get(i);
+			riderSprinterPoints[i] = stage.getResults().get(rider).getStageSprintersPoints();
+		}
+		return riderSprinterPoints;
 	}
 
 	@Override
 	public int[] getRidersMountainPointsInStage(int stageId) throws IDNotRecognisedException {
-		// TODO Auto-generated method stub
-		return null;
+		Stage stage = getStageById(stageId);
+		List<Rider> riders = stage.getRidersByElapsedTime();
+		int[] riderMountainPoints = new int[riders.size()];
+		for (int i = 0; i < riders.size(); i++) {
+			Rider rider = riders.get(i);
+			riderMountainPoints[i] = stage.getResults().get(rider).getStageMountainPoints();
+		}
+		return riderMountainPoints;
 	}
 
 	@Override

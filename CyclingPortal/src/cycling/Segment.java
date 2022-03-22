@@ -1,17 +1,25 @@
 package cycling;
 
 import java.time.LocalTime;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Segment {
 
 	private static int count = 0;
 	private Stage stage;
-	private int stageId;
 	private int id;
 	private SegmentType type;
 	private double location;
+	
 	private HashMap<Rider, SegmentResult> results = new HashMap<Rider, SegmentResult>();
+	private boolean updatedStatisticsCalculated = false; //TODO:DO WE NEED THIS??
+	
+	private static Comparator<SegmentResult> sortByElapsedTime = (SegmentResult result1, SegmentResult result2) -> result1
+			.getCheckpointTime().compareTo(result2.getCheckpointTime());
 	
 	private static final int[] SPRINT_POINTS = {20,17,15,13,11,10,9,8,7,6,5,4,3,2,1};
 	private static final int[] HC_POINTS = {20,15,12,10,8,6,4,2};
@@ -21,7 +29,7 @@ public class Segment {
 	private static final int[] C4_POINTS = {1};
 
 
-	public Segment(int stageId, Stage stage, SegmentType type, double location)
+	public Segment(Stage stage, SegmentType type, double location)
 			throws InvalidLocationException, InvalidStageStateException, InvalidStageTypeException {
 		if (location > stage.getLength()) {
 			throw new InvalidLocationException("The location is out of bounds of the stage length.");
@@ -32,9 +40,8 @@ public class Segment {
 		if (stage.getType().equals(StageType.TT)) {
 			throw new InvalidStageTypeException("Time-trial stages cannot contain any segments.");
 		}
-		this.stageId = stageId;
 		this.stage = stage;
-		this.id = this.count++;
+		this.id = Segment.count++;
 		this.type = type;
 		this.location = location;
 	}
@@ -54,6 +61,36 @@ public class Segment {
 	public void registerResults(Rider rider, LocalTime checkpoint) {
 		SegmentResult result = new SegmentResult(checkpoint);
 		results.put(rider, result);
+		updatedStatisticsCalculated = false;
+	}
+	
+	public SegmentResult getRiderResult(Rider rider) {
+		return results.get(rider);
+	}
+	
+	public List<Rider> getRidersByElapsedTime() {
+		List<Rider> ridersByElapsedTime = results.entrySet()
+				.stream()
+				.sorted(Comparator.comparing(Map.Entry::getValue, sortByElapsedTime))
+				.map(Map.Entry::getKey)
+				.collect(Collectors.toList());
+		return ridersByElapsedTime;
+	}
+	
+	public void generateSegmentResults() {
+		List<Rider> riders = getRidersByElapsedTime();
+		
+		for(int i = 0; i < results.size(); i++) {
+			Rider rider = riders.get(i);
+			SegmentResult result = results.get(rider);
+			result.setPosition(i + 1);
+			if (this.type.equals(SegmentType.SPRINT)) {
+				result.setSegmentSprinterPoints(getPoints(i));
+			} else {
+				result.setSegmentMountainPoints(getPoints(i));
+			}
+		}
+		updatedStatisticsCalculated = true;
 	}
 	
 	private int getPoints(int position) {

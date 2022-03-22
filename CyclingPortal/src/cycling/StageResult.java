@@ -10,11 +10,18 @@ public class StageResult {
 	private LocalTime adjustedElapsedLocalTime;
 	private int position;
 	private int stageSprintersPoints;
-	private int stageMountainPoints;
+	private int stageMountainPoints = 0;
+	
+//	private ArrayList<SegmentResult> segmentResults = new ArrayList<SegmentResult>();
 
 	public StageResult(LocalTime[] checkpoints) {
 		this.checkpointTimes = checkpoints;
 		this.elapsedTime = Duration.between(checkpoints[0], checkpoints[checkpoints.length - 1]);
+		
+//		for (int i = 0; i < checkpoints.length - 2; i++) {
+//			SegmentResult segmentResult = new SegmentResult(checkpoints[i + 1]);
+//			segmentResults.add(segmentResult);
+//		}
 	}
 
 	public Duration getElapsedTime() {
@@ -48,5 +55,13 @@ public class StageResult {
 	
 	public int getStageSprintersPoints() {
 		return stageSprintersPoints;
+	}
+	
+	public void setStageMountainPoints(int points) {
+		this.stageMountainPoints = points;
+	}
+	
+	public int getStageMountainPoints() {
+		return stageMountainPoints;
 	}
 }

@@ -8,13 +8,9 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Stage {
-
-	private int raceId;
 	private Race race;
 	private String name;
 	private String description;
@@ -23,9 +19,10 @@ public class Stage {
 	private StageType type;
 	private int id;
 	private static int count = 0;
-	private ArrayList<Segment> segments = new ArrayList<>();
-	private HashMap<Rider, StageResult> results = new HashMap<Rider, StageResult>();
 	private boolean waitingForResults = false;
+	private ArrayList<Segment> segments = new ArrayList<>();
+	
+	private HashMap<Rider, StageResult> results = new HashMap<Rider, StageResult>();
 	private boolean updatedStatisticsCalculated = false; //TODO:DO WE NEED THIS??
 	
 	private static final int[] FLAT_POINTS = {50,30,20,18,16,14,12,10,8,7,6,5,4,3,2};
@@ -34,10 +31,10 @@ public class Stage {
 	private static final int[] TT_POINTS = {20,17,15,13,11,10,9,8,7,6,5,4,3,2,1};
 
 
-	private static Comparator<StageResult> sortByElapsedTime = (StageResult result1, StageResult result2) -> result1
+	static Comparator<StageResult> sortByElapsedTime = (StageResult result1, StageResult result2) -> result1
 			.getElapsedTime().compareTo(result2.getElapsedTime());
 
-	public Stage(int raceId, Race race, String name, String description, double length, LocalDateTime startTime,
+	public Stage(Race race, String name, String description, double length, LocalDateTime startTime,
 			StageType type) throws InvalidNameException, InvalidLengthException {
 		if (name == null || name.isEmpty() || name.length() > 30) {
 			throw new InvalidNameException("Stage name cannot be null, empty or have more than 30 characters.");
@@ -47,12 +44,11 @@ public class Stage {
 		}
 		this.name = name;
 		this.description = description;
-		this.raceId = raceId;
 		this.race = race;
 		this.length = length;
 		this.startTime = startTime;
 		this.type = type;
-		this.id = this.count++;
+		this.id = Stage.count++;
 	}
 
 	public int getId() {
@@ -114,6 +110,8 @@ public class Stage {
 
 		StageResult result = new StageResult(checkpoints);		
 		results.put(rider, result);
+		
+		
 
 		for (int i = 0; i < segments.size(); i++) {
 //			TODO: INCLUDE START TIME??
@@ -151,15 +149,28 @@ public class Stage {
 		return ridersByElapsedTime;
 	}
 
-	private void generateStatistics() {
+	private void generateStageResults() {
 		List<Rider> riders = getRidersByElapsedTime();
 		
 		for(int i = 0; i < results.size(); i++) {
 			Rider rider = riders.get(i);
 			StageResult result = results.get(rider);
 			result.setPosition(i + 1);
-			result.setStageSprintersPoints(getPoints(i));
 			
+			int sprintersPoints = getPoints(i);
+			int mountainPoints = getPoints(i);
+			
+//			This is optional for some results, it may not need to be computed
+			for(Segment segment:segments) {
+				segment.generateSegmentResults();
+				sprintersPoints += segment.getRiderResult(rider).getSegmentSprinterPoints();
+				mountainPoints += segment.getRiderResult(rider).getSegmentMountainPoints();
+			}
+			
+			result.setStageSprintersPoints(sprintersPoints);
+			result.setStageMountainPoints(mountainPoints);
+			
+//			Adjusted Elapsed Time Calculations
 			if(i == 0) {
 				result.setAdjustedElapsedTime(result.getElapsedTime());
 			} else {
@@ -183,7 +194,7 @@ public class Stage {
 	}
 	
 	public void debugPrintResults() {
-		generateStatistics();
+		generateStageResults();
 		getRidersByElapsedTime().forEach(rider -> {
 			StageResult riderResults = results.get(rider);
 			System.out.println(rider.getName() + " finished in " + riderResults.getPosition() + "th.");

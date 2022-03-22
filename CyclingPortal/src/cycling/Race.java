@@ -21,7 +21,7 @@ public class Race {
 		}
 		this.name = name;
 		this.description = description;
-		this.id = this.count++;
+		this.id = Race.count++;
 	}
 
 	public int getId() {

@@ -16,7 +16,7 @@ public class Team {
 		}
 		this.name = name;
 		this.description = description;
-		this.id = this.count++;
+		this.id = Team.count++;
 	}
 
 	public String getName() {
