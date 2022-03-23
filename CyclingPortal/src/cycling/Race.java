@@ -16,7 +16,9 @@ public class Race extends CompetitiveEvent{
 	public Race(String name, String description) throws InvalidNameException {
 		super(EventType.RACE);
 		// TODO: Check for whitespace!!!
-		if (name == null || name.isEmpty() || name.length() > 30) {
+		if (name == null || name.isEmpty() || name.length() > 30 || name.contains(" ")
+				|| name.contains("\n") || name.contains("\t") || name.contains("\f")
+				|| name.contains("\r")) {
 			throw new InvalidNameException(
 					"The name cannot be null, empty, have more than 30 characters, or have white spaces.");
 		}

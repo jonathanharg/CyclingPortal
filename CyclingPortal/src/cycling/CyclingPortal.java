@@ -108,7 +108,7 @@ public class CyclingPortal implements CyclingPortalInterface {
 
 	@Override
 	public int createRace(String name, String description) throws IllegalNameException, InvalidNameException {
-		for (final Race race : races) {
+		for (Race race : races) {
 			if (race.getName().equals(name)) {
 				throw new IllegalNameException("A Race with the name " + name + " already exists.");
 			}
