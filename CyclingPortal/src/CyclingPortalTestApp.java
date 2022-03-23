@@ -314,11 +314,11 @@ class CyclingPortalTestApp {
 			try {
 				raceRemovez = portal.createRace("iamgonnadie", "ded");
 			}catch (Exception e) {}
-			assertEquals(portal.getRaceIds().length,4);
+			assertEquals(portal.getRaceIds().length,3);
 			try {
 				portal.removeRaceById(raceRemovez);
 			}catch (Exception e) {}
-			assertEquals(portal.getRaceIds().length,3);
+			assertEquals(portal.getRaceIds().length,2);
 		}
 		
 		@Test
@@ -608,7 +608,7 @@ class CyclingPortalTestApp {
 				System.out.println(segments[0]);
 				System.out.println(segments[1]);
 				System.out.println(segments[2]);
-				assertEquals(segments[0], seg1);
+				assertEquals(segments[0], seg2);
 				assertEquals(segments[1], seg3);
 				assertEquals(segments[2], seg1);
 
