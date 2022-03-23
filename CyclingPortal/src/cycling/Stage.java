@@ -126,51 +126,38 @@ public class Stage extends CompetitiveEvent {
 		return waitingForResults;
 	}
 
-	// private void calculatePoints() {
-	// 	List<Rider> riders = getRidersByElapsedTime();
-	// 	int[] pointsDistribution = {};
-	// 	switch(type) {
-	// 		case FLAT:
-	// 			pointsDistribution = FLAT_POINTS;
-	// 		case MEDIUM_MOUNTAIN:
-	// 			pointsDistribution = MEDIUM_POINTS;
-	// 		case HIGH_MOUNTAIN:
-	// 			pointsDistribution = HIGH_POINTS;
-	// 		case TT:
-	// 			pointsDistribution = TT_POINTS;
-	// 	}
-	// 	for(Segment segment:segments){
-	// 		segment.calculatePoints();
-	// 		for(Rider rider:riders){
-	// 			Result result = getRiderResults(rider);
-	// 			if ((result.getPosition()) <= pointsDistribution.length) {
-	// 				points = pointsDistribution[result.getPosition() - 1];
-	// 			}
-	// 			if (type.equals(SegmentType.SPRINT)){
-	// 				result.setSprintersPoints(points);
-	// 			} else {
-	// 				result.setMountainPoints(points);
-	// 			}
-	// 		}
-	// 	}
-	// }
+	public int getRiderPoints(PointType pointType, Rider rider){
+		Result stageResult = getRiderResults(rider);
+		int stagePoints = 0;
+		for(Segment segment:segments){
+			Result segmentResult = segment.getRiderResults(rider);
+			int segmentPoints = segment.calculatePoints(pointType, segmentResult.getPosition());
+			segmentResult.setPoints(pointType, segmentPoints);
+			stagePoints += segmentPoints;
+		}
+		if(pointType.equals(PointType.SPRINTERS)){
+			stagePoints += this.calculatePoints(stageResult.getPosition());
+		}
+		stageResult.setPoints(pointType, stagePoints);
+		return stagePoints;
+	}
 
-	private int getPoints(int position) {
-		int[] points = {};
+	private int calculatePoints(int position) {
+		int[] pointsDistribution = {};
+		int points = 0;
 		switch (type) {
 			case FLAT:
-				points = FLAT_POINTS;
+				pointsDistribution = FLAT_POINTS;
 			case MEDIUM_MOUNTAIN:
-				points = MEDIUM_POINTS;
+				pointsDistribution = MEDIUM_POINTS;
 			case HIGH_MOUNTAIN:
-				points = HIGH_POINTS;
+				pointsDistribution = HIGH_POINTS;
 			case TT:
-				points = TT_POINTS;
+				pointsDistribution = TT_POINTS;
 		}
-		if ((position) > points.length) {
-			return 0;
-		} else {
-			return points[position];
+		if (position <= pointsDistribution.length) {
+			points = pointsDistribution[position - 1];
 		}
+		return points;
 	}
 }

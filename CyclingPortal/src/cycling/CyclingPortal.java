@@ -366,7 +366,7 @@ public class CyclingPortal implements CyclingPortalInterface {
 		int[] riderSprinterPoints = new int[riders.size()];
 		for (int i = 0; i < riders.size(); i++) {
 			Rider rider = riders.get(i);
-			riderSprinterPoints[i] = stage.getRiderResults(rider).getSprintersPoints();
+			riderSprinterPoints[i] = stage.getRiderResults(rider).getPoints(PointType.SPRINTERS);
 		}
 		return riderSprinterPoints;
 	}
@@ -378,7 +378,7 @@ public class CyclingPortal implements CyclingPortalInterface {
 		int[] riderMountainPoints = new int[riders.size()];
 		for (int i = 0; i < riders.size(); i++) {
 			Rider rider = riders.get(i);
-			riderMountainPoints[i] = stage.getRiderResults(rider).getMountainPoints();
+			riderMountainPoints[i] = stage.getRiderResults(rider).getPoints(PointType.MOUNTAIN);
 		}
 		return riderMountainPoints;
 	}

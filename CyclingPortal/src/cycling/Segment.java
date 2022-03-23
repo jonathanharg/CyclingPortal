@@ -56,9 +56,9 @@ public class Segment extends CompetitiveEvent{
 		// latestResultsCalculated = false;
 	}
 
-	public void calculatePoints() {
-		List<Rider> riders = getRidersByElapsedTime();
+	public int calculatePoints(PointType requestingType, int position) {
 		int[] pointsDistribution = {};
+		int points = 0;
 		switch(type) {
 			case HC:
 				pointsDistribution = HC_POINTS;
@@ -73,17 +73,25 @@ public class Segment extends CompetitiveEvent{
 			case SPRINT:
 				pointsDistribution = SPRINT_POINTS;
 		}
-		for(Rider rider:riders){
-			Result result = getRiderResults(rider);
-			int points = 0;
-			if ((result.getPosition()) <= pointsDistribution.length) {
-				points = pointsDistribution[result.getPosition() - 1];
-			}
-			if (type.equals(SegmentType.SPRINT)){
-				result.setSprintersPoints(points);
-			} else {
-				result.setMountainPoints(points);
-			}
+		if (position <= pointsDistribution.length) {
+			points = pointsDistribution[position - 1];
+		}
+		// If requesting sprinters points
+		switch (requestingType) {
+			case MOUNTAIN:
+				if (type.equals(SegmentType.SPRINT)){
+					return 0;
+				} else {
+					return points;
+				}
+			case SPRINTERS:
+				if (type.equals(SegmentType.SPRINT)) {
+					return points;
+				} else {
+					return 0;
+				}
+			default:
+				return 0;
 		}
 	}
 }
