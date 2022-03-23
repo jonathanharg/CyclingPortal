@@ -11,7 +11,10 @@ import org.junit.jupiter.api.Nested;
 import cycling.CyclingPortal;
 import cycling.IllegalNameException;
 import cycling.InvalidLengthException;
+import cycling.InvalidLocationException;
 import cycling.InvalidNameException;
+import cycling.InvalidStageStateException;
+import cycling.InvalidStageTypeException;
 import cycling.SegmentType;
 import cycling.StageType;
 import cycling.IDNotRecognisedException;
@@ -262,7 +265,8 @@ class CyclingPortalTestApp {
 						StageType.FLAT);
 				int stage2Id = portal.addStageToRace(race1Id, "Giraffe", null, 10, LocalDateTime.now(),
 						StageType.FLAT);
-				
+				int intspr1 = portal.addIntermediateSprintToStage(stage2Id, 7.0);
+				int intspr2 = portal.addIntermediateSprintToStage(stage2Id,7.2);
 				
 				//viewRaceDetails 
 				System.out.println(portal.viewRaceDetails(race2Id));
@@ -354,10 +358,56 @@ class CyclingPortalTestApp {
 				
 				
 				//addCategorizedClimbToStage
+				assertThrows(IDNotRecognisedException.class, () -> {
+					portal.addCategorizedClimbToStage(3000, 7.0, SegmentType.HC, 5.2, 2.0);
+				});
+				assertThrows(InvalidLocationException.class, () -> {
+					portal.addCategorizedClimbToStage(stage1Id, 100.0, SegmentType.HC, 5.2, 2.0);
+				});
+				//??
+				assertThrows(InvalidLocationException.class, () -> {
+					portal.addCategorizedClimbToStage(stage1Id, 100.0, SegmentType.HC, 5.2, 2.0);
+				});
+				assertThrows(InvalidStageStateException.class, () -> {
+					portal.concludeStagePreparation(stage2Id);
+					portal.addCategorizedClimbToStage(stage2Id, 7.0, SegmentType.HC, 5.2, 2.0);
+				});
+				assertThrows(InvalidStageTypeException.class, () -> {
+					int stage3Id = portal.addStageToRace(race1Id, "TimeTrial", null, 10, LocalDateTime.now(),
+							StageType.TT);
+					portal.addCategorizedClimbToStage(stage3Id, 7.0, SegmentType.HC, 5.2, 2.0);
+				});
 				
+				//addIntermediateSprintToStage
+				assertThrows(IDNotRecognisedException.class, () -> {
+					portal.addIntermediateSprintToStage(3000, 7.0);
+				});
+				assertThrows(InvalidLocationException.class, () -> {
+					portal.addIntermediateSprintToStage(stage1Id, 100.0);
+				});
+				//??
+				assertThrows(InvalidLocationException.class, () -> {
+					portal.addIntermediateSprintToStage(stage1Id, 100.0);
+				});
+				assertThrows(InvalidStageStateException.class, () -> {
+					portal.concludeStagePreparation(stage2Id);
+					portal.addIntermediateSprintToStage(stage2Id, 7.0);
+				});
+				assertThrows(InvalidStageTypeException.class, () -> {
+					int stage3Id = portal.addStageToRace(race1Id, "TimeTrial", null, 10, LocalDateTime.now(),
+							StageType.TT);
+					portal.addIntermediateSprintToStage(stage3Id, 7.0);
+				});
 				
+				//removeSegment
+				assertThrows(IDNotRecognisedException.class, () -> {
+					portal.removeSegment(3000);
+				});
 				
-				
+				assertThrows(InvalidStageStateException.class, () -> {
+					portal.concludeStagePreparation(stage2Id);
+					portal.removeSegment(intspr);
+				});
 				
 				
 			} catch (Exception e) {
