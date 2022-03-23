@@ -193,7 +193,7 @@ class CyclingPortalTestApp {
 		}
 
 		@ParameterizedTest
-		@ValueSource(strings = { "", "aVeryLongNameAAAAAAAAAAAAAAAAAA" })
+		@ValueSource(strings = { "", "aVeryLongNameAAAAAAAAAAAAAAAAAA", "Space Name", "EscapChars\t\n\r\f"})
 		public void invalidNames(String invalidName) {
 			assertThrows(InvalidNameException.class, () -> {
 				portal.createRace(invalidName, null);
@@ -221,8 +221,8 @@ class CyclingPortalTestApp {
 				int raceId = portal.createRace("BasicRace", null);
 				int stageId = portal.addStageToRace(raceId, "BasicStage", null, 10, LocalDateTime.now(),
 						StageType.FLAT);
-				int sprintId = portal.addIntermediateSprintToStage(stageId, 2.0);
 				int mountId = portal.addCategorizedClimbToStage(stageId, 7.0, SegmentType.HC, 5.2, 2.0);
+				int sprintId = portal.addIntermediateSprintToStage(stageId, 2.0);
 				portal.concludeStagePreparation(stageId);
 				portal.registerRiderResultsInStage(stageId, rider5Id, LocalTime.of(0, 10, 00, 00), LocalTime.of(0, 10, 17, 00),
 						LocalTime.of(0, 10, 21, 00), LocalTime.of(0, 10, 50, 00));
@@ -236,11 +236,21 @@ class CyclingPortalTestApp {
 						LocalTime.of(0, 10, 15, 00), LocalTime.of(0, 10, 55, 00));
 				
 				portal.testResults(stageId);
-//				System.out.println(portal.getRiderResultsInStage(stageId, rider3Id));
-				System.out.println(portal.getRiderAdjustedElapsedTimeInStage(stageId, rider1Id));
-				int[] rankInStage = portal.getRidersRankInStage(stageId);
-				System.out.println("okay");
-//				portal.getRiderResultsInStage(stageId, rider1Id);
+				
+				assertEquals(portal.getRiderAdjustedElapsedTimeInStage(stageId, rider2Id), LocalTime.of(0, 10,50,0));
+				assertArrayEquals(portal.getRidersRankInStage(stageId), new int[] {rider5Id,rider3Id,rider2Id,rider1Id,rider4Id});
+				assertArrayEquals(portal.getRankedAdjustedElapsedTimesInStage(stageId), new LocalTime[] { LocalTime.of(0, 10, 50, 00), LocalTime.of(0, 10, 50, 00), LocalTime.of(0, 10, 50, 00), LocalTime.of(0, 10, 54, 00), LocalTime.of(0, 10, 54, 00)});
+				assertArrayEquals(portal.getRidersPointsInStage(stageId), new int[] {
+						11,
+						13,
+						15,
+						17,
+						20,
+				});
+				System.out.println("Stop");
+				portal.eraseCyclingPortal();
+
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
