@@ -21,6 +21,7 @@ import cycling.IDNotRecognisedException;
 import java.lang.IllegalArgumentException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Arrays;
 // !! DO NOT SUBMIT: Doesn't start with java.
 
 class CyclingPortalTestApp {
@@ -161,7 +162,7 @@ class CyclingPortalTestApp {
 		@Test
 		public void testReturnsId() {
 			try {
-				int id = portal.createRace("Race 0", "Test race");
+				int id = portal.createRace("Race0", "Test race");
 			} catch (IllegalNameException | InvalidNameException e1) {
 				e1.printStackTrace();
 			}
@@ -171,7 +172,9 @@ class CyclingPortalTestApp {
 		public void existingName() {
 			assertThrows(IllegalNameException.class, () -> {
 				portal.createRace("Race A", "Description");
+				System.out.println(portal.getRaceIds().length);
 				portal.createRace("Race A", "Repeated Race Descripton");
+				System.out.println(portal.getRaceIds().length);
 			});
 		}
 
@@ -202,10 +205,6 @@ class CyclingPortalTestApp {
 
 	}
 	
-	
-	
-	
-
 	@Nested
 	class ResultsTests {
 		@Test
@@ -259,180 +258,392 @@ class CyclingPortalTestApp {
 	
 	@Nested
 	class MTests{
-		@Test
-		public void basic() {
+		
+		int teamId;
+		int rider1Id;
+		int race1Id;
+		int race2Id;
+		int stage1Id;
+		int stage2Id;
+		int intspr1;
+		int intspr2;
+		int race3Id;
+		int stage3Id;
+		int seg1;
+		int seg2;
+		int seg3;
+		
+		@BeforeEach
+		void b4() {
+			
 			try {
-				int teamId = portal.createTeam("Blue Team", null);
-				int rider1Id = portal.createRider(teamId, "Andrew", 1999);
-				int rider2Id = portal.createRider(teamId, "Bart", 1999);
-				int rider3Id = portal.createRider(teamId, "Charlie", 1999);
-				int rider4Id = portal.createRider(teamId, "Doug", 1999);
-				int rider5Id = portal.createRider(teamId, "Earnie", 1999);
-	
-				int race1Id = portal.createRace("BasicRace", null);
-				int race2Id = portal.createRace("Penis", "poop");
-				int stage1Id = portal.addStageToRace(race1Id, "Penguin", null, 10, LocalDateTime.now(),
+				teamId = portal.createTeam("Blue Team", null);
+				race1Id = portal.createRace("BasicRace", null);
+				race2Id = portal.createRace("Penis", "poop");
+				stage1Id = portal.addStageToRace(race1Id, "Penguin", null, 10, LocalDateTime.now(),
 						StageType.FLAT);
-				int stage2Id = portal.addStageToRace(race1Id, "Giraffe", null, 10, LocalDateTime.now(),
+				stage2Id = portal.addStageToRace(race1Id, "Giraffe", null, 10, LocalDateTime.now(),
 						StageType.FLAT);
-				int intspr1 = portal.addIntermediateSprintToStage(stage2Id, 7.0);
-				int intspr2 = portal.addIntermediateSprintToStage(stage2Id,7.2);
-				
-				//viewRaceDetails 
-				System.out.println(portal.viewRaceDetails(race2Id));
-				assertThrows(IDNotRecognisedException.class, () -> {
-					portal.viewRaceDetails(33333);
-				});
-				
-				
-				//removeRaceById
-				int raceRemovez = portal.createRace("i am gonna die", "ded");
-				assertEquals(portal.getRaceIds().length,3);
-				portal.removeRaceById(raceRemovez);
-				assertEquals(portal.getRaceIds().length,2);
-				assertThrows(IDNotRecognisedException.class, () -> {
-					portal.removeRaceById(33333);
-				});
-				
-				
-				//getNumberOfStages
-				assertThrows(IDNotRecognisedException.class, () -> {
-					portal.getNumberOfStages(33333);
-				});
-				assertEquals(portal.getNumberOfStages(race1Id),2);
-				assertEquals(portal.getNumberOfStages(race2Id),0);
-				
-				
-				//addStageToRace
-				assertThrows(IDNotRecognisedException.class, () -> {
-					int id = portal.addStageToRace(1000, "Yes", null, 10, LocalDateTime.now(),
-							StageType.FLAT);
-				});
-				assertThrows(IllegalNameException.class, () -> {
-					int id = portal.addStageToRace(race1Id, "Penguin", null, 10, LocalDateTime.now(),
-							StageType.FLAT);
-				});
-				assertThrows(IllegalNameException.class, () -> {
-					int id = portal.addStageToRace(race2Id, "Penguin", null, 10, LocalDateTime.now(),
-							StageType.FLAT);
-				});
-				assertThrows(InvalidNameException.class, () -> {
-					int id = portal.addStageToRace(race1Id, null, null, 10, LocalDateTime.now(),
-							StageType.FLAT);
-				});
-				assertThrows(InvalidNameException.class, () -> {
-					int id = portal.addStageToRace(race1Id, "", null, 10, LocalDateTime.now(),
-							StageType.FLAT);
-				});
-				assertThrows(InvalidNameException.class, () -> {
-					int id = portal.addStageToRace(race1Id, "this is a str that has many many "
-							+ "many characters, hopefully more than 30", null, 10, LocalDateTime.now(),
-							StageType.FLAT);
-				});
-				assertThrows(InvalidLengthException.class, () -> {
-					int id = portal.addStageToRace(race1Id, "Penis", null, 4.9, LocalDateTime.now(),
-							StageType.FLAT);
-				});
-				assertThrows(InvalidLengthException.class, () -> {
-					int id = portal.addStageToRace(race1Id, "Penis", null, -100, LocalDateTime.now(),
-							StageType.FLAT);
-				});
-				
+				intspr1 = portal.addIntermediateSprintToStage(stage2Id, 7.0);
+				intspr2 = portal.addIntermediateSprintToStage(stage2Id,7.2);
 
-				//getRaceStages
-				assertThrows(IDNotRecognisedException.class, () -> {
-					int[] stageids = portal.getRaceStages(30000);
-				});
+				
+				
+			} catch (Exception e ) {
+				
+			}
+	
+		}
+	
+		
+		//viewRaceDetails 
+		
+		@Test
+		public void viewRaceDetailsID() {
+			assertThrows(IDNotRecognisedException.class, () -> {
+				portal.viewRaceDetails(33333);
+			});
+		}
+		
+		
+		//removeRaceById
+		
+		@Test
+		public void removeRaceByIdworks() {
+			int raceRemovez = 333;
+			try {
+				raceRemovez = portal.createRace("iamgonnadie", "ded");
+			}catch (Exception e) {}
+			assertEquals(portal.getRaceIds().length,4);
+			try {
+				portal.removeRaceById(raceRemovez);
+			}catch (Exception e) {}
+			assertEquals(portal.getRaceIds().length,3);
+		}
+		
+		@Test
+		public void removeRaceByIdthrowId() {
+			assertThrows(IDNotRecognisedException.class, () -> {
+				portal.removeRaceById(33333);
+			});
+		}
+		
+		//getNumberOfStages
+		
+		@Test
+		public void getNumberOfStagesThrowId() {
+			assertThrows(IDNotRecognisedException.class, () -> {
+				portal.getNumberOfStages(33333);
+			});
+		}
+		
+		@Test
+		public void getNumberOfStagesReturns1() {
+			try {
+				assertEquals(portal.getNumberOfStages(race1Id),2);
+			}catch (Exception e){}
+		}
+		
+		@Test
+		public void getNumberOfStagesReturns2() {
+			try {
+				assertEquals(portal.getNumberOfStages(race2Id),0);
+			}catch (Exception e){}
+		}
+		
+		//addStageToRace
+		
+		@Test
+		public void addStageToRaceThrowsID() {
+			assertThrows(IDNotRecognisedException.class, () -> {
+				int id = portal.addStageToRace(1000, "Yes", null, 10, LocalDateTime.now(),
+						StageType.FLAT);
+			});
+		}
+		
+		@Test
+		public void addStageToRaceThrowsSameName1() {
+			assertThrows(IllegalNameException.class, () -> {
+				int id = portal.addStageToRace(race1Id, "Penguin", null, 10, LocalDateTime.now(),
+						StageType.FLAT);
+			});
+		}
+		
+		@Test
+		public void addStageToRaceThrowsSameName2() {
+			assertThrows(IllegalNameException.class, () -> {
+				int id = portal.addStageToRace(race2Id, "Penguin", null, 10, LocalDateTime.now(),
+						StageType.FLAT);
+			});
+		}
+
+		@Test
+		public void addStageToRaceThrowsNullName() {
+			assertThrows(InvalidNameException.class, () -> {
+				int id = portal.addStageToRace(race1Id, null, null, 10, LocalDateTime.now(),
+						StageType.FLAT);
+			});
+		}
+
+		@Test
+		public void addStageToRaceThrowsEmptyName() {
+			assertThrows(InvalidNameException.class, () -> {
+				int id = portal.addStageToRace(race1Id, "", null, 10, LocalDateTime.now(),
+						StageType.FLAT);
+			});
+		}
+
+		@Test
+		public void addStageToRaceThrowsLongName() {
+			assertThrows(InvalidNameException.class, () -> {
+				int id = portal.addStageToRace(race1Id, "this is a str that has many many "
+						+ "many characters, hopefully more than 30", null, 10, LocalDateTime.now(),
+						StageType.FLAT);
+			});
+		}
+		
+		@Test
+		public void addStageToRaceThrowsShortLength() {
+			assertThrows(InvalidLengthException.class, () -> {
+				int id = portal.addStageToRace(race1Id, "Penis", null, 4.9, LocalDateTime.now(),
+						StageType.FLAT);
+			});
+		}
+		
+		
+		//getRaceStages
+		
+		@Test
+		public void getRaceStagesThrowsTd() {
+			assertThrows(IDNotRecognisedException.class, () -> {
+				int[] stageids = portal.getRaceStages(30000);
+			});	
+		}
+
+		@Test
+		public void getRaceStagesReturns1() {
+			try {
 				int[] stageids = portal.getRaceStages(race1Id);
 				assertEquals(stageids.length, portal.getNumberOfStages(race1Id));
+			}catch(Exception e) {}
+		}
+		
+		@Test
+		public void getRaceStagesReturns2() {
+			try {
+				int[] stageids = portal.getRaceStages(race1Id);
 				assertEquals(stageids[0],stage1Id);
+			}catch(Exception e) {}
+		}
+		
+		@Test
+		public void getRaceStagesReturns3() {
+			try {
+				int[] stageids = portal.getRaceStages(race1Id);
 				assertEquals(stageids[1],stage2Id);
-				
-				
-				//getStageLength
-				assertThrows(IDNotRecognisedException.class, () -> {
-					double leng = portal.getStageLength(30000);
-				});
+			}catch(Exception e) {}
+		}
+		
+		
+		//getStageLength
+		
+		@Test
+		public void getStageLengthThrowsId() {
+			assertThrows(IDNotRecognisedException.class, () -> {
+				double leng = portal.getStageLength(30000);
+			});	
+		}
+
+		@Test
+		public void getStageLengthReturns() {
+			try {
 				assertEquals(portal.getStageLength(stage1Id), 10);
-				
-				
-				//removeStageById
-				assertThrows(IDNotRecognisedException.class, () -> {
-					portal.removeStageById(33333);
-				});
+			}catch(Exception e) {}
+		}
+
+		
+		//removeStageById
+		
+		@Test
+		public void removeStageByIdThrowsId() {
+			assertThrows(IDNotRecognisedException.class, () -> {
+				portal.removeStageById(33333);
+			});
+		}
+
+		@Test
+		public void removeStageByIdWorks() {
+			try {
 				int stageDel = portal.addStageToRace(race1Id, "Delete me", null, 10, LocalDateTime.now(),
 						StageType.FLAT);
 				assertEquals(portal.getRaceStages(race1Id).length, 3);
 				portal.removeStageById(stageDel);
 				assertEquals(portal.getRaceStages(race1Id).length, 2);
-				
-				
-				//addCategorizedClimbToStage
-				assertThrows(IDNotRecognisedException.class, () -> {
-					portal.addCategorizedClimbToStage(3000, 7.0, SegmentType.HC, 5.2, 2.0);
-				});
-				assertThrows(InvalidLocationException.class, () -> {
-					portal.addCategorizedClimbToStage(stage1Id, 100.0, SegmentType.HC, 5.2, 2.0);
-				});
-				//??
-				assertThrows(InvalidLocationException.class, () -> {
-					portal.addCategorizedClimbToStage(stage1Id, 100.0, SegmentType.HC, 5.2, 2.0);
-				});
-				assertThrows(InvalidStageStateException.class, () -> {
-					portal.concludeStagePreparation(stage2Id);
-					portal.addCategorizedClimbToStage(stage2Id, 7.0, SegmentType.HC, 5.2, 2.0);
-				});
-				assertThrows(InvalidStageTypeException.class, () -> {
-					int stage3Id = portal.addStageToRace(race1Id, "TimeTrial", null, 10, LocalDateTime.now(),
-							StageType.TT);
-					portal.addCategorizedClimbToStage(stage3Id, 7.0, SegmentType.HC, 5.2, 2.0);
-				});
-				
-				//addIntermediateSprintToStage
-				assertThrows(IDNotRecognisedException.class, () -> {
-					portal.addIntermediateSprintToStage(3000, 7.0);
-				});
-				assertThrows(InvalidLocationException.class, () -> {
-					portal.addIntermediateSprintToStage(stage1Id, 100.0);
-				});
-				//??
-				assertThrows(InvalidLocationException.class, () -> {
-					portal.addIntermediateSprintToStage(stage1Id, 100.0);
-				});
-				assertThrows(InvalidStageStateException.class, () -> {
-					portal.concludeStagePreparation(stage2Id);
-					portal.addIntermediateSprintToStage(stage2Id, 7.0);
-				});
-				assertThrows(InvalidStageTypeException.class, () -> {
-					int stage3Id = portal.addStageToRace(race1Id, "TimeTrial", null, 10, LocalDateTime.now(),
-							StageType.TT);
-					portal.addIntermediateSprintToStage(stage3Id, 7.0);
-				});
-				
-				//removeSegment
-				assertThrows(IDNotRecognisedException.class, () -> {
-					portal.removeSegment(3000);
-				});
-				
-				assertThrows(InvalidStageStateException.class, () -> {
-					portal.concludeStagePreparation(stage2Id);
-					portal.removeSegment(intspr1);
-				});
-				
-				
-			} catch (Exception e) {
-				
-				
-				
-				
-			}
-			
-			
-			
-			
-			
+			} catch (Exception e) {}
+		}
+
+		
+		//addCategorizedClimbToStage
+		
+		@Test
+		public void addCategorizedClimbToStageThrowsId() {
+			assertThrows(IDNotRecognisedException.class, () -> {
+				portal.addCategorizedClimbToStage(3000, 7.0, SegmentType.HC, 5.2, 2.0);
+			});
+		}
+
+		@Test
+		public void addCategorizedClimbToStageThrowsLongLocation() {
+			//??
+			assertThrows(InvalidLocationException.class, () -> {
+				portal.addCategorizedClimbToStage(stage1Id, 100.0, SegmentType.HC, 5.2, 2.0);
+			});
+		}
+
+		@Test
+		public void addCategorizedClimbToStageThrowsConcludedPrep() {
+			assertThrows(InvalidStageStateException.class, () -> {
+				portal.concludeStagePreparation(stage2Id);
+				portal.addCategorizedClimbToStage(stage2Id, 7.0, SegmentType.HC, 5.2, 2.0);
+			});
+		}
+		
+		@Test
+		public void addCategorizedClimbToStageThrowsTT() {
+			assertThrows(InvalidStageTypeException.class, () -> {
+				int stage3Id = portal.addStageToRace(race1Id, "TimeTrial", null, 10, LocalDateTime.now(),
+						StageType.TT);
+				portal.addCategorizedClimbToStage(stage3Id, 7.0, SegmentType.HC, 5.2, 2.0);
+			});
+		}
+		
+		
+		//addIntermediateSprintToStage
+		
+		@Test
+		public void addIntermediateSprintToStageThrowsId() {
+			assertThrows(IDNotRecognisedException.class, () -> {
+				portal.addIntermediateSprintToStage(3000, 7.0);
+			});
+		}
+
+		@Test
+		public void addIntermediateSprintToStageThrowsLongLocation() {
+			assertThrows(InvalidLocationException.class, () -> {
+				portal.addIntermediateSprintToStage(stage1Id, 100.0);
+			});
+		}
+
+		@Test
+		public void addIntermediateSprintToStageThrowsConcPrep() {
+			assertThrows(InvalidStageStateException.class, () -> {
+				portal.concludeStagePreparation(stage2Id);
+				portal.addIntermediateSprintToStage(stage2Id, 7.0);
+			});
+		}
+
+		@Test
+		public void addIntermediateSprintToStageThrowsTT() {
+			assertThrows(InvalidStageTypeException.class, () -> {
+				int stage3Id = portal.addStageToRace(race1Id, "TimeTrial", null, 10, LocalDateTime.now(),
+						StageType.TT);
+				portal.addIntermediateSprintToStage(stage3Id, 7.0);
+			});
+		}
+
+		
+		//removeSegment
+		
+		@Test
+		public void removeSegmentThrowsId() {
+			assertThrows(IDNotRecognisedException.class, () -> {
+				portal.removeSegment(3000);
+			});
+		}
+
+		@Test
+		public void removeSegmentThrowsConcPrep() {
+			assertThrows(InvalidStageStateException.class, () -> {
+				portal.concludeStagePreparation(stage2Id);
+				portal.removeSegment(intspr1);
+			});
+		}
+		
+		//concludeStagePreparation
+		
+		@Test
+		public void concludeStagePreparationThrowsId() {
+			assertThrows(IDNotRecognisedException.class, () -> {
+				portal.concludeStagePreparation(3000);
+			});
+		}
+
+		@Test
+		public void concludeStagePreparationThrowsConcPrep() {
+			assertThrows(InvalidStageStateException.class, () -> {
+				portal.concludeStagePreparation(stage2Id);
+				portal.concludeStagePreparation(stage2Id);
+			});
+		}
+
+		//getStageSegments
+		
+		@Test
+		public void getStageSegmentsThrowsId() {
+			assertThrows(IDNotRecognisedException.class, () -> {
+				portal.getStageSegments(3000);
+			});
+		}
+		
+		@Test
+		public void getStageSegmentsOrdered() {
+			try {
+				race3Id = portal.createRace("ARace", null);
+				stage3Id = portal.addStageToRace(race3Id,"Stage", null, 10, LocalDateTime.now(),
+						StageType.FLAT);
+				seg1 = portal.addIntermediateSprintToStage(stage3Id, 5.0);
+				seg2 = portal.addIntermediateSprintToStage(stage3Id, 9.0);
+				seg3 = portal.addIntermediateSprintToStage(stage3Id, 7.0);
+				int[] segments = portal.getStageSegments(stage3Id);
+				System.out.println(segments[0]);
+				System.out.println(segments[1]);
+				System.out.println(segments[2]);
+				assertEquals(segments[0], seg1);
+				assertEquals(segments[1], seg3);
+				assertEquals(segments[2], seg1);
+
+			}catch (Exception e) {}
+		}
+		
+		
+		// createTeam
+		
+		@Test
+		public void createTeamThrowsSameName() {
+			assertThrows(IllegalNameException.class, () -> {
+				portal.createTeam("Blue Team", "Hello");
+			});
+		}
+		
+		@Test
+		public void createTeamThrowsInvalidName() {
+			assertThrows(InvalidNameException.class, () -> {
+				portal.createTeam(null, "Hello");
+			});
+			assertThrows(InvalidNameException.class, () -> {
+				portal.createTeam("", "Hello");
+			});
+			assertThrows(InvalidNameException.class, () -> {
+				portal.createTeam("Hi i have more than 30 characters hopefully once i have wirrtten enoof wordz", "Hello");
+			});
+		}
+		
+		@Test
+		public void createTeamReturnsId() {
 			
 		}
+		
+
 	}
 	
 	
