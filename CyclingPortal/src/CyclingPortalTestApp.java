@@ -35,13 +35,58 @@ class CyclingPortalTestApp {
 	}
 
 	@Nested
+	class UpdateTests {
+		@ParameterizedTest
+		@ValueSource(strings = {"contains whitespace","EscapChars\t\n\r\f" })
+		public void stagesNowNoWhiteSpace(String invalidName) {
+			assertThrows(InvalidNameException.class, () -> {
+				int race = portal.createRace("race1", "racer race");
+				portal.addStageToRace(race, invalidName, "desc", 2.0, LocalDateTime.now(), StageType.FLAT);
+			});
+		}
+		
+		@Test
+		public void getRaceStagesIsEmptyArray() {
+			try {
+				int race = portal.createRace("race1", "toboggan race");
+				int[] stages = portal.getRaceStages(race);
+				assertEquals(stages.length,0);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		@ParameterizedTest
+		@ValueSource(strings = {"contains whitespace","EscapChars\t\n\r\f" })
+		public void teamsNowNoWhiteSpace(String invalidName) {
+			assertThrows(InvalidNameException.class, () -> {
+				portal.createTeam(invalidName, "why diogo");
+			});
+		}
+		
+		@Test
+		public void getRiderAETreturnNull() {
+			try {
+				int race = portal.createRace("race1", "toboggan race");
+				int stage = portal.addStageToRace(race, "stage", "stage desc", 4.0, LocalDateTime.now(), StageType.FLAT);
+				int team = portal.createTeam("teame", "teamteam");
+				int rider = portal.createRider(team, "john smith", 1999);
+				LocalTime aet = portal.getRiderAdjustedElapsedTimeInStage(stage, rider);
+				assertNull(aet);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	@Nested
 	class TeamTests {
 
 		@Test
 		public void returnsID() {
 			// TODO: assert returned int = team.getID
 			try {
-				int team = portal.createTeam("Team A", "Description...");
+				int team = portal.createTeam("TeamA", "Description...");
 			} catch (IllegalNameException | InvalidNameException e) {
 				e.printStackTrace();
 			}
@@ -65,7 +110,7 @@ class CyclingPortalTestApp {
 		}
 
 		@ParameterizedTest
-		@ValueSource(strings = { "", "aVeryLongNameAAAAAAAAAAAAAAAAAA" })
+		@ValueSource(strings = { "", "aVeryLongNameAAAAAAAAAAAAAAAAAA", "contains whitespace","EscapChars\t\n\r\f" })
 		public void invalidNames(String invalidName) {
 			assertThrows(InvalidNameException.class, () -> {
 				portal.createTeam(invalidName, null);
@@ -75,8 +120,8 @@ class CyclingPortalTestApp {
 		@Test
 		public void existingName() {
 			assertThrows(IllegalNameException.class, () -> {
-				portal.createTeam("Team A", "Description");
-				portal.createTeam("Team A", "Repeated Team Name");
+				portal.createTeam("TeamA", "Description");
+				portal.createTeam("TeamA", "Repeated Team Name");
 			});
 		}
 	}
@@ -87,7 +132,7 @@ class CyclingPortalTestApp {
 		@Test
 		public void returnsID() {
 			try {
-				int id = portal.createTeam("Team 0", "Test team");
+				int id = portal.createTeam("Team0", "Test team");
 				int rider = portal.createRider(id, "John Snow", 2000);
 			} catch (IllegalNameException | InvalidNameException e1) {
 				e1.printStackTrace();
@@ -99,7 +144,7 @@ class CyclingPortalTestApp {
 		@Test
 		public void nullName() {
 			assertThrows(IllegalArgumentException.class, () -> {
-				int id = portal.createTeam("Team 0", "Test team");
+				int id = portal.createTeam("Team0", "Test team");
 				portal.createRider(id, null, 2000);
 			});
 		}
@@ -108,7 +153,7 @@ class CyclingPortalTestApp {
 		@ValueSource(ints = { 2000, 1900, 1950 })
 		public void validYOB(int validYOBs) {
 			try {
-				int id = portal.createTeam("Team 0", "Test team");
+				int id = portal.createTeam("Team0", "Test team");
 				portal.createRider(id, "Maddie", validYOBs);
 			} catch (IDNotRecognisedException | IllegalArgumentException e) {
 				e.printStackTrace();
@@ -121,7 +166,7 @@ class CyclingPortalTestApp {
 		@ValueSource(ints = { 0, 1899, -200 })
 		public void invalidYOB(int invalidYOBs) {
 			assertThrows(IllegalArgumentException.class, () -> {
-				int id = portal.createTeam("Team 0", "Test team");
+				int id = portal.createTeam("Team0", "Test team");
 				portal.createRider(id, "Jonathan", invalidYOBs);
 			});
 		}
@@ -147,7 +192,7 @@ class CyclingPortalTestApp {
 		@Test
 		public void testGetTeamRiders() {
 			try {
-				int teamId = portal.createTeam("Test Team", "Team");
+				int teamId = portal.createTeam("TestTeam", "Team");
 				int r1 = portal.createRider(teamId, "rider 1", 1999);
 				int r2 = portal.createRider(teamId, "rider 1", 1999);
 				int r3 = portal.createRider(teamId, "rider 1", 1999);
@@ -173,9 +218,9 @@ class CyclingPortalTestApp {
 		@Test
 		public void existingName() {
 			assertThrows(IllegalNameException.class, () -> {
-				portal.createRace("Race A", "Description");
+				portal.createRace("RaceA", "Description");
 				System.out.println(portal.getRaceIds().length);
-				portal.createRace("Race A", "Repeated Race Descripton");
+				portal.createRace("RaceA", "Repeated Race Descripton");
 				System.out.println(portal.getRaceIds().length);
 			});
 		}
@@ -314,7 +359,7 @@ class CyclingPortalTestApp {
 		void b4() {
 			
 			try {
-				teamId = portal.createTeam("Blue Team", null);
+				teamId = portal.createTeam("BlueTeam", null);
 				race1Id = portal.createRace("BasicRace", null);
 				race2Id = portal.createRace("Penis", "poop");
 				stage1Id = portal.addStageToRace(race1Id, "Penguin", null, 10, LocalDateTime.now(),
@@ -661,7 +706,7 @@ class CyclingPortalTestApp {
 		@Test
 		public void createTeamThrowsSameName() {
 			assertThrows(IllegalNameException.class, () -> {
-				portal.createTeam("Blue Team", "Hello");
+				portal.createTeam("BlueTeam", "Hello");
 			});
 		}
 		
