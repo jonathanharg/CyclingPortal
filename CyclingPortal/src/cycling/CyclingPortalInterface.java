@@ -9,7 +9,7 @@ import java.time.LocalTime;
  * submissions ONLY.
  * 
  * @author Diogo Pacheco
- * @version 1.1
+ * @version 1.2
  *
  */
 public interface CyclingPortalInterface extends MiniCyclingPortalInterface {
@@ -66,8 +66,8 @@ public interface CyclingPortalInterface extends MiniCyclingPortalInterface {
 	 * exceptions are thrown.
 	 * 
 	 * @param raceId The ID of the race being queried.
-	 * @return A list of riders' points (i.e., the sum of their points in all stages
-	 *         of the race), sorted by the total elapsed time. An empty list if
+	 * @return An array of riders' points (i.e., the sum of their points in all stages
+	 *         of the race), sorted by the total adjusted elapsed time. An empty array if
 	 *         there is no result for any stage in the race. These points should
 	 *         match the riders returned by {@link #getRidersGeneralClassificationRank(int)}.
 	 * @throws IDNotRecognisedException If the ID does not match any race in the
@@ -82,9 +82,9 @@ public interface CyclingPortalInterface extends MiniCyclingPortalInterface {
 	 * exceptions are thrown.
 	 * 
 	 * @param raceId The ID of the race being queried.
-	 * @return A list of riders' mountain points (i.e., the sum of their mountain
-	 *         points in all stages of the race), sorted by the total elapsed time.
-	 *         An empty list if there is no result for any stage in the race. These
+	 * @return An array of riders' mountain points (i.e., the sum of their mountain
+	 *         points in all stages of the race), sorted by the total adjusted elapsed time.
+	 *         An empty array if there is no result for any stage in the race. These
 	 *         points should match the riders returned by
 	 *         {@link #getRidersGeneralClassificationRank(int)}.
 	 * @throws IDNotRecognisedException If the ID does not match any race in the

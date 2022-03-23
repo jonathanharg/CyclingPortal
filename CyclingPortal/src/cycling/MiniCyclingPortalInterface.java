@@ -11,7 +11,7 @@ import java.time.LocalTime;
  * an empty platform with no initial racing teams nor races within it.
  * 
  * @author Diogo Pacheco
- * @version 1.1
+ * @version 1.2
  *
  */
 public interface MiniCyclingPortalInterface extends Serializable {
@@ -99,8 +99,8 @@ public interface MiniCyclingPortalInterface extends Serializable {
 	 * @throws IDNotRecognisedException If the ID does not match to any race in the
 	 *                                  system.
 	 * @throws IllegalNameException     If the name already exists in the platform.
-	 * @throws InvalidNameException     If the new name is null, empty, has more
-	 *                                  than 30.
+	 * @throws InvalidNameException     If the name is null, empty, has more than 30
+	 *                              	characters, or has white spaces.
 	 * @throws InvalidLengthException   If the length is less than 5km.
 	 */
 	int addStageToRace(int raceId, String stageName, String description, double length, LocalDateTime startTime,
@@ -114,8 +114,8 @@ public interface MiniCyclingPortalInterface extends Serializable {
 	 * exceptions are thrown.
 	 * 
 	 * @param raceId The ID of the race being queried.
-	 * @return The list of stage IDs ordered (from first to last) by their sequence in the
-	 *         race.
+	 * @return An array of stage IDs ordered (from first to last) by their sequence in the
+	 *         race or an empty array if none exists.
 	 * @throws IDNotRecognisedException If the ID does not match to any race in the
 	 *                                  system.
 	 */
@@ -247,8 +247,8 @@ public interface MiniCyclingPortalInterface extends Serializable {
 	 * @param description A description of the team.
 	 * @return The ID of the created team.
 	 * @throws IllegalNameException If the name already exists in the platform.
-	 * @throws InvalidNameException If the new name is null, empty, has more than
-	 *                              30 characters.
+	 * @throws InvalidNameException If the name is null, empty, has more than 30
+	 *                              characters, or has white spaces.
 	 */
 	int createTeam(String name, String description) throws IllegalNameException, InvalidNameException;
 
@@ -382,8 +382,8 @@ public interface MiniCyclingPortalInterface extends Serializable {
 	 * 
 	 * @param stageId The ID of the stage the result refers to.
 	 * @param riderId The ID of the rider.
-	 * @return The adjusted elapsed time for the rider in the stage. Return an empty
-	 *         array if there is no result registered for the rider in the stage.
+	 * @return The adjusted elapsed time for the rider in the stage. Return null if 
+	 * 		  there is no result registered for the rider in the stage.
 	 * @throws IDNotRecognisedException   If the ID does not match to any rider or
 	 *                                    stage in the system.
 	 */
