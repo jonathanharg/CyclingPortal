@@ -10,10 +10,7 @@ public class Result{
 	private Duration adjustedElapsedTime;
 	private LocalTime adjustedElapsedLocalTime;
 	private int position;
-	private int cumulativeSprintersPoints;
-	private int cumulativeMountainPoints;
 	private int sprintersPoints;
-
 	private int mountainPoints;
 
 	protected static final Comparator<Result> sortByElapsedTime = (Result result1, Result result2) -> result1.getElapsedTime().compareTo(result2.getElapsedTime());
@@ -49,35 +46,23 @@ public class Result{
 		return adjustedElapsedLocalTime;
 	}
 	
-	public void setSprintersPoints(int points) {
-		this.sprintersPoints = points;
+	public void setPoints(PointType pointType, int points) {
+		switch(pointType){
+			case MOUNTAIN:
+				this.mountainPoints = points;
+			case SPRINTERS:
+				this.sprintersPoints = points;
+		}
 	}
 	
-	public int getSprintersPoints() {
-		return sprintersPoints;
-	}
-	
-	public void setMountainPoints(int points) {
-		this.mountainPoints = points;
-	}
-	
-	public int getMountainPoints() {
-		return mountainPoints;
-	}
-
-	public int getCumulativeSprintersPoints() {
-		return cumulativeSprintersPoints;
-	}
-
-	public void setCumulativeSprintersPoints(int cumulativeSprintersPoints) {
-		this.cumulativeSprintersPoints = cumulativeSprintersPoints;
-	}
-
-	public int getCumulativeMountainPoints() {
-		return cumulativeMountainPoints;
-	}
-
-	public void setCumulativeMountainPoints(int cumulativeMountainPoints) {
-		this.cumulativeMountainPoints = cumulativeMountainPoints;
+	public int getPoints(PointType pointType) {
+		switch(pointType){
+			case MOUNTAIN:
+				return mountainPoints;
+			case SPRINTERS:
+				return sprintersPoints;
+			default:
+				return 0;
+		}
 	}
 }
