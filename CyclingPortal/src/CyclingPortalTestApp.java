@@ -416,7 +416,7 @@ class CyclingPortalTestApp {
 				
 				assertThrows(InvalidStageStateException.class, () -> {
 					portal.concludeStagePreparation(stage2Id);
-					portal.removeSegment(intspr);
+					portal.removeSegment(intspr1);
 				});
 				
 				
