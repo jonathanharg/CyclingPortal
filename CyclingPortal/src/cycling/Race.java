@@ -3,7 +3,7 @@ package cycling;
 import java.util.ArrayList;
 import java.time.LocalDateTime;
 
-public class Race {
+public class Race extends CompetitiveEvent{
 
 	private String name;
 	private String description;
@@ -14,6 +14,7 @@ public class Race {
 	private int id;
 
 	public Race(String name, String description) throws InvalidNameException {
+		super(EventType.RACE);
 		// TODO: Check for whitespace!!!
 		if (name == null || name.isEmpty() || name.length() > 30) {
 			throw new InvalidNameException(

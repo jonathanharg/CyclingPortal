@@ -1,16 +1,11 @@
 package cycling;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
-public class Stage {
+public class Stage extends CompetitiveEvent {
 	private Race race;
 	private String name;
 	private String description;
@@ -21,21 +16,15 @@ public class Stage {
 	private static int count = 0;
 	private boolean waitingForResults = false;
 	private ArrayList<Segment> segments = new ArrayList<>();
-	
-	private HashMap<Rider, StageResult> results = new HashMap<Rider, StageResult>();
-	private boolean updatedStatisticsCalculated = false; //TODO:DO WE NEED THIS??
-	
-	private static final int[] FLAT_POINTS = {50,30,20,18,16,14,12,10,8,7,6,5,4,3,2};
-	private static final int[] MEDIUM_POINTS = {30,25,22,19,17,15,13,11,9,7,6,5,4,3,2};
-	private static final int[] HIGH_POINTS = {20,17,15,13,11,10,9,8,7,6,5,4,3,2,1};
-	private static final int[] TT_POINTS = {20,17,15,13,11,10,9,8,7,6,5,4,3,2,1};
 
+	private static final int[] FLAT_POINTS = { 50, 30, 20, 18, 16, 14, 12, 10, 8, 7, 6, 5, 4, 3, 2 };
+	private static final int[] MEDIUM_POINTS = { 30, 25, 22, 19, 17, 15, 13, 11, 9, 7, 6, 5, 4, 3, 2 };
+	private static final int[] HIGH_POINTS = { 20, 17, 15, 13, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 };
+	private static final int[] TT_POINTS = { 20, 17, 15, 13, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 };
 
-	static Comparator<StageResult> sortByElapsedTime = (StageResult result1, StageResult result2) -> result1
-			.getElapsedTime().compareTo(result2.getElapsedTime());
-
-	public Stage(Race race, String name, String description, double length, LocalDateTime startTime,
-			StageType type) throws InvalidNameException, InvalidLengthException {
+	public Stage(Race race, String name, String description, double length, LocalDateTime startTime, StageType type)
+			throws InvalidNameException, InvalidLengthException {
+		super(EventType.STAGE);
 		if (name == null || name.isEmpty() || name.length() > 30) {
 			throw new InvalidNameException("Stage name cannot be null, empty or have more than 30 characters.");
 		}
@@ -88,10 +77,16 @@ public class Stage {
 			}
 		}
 		segments.add(segment);
+
+		// !!!
+		// latestResultsCalculated = false;
 	}
 
 	public void removeSegment(Segment segment) {
 		segments.remove(segment);
+
+		// !!!
+		// latestResultsCalculated = false;
 	}
 
 	public void registerResult(Rider rider, LocalTime[] checkpoints)
@@ -108,16 +103,16 @@ public class Stage {
 					"The length of the checkpoint must equal number of Segments in the Stage + 2.");
 		}
 
-		StageResult result = new StageResult(checkpoints);		
+		Result result = new Result(checkpoints);
 		results.put(rider, result);
-		
-		
 
 		for (int i = 0; i < segments.size(); i++) {
-//			TODO: INCLUDE START TIME??
 			segments.get(i).registerResults(rider, checkpoints[i + 1]);
 		}
-		updatedStatisticsCalculated = false;
+
+		// !!!
+		// ridersByElapsedTime = null;
+		// latestResultsCalculated = false;
 	}
 
 	public void concludePreparation() throws InvalidStageStateException {
@@ -131,80 +126,38 @@ public class Stage {
 		return waitingForResults;
 	}
 
-	public HashMap<Rider, StageResult> getResults() {
-		return results;
-	}
+	// private void calculatePoints() {
+	// 	List<Rider> riders = getRidersByElapsedTime();
+	// 	int[] pointsDistribution = {};
+	// 	switch(type) {
+	// 		case FLAT:
+	// 			pointsDistribution = FLAT_POINTS;
+	// 		case MEDIUM_MOUNTAIN:
+	// 			pointsDistribution = MEDIUM_POINTS;
+	// 		case HIGH_MOUNTAIN:
+	// 			pointsDistribution = HIGH_POINTS;
+	// 		case TT:
+	// 			pointsDistribution = TT_POINTS;
+	// 	}
+	// 	for(Segment segment:segments){
+	// 		segment.calculatePoints();
+	// 		for(Rider rider:riders){
+	// 			Result result = getRiderResults(rider);
+	// 			if ((result.getPosition()) <= pointsDistribution.length) {
+	// 				points = pointsDistribution[result.getPosition() - 1];
+	// 			}
+	// 			if (type.equals(SegmentType.SPRINT)){
+	// 				result.setSprintersPoints(points);
+	// 			} else {
+	// 				result.setMountainPoints(points);
+	// 			}
+	// 		}
+	// 	}
+	// }
 
-	public void deleteRiderResults(Rider rider) {
-		results.remove(rider);
-		updatedStatisticsCalculated = false;
-	}
-
-	public List<Rider> getRidersByElapsedTime() {
-		List<Rider> ridersByElapsedTime = results.entrySet()
-				.stream()
-				.sorted(Comparator.comparing(Map.Entry::getValue, sortByElapsedTime))
-				.map(Map.Entry::getKey)
-				.collect(Collectors.toList());
-		return ridersByElapsedTime;
-	}
-
-	private void generateStageResults() {
-		List<Rider> riders = getRidersByElapsedTime();
-		
-		for(int i = 0; i < results.size(); i++) {
-			Rider rider = riders.get(i);
-			StageResult result = results.get(rider);
-			result.setPosition(i + 1);
-			
-			int sprintersPoints = getPoints(i);
-			int mountainPoints = getPoints(i);
-			
-//			This is optional for some results, it may not need to be computed
-			for(Segment segment:segments) {
-				segment.generateSegmentResults();
-				sprintersPoints += segment.getRiderResult(rider).getSegmentSprinterPoints();
-				mountainPoints += segment.getRiderResult(rider).getSegmentMountainPoints();
-			}
-			
-			result.setStageSprintersPoints(sprintersPoints);
-			result.setStageMountainPoints(mountainPoints);
-			
-//			Adjusted Elapsed Time Calculations
-			if(i == 0) {
-				result.setAdjustedElapsedTime(result.getElapsedTime());
-			} else {
-				Rider prevRider = riders.get(i - 1);
-				Duration prevTime = results.get(prevRider).getElapsedTime();
-				Duration time = results.get(rider).getElapsedTime();
-				
-				int timeDiff = time.minus(prevTime).compareTo(Duration.ofSeconds(1));
-				if(timeDiff <= 0) {
-//					Close Finish Condition
-					Duration prevAdjustedTime = results.get(prevRider).getAdjustedElapsedTime();
-					results.get(rider).setAdjustedElapsedTime(prevAdjustedTime);
-				} else {
-//					Far Finish Condition
-					results.get(rider).setAdjustedElapsedTime(time);
-				}
-			}
-			
-		}
-		updatedStatisticsCalculated = true;
-	}
-	
-	public void debugPrintResults() {
-		generateStageResults();
-		getRidersByElapsedTime().forEach(rider -> {
-			StageResult riderResults = results.get(rider);
-			System.out.println(rider.getName() + " finished in " + riderResults.getPosition() + "th.");
-			System.out.println("ET: " + riderResults.getElapsedTime() + " AET: " + riderResults.getAdjustedElapsedTime() + " SP: " + riderResults.getStageSprintersPoints());
-		});
-	}
-	
 	private int getPoints(int position) {
 		int[] points = {};
-		switch(type) {
+		switch (type) {
 			case FLAT:
 				points = FLAT_POINTS;
 			case MEDIUM_MOUNTAIN:
