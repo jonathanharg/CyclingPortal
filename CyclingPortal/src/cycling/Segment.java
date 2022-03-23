@@ -36,6 +36,10 @@ public class Segment extends CompetitiveEvent{
 		this.location = location;
 	}
 
+	public SegmentType getType () {
+		return type;
+	}
+
 	public int getId() {
 		return id;
 	}
@@ -62,16 +66,22 @@ public class Segment extends CompetitiveEvent{
 		switch(type) {
 			case HC:
 				pointsDistribution = HC_POINTS;
+				break;
 			case C1:
 				pointsDistribution = C1_POINTS;
+				break;
 			case C2:
 				pointsDistribution = C2_POINTS;
+				break;
 			case C3:
 				pointsDistribution = C3_POINTS;
+				break;
 			case C4:
 				pointsDistribution = C4_POINTS;
+				break;
 			case SPRINT:
 				pointsDistribution = SPRINT_POINTS;
+				break;
 		}
 		if (position <= pointsDistribution.length) {
 			points = pointsDistribution[position - 1];
@@ -93,5 +103,11 @@ public class Segment extends CompetitiveEvent{
 			default:
 				return 0;
 		}
+	}
+
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return type+"Segment"+id;
 	}
 }

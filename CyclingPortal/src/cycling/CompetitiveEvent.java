@@ -19,7 +19,7 @@ public class CompetitiveEvent {
 
 	public Result getRiderResults(Rider rider) {
 		// !!!
-
+		calculateResults();
 		return results.get(rider);
 	}
 
@@ -29,19 +29,19 @@ public class CompetitiveEvent {
 		ridersByElapsedTime = null;
 	}
 
-	public List<Rider> getRidersByElapsedTime() {
-		if(ridersByElapsedTime == null){
+	public List<Rider> getRidersByLastCheckpoint() {
+		// if(ridersByElapsedTime == null){
 			ridersByElapsedTime = results.entrySet()
 					.stream()
-					.sorted(Comparator.comparing(Map.Entry::getValue, Result.sortByElapsedTime))
+					.sorted(Comparator.comparing(Map.Entry::getValue, Result.sortByLastCheckpoint))
 					.map(Map.Entry::getKey)
 					.collect(Collectors.toList());
-		}
+		// }
 		return ridersByElapsedTime;
 	}
 
 	private void calculateResults() {
-		List<Rider> riders = getRidersByElapsedTime();
+		List<Rider> riders = getRidersByLastCheckpoint();
 		
 		for(int i = 0; i < results.size(); i++) {
 			Rider rider = riders.get(i);
@@ -73,13 +73,12 @@ public class CompetitiveEvent {
 		latestResultsCalculated = true;
 	}
 	
-	public void debugPrintResults() {
-		calculateResults();
-		getRidersByElapsedTime().forEach(rider -> {
-			Result riderResults = results.get(rider);
-			System.out.println(rider.getName() + " finished in " + riderResults.getPosition() + "th.");
-			System.out.println("ET: " + riderResults.getElapsedTime() + " AET: " + riderResults.getAdjustedElapsedTime() + " SP: " + riderResults.getSprintersPoints() + " MP: " + riderResults.getMountainPoints());
-		});
-	}
-
+	// public void debugPrintResults() {
+	// 	calculateResults();
+	// 	getRidersByElapsedTime().forEach(rider -> {
+	// 		Result riderResults = results.get(rider);
+	// 		System.out.println(rider.getName() + " finished in " + riderResults.getPosition() + "th.");
+	// 		System.out.println("ET: " + riderResults.getElapsedTime() + " AET: " + riderResults.getAdjustedElapsedTime() + " SP: " + riderResults.getPoints(PointType.SPRINTERS) + " MP: " + riderResults.getPoints(PointType.MOUNTAIN));
+	// 	});
+	// }
 }

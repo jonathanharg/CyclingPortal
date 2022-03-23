@@ -3,6 +3,7 @@ package cycling;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Stage extends CompetitiveEvent {
@@ -69,7 +70,6 @@ public class Stage extends CompetitiveEvent {
 	}
 
 	public void addSegment(Segment segment) {
-		// TODO: TEST!!!!
 		for (int i = 0; i < segments.size(); i++) {
 			if (segment.getLocation() < segments.get(i).getLocation()) {
 				segments.add(i, segment);
@@ -127,6 +127,8 @@ public class Stage extends CompetitiveEvent {
 	}
 
 	public int getRiderPoints(PointType pointType, Rider rider){
+		// System.out.println(segments.toString());
+		// System.out.println("---------" + rider.getName() + "---------");
 		Result stageResult = getRiderResults(rider);
 		int stagePoints = 0;
 		for(Segment segment:segments){
@@ -134,9 +136,12 @@ public class Stage extends CompetitiveEvent {
 			int segmentPoints = segment.calculatePoints(pointType, segmentResult.getPosition());
 			segmentResult.setPoints(pointType, segmentPoints);
 			stagePoints += segmentPoints;
+			// System.out.println("SEG" + segment.getId() + "(" + segment.getType() + "): " + segmentPoints + " " + pointType + " points, " + stagePoints + " total");
 		}
 		if(pointType.equals(PointType.SPRINTERS)){
-			stagePoints += this.calculatePoints(stageResult.getPosition());
+			int extraPoints = this.calculatePoints(stageResult.getPosition());
+			stagePoints += extraPoints;
+			// System.out.println("STG(" + this.type + "): " + extraPoints + " BONUS SPRINTERS points" + stagePoints + " total");
 		}
 		stageResult.setPoints(pointType, stagePoints);
 		return stagePoints;
@@ -148,16 +153,26 @@ public class Stage extends CompetitiveEvent {
 		switch (type) {
 			case FLAT:
 				pointsDistribution = FLAT_POINTS;
+				break;
 			case MEDIUM_MOUNTAIN:
 				pointsDistribution = MEDIUM_POINTS;
+				break;
 			case HIGH_MOUNTAIN:
 				pointsDistribution = HIGH_POINTS;
+				break;
 			case TT:
 				pointsDistribution = TT_POINTS;
+				break;
 		}
 		if (position <= pointsDistribution.length) {
 			points = pointsDistribution[position - 1];
 		}
 		return points;
+	}
+
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return "Stage"+id;
 	}
 }

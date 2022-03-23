@@ -18,6 +18,8 @@ import cycling.InvalidStageTypeException;
 import cycling.SegmentType;
 import cycling.StageType;
 import cycling.IDNotRecognisedException;
+
+import java.beans.Transient;
 import java.lang.IllegalArgumentException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -208,6 +210,59 @@ class CyclingPortalTestApp {
 	@Nested
 	class ResultsTests {
 		@Test
+		public void stagesAreOrdered() {
+			try {
+				int raceId = portal.createRace("RacerRacer", "racerRacingRace");
+				int stage2 = portal.addStageToRace(raceId, "stage2", "tt", 50.0, LocalDateTime.now().plusHours(1), StageType.TT);
+				int stage3 = portal.addStageToRace(raceId, "stage3", "hm", 50.0, LocalDateTime.now().plusHours(2), StageType.HIGH_MOUNTAIN);
+				int stage4 = portal.addStageToRace(raceId, "stage4", "mm", 50.0, LocalDateTime.now().plusHours(3), StageType.MEDIUM_MOUNTAIN);
+				int stage1 = portal.addStageToRace(raceId, "stage1", "ft", 50.0, LocalDateTime.now(), StageType.FLAT);
+
+				int segment6 = portal.addIntermediateSprintToStage(stage1, 22.0);
+				int segment4 = portal.addCategorizedClimbToStage(stage1, 17.0, SegmentType.C4, 0.2, 1.0);
+				int segment3 = portal.addCategorizedClimbToStage(stage1, 12.0, SegmentType.C3, 0.1, 3.0);
+				int segment1 = portal.addCategorizedClimbToStage(stage1, 4.0, SegmentType.SPRINT, 12.0, 6.0);
+				int segment2 = portal.addCategorizedClimbToStage(stage1, 9.0, SegmentType.C2, 8.3, 2.0);
+				int segment5 = portal.addCategorizedClimbToStage(stage1, 19.0, SegmentType.HC, 6.9, 1.0);
+				
+				int[] result = portal.getRaceStages(raceId);
+				int[] ans = new int[] {stage1, stage2, stage3, stage4};
+
+				assertArrayEquals(result, ans);
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		@Test
+		public void segmentsAreOrdered() {
+			try {
+				int raceId = portal.createRace("RacerRacer", "racerRacingRace");
+				int stage2 = portal.addStageToRace(raceId, "stage2", "tt", 50.0, LocalDateTime.now().plusHours(1), StageType.TT);
+				int stage3 = portal.addStageToRace(raceId, "stage3", "hm", 50.0, LocalDateTime.now().plusHours(2), StageType.HIGH_MOUNTAIN);
+				int stage4 = portal.addStageToRace(raceId, "stage4", "mm", 50.0, LocalDateTime.now().plusHours(3), StageType.MEDIUM_MOUNTAIN);
+				int stage1 = portal.addStageToRace(raceId, "stage1", "ft", 50.0, LocalDateTime.now(), StageType.FLAT);
+
+				int segment6 = portal.addIntermediateSprintToStage(stage1, 22.0);
+				int segment4 = portal.addCategorizedClimbToStage(stage1, 17.0, SegmentType.C4, 0.2, 1.0);
+				int segment3 = portal.addCategorizedClimbToStage(stage1, 12.0, SegmentType.C3, 0.1, 3.0);
+				int segment1 = portal.addCategorizedClimbToStage(stage1, 4.0, SegmentType.SPRINT, 12.0, 6.0);
+				int segment2 = portal.addCategorizedClimbToStage(stage1, 9.0, SegmentType.C2, 8.3, 2.0);
+				int segment5 = portal.addCategorizedClimbToStage(stage1, 19.0, SegmentType.HC, 6.9, 1.0);
+
+				int[] result = portal.getStageSegments(stage1);
+				int[] ans = new int[] {segment1, segment2, segment3, segment4, segment5, segment6};
+				
+				assertArrayEquals(result, ans);
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		
+		@Test
 		public void basicResultsTest() {
 			try {
 				int teamId = portal.createTeam("Blue Team", null);
@@ -223,33 +278,27 @@ class CyclingPortalTestApp {
 				int mountId = portal.addCategorizedClimbToStage(stageId, 7.0, SegmentType.HC, 5.2, 2.0);
 				int sprintId = portal.addIntermediateSprintToStage(stageId, 2.0);
 				portal.concludeStagePreparation(stageId);
-				portal.registerRiderResultsInStage(stageId, rider5Id, LocalTime.of(0, 10, 00, 00), LocalTime.of(0, 10, 17, 00),
-						LocalTime.of(0, 10, 21, 00), LocalTime.of(0, 10, 50, 00));
-				portal.registerRiderResultsInStage(stageId, rider3Id, LocalTime.of(0, 10, 00, 00), LocalTime.of(0, 10, 14, 00),
-						LocalTime.of(0, 10, 20, 00), LocalTime.of(0, 10, 51, 00));
-				portal.registerRiderResultsInStage(stageId, rider2Id, LocalTime.of(0, 10, 00, 00), LocalTime.of(0, 10, 13, 00),
-						LocalTime.of(0, 10, 18, 00), LocalTime.of(0, 10, 52, 00));
 				portal.registerRiderResultsInStage(stageId, rider1Id, LocalTime.of(0, 10, 00, 00), LocalTime.of(0, 10, 11, 00),
 						LocalTime.of(0, 10, 17, 00), LocalTime.of(0, 10, 54, 00));
+				portal.registerRiderResultsInStage(stageId, rider2Id, LocalTime.of(0, 10, 00, 00), LocalTime.of(0, 10, 13, 00),
+						LocalTime.of(0, 10, 18, 00), LocalTime.of(0, 10, 52, 00));
+				portal.registerRiderResultsInStage(stageId, rider3Id, LocalTime.of(0, 10, 00, 00), LocalTime.of(0, 10, 14, 00),
+						LocalTime.of(0, 10, 20, 00), LocalTime.of(0, 10, 51, 00));
 				portal.registerRiderResultsInStage(stageId, rider4Id, LocalTime.of(0, 10, 00, 00), LocalTime.of(0, 10, 10, 00),
 						LocalTime.of(0, 10, 15, 00), LocalTime.of(0, 10, 55, 00));
+				portal.registerRiderResultsInStage(stageId, rider5Id, LocalTime.of(0, 10, 00, 00), LocalTime.of(0, 10, 17, 00),
+						LocalTime.of(0, 10, 21, 00), LocalTime.of(0, 10, 50, 00));
+
 				
-				portal.testResults(stageId);
+				
+//				portal.testResults(stageId);
 				
 				assertEquals(portal.getRiderAdjustedElapsedTimeInStage(stageId, rider2Id), LocalTime.of(0, 10,50,0));
 				assertArrayEquals(portal.getRidersRankInStage(stageId), new int[] {rider5Id,rider3Id,rider2Id,rider1Id,rider4Id});
 				assertArrayEquals(portal.getRankedAdjustedElapsedTimesInStage(stageId), new LocalTime[] { LocalTime.of(0, 10, 50, 00), LocalTime.of(0, 10, 50, 00), LocalTime.of(0, 10, 50, 00), LocalTime.of(0, 10, 54, 00), LocalTime.of(0, 10, 54, 00)});
-				assertArrayEquals(portal.getRidersPointsInStage(stageId), new int[] {
-						11,
-						13,
-						15,
-						17,
-						20,
-				});
-				System.out.println("Stop");
-				portal.eraseCyclingPortal();
-
 				
+				assertArrayEquals(portal.getRidersMountainPointsInStage(stageId), new int[] {8,10,12,15,20});
+				assertArrayEquals(portal.getRidersPointsInStage(stageId), new int[] {61,43,35,35,36});
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -259,19 +308,7 @@ class CyclingPortalTestApp {
 	@Nested
 	class MTests{
 		
-		int teamId;
-		int rider1Id;
-		int race1Id;
-		int race2Id;
-		int stage1Id;
-		int stage2Id;
-		int intspr1;
-		int intspr2;
-		int race3Id;
-		int stage3Id;
-		int seg1;
-		int seg2;
-		int seg3;
+		int teamId, rider1Id, race1Id, race2Id, stage1Id, stage2Id, intspr1, intspr2, race3Id, stage3Id, seg1, seg2, seg3;
 		
 		@BeforeEach
 		void b4() {
@@ -604,13 +641,16 @@ class CyclingPortalTestApp {
 				seg1 = portal.addIntermediateSprintToStage(stage3Id, 5.0);
 				seg2 = portal.addIntermediateSprintToStage(stage3Id, 9.0);
 				seg3 = portal.addIntermediateSprintToStage(stage3Id, 7.0);
+				
+
 				int[] segments = portal.getStageSegments(stage3Id);
-				System.out.println(segments[0]);
-				System.out.println(segments[1]);
-				System.out.println(segments[2]);
-				assertEquals(segments[0], seg2);
-				assertEquals(segments[1], seg3);
-				assertEquals(segments[2], seg1);
+				int[] ans = new int[] {seg1, seg3, seg2};
+				System.out.println(Arrays.toString(ans));
+				System.out.println(Arrays.toString(segments));
+				assertArrayEquals(segments, ans);
+//				assertEquals(segments[0], seg2);
+//				assertEquals(segments[1], seg3);
+//				assertEquals(segments[2], seg1);
 
 			}catch (Exception e) {}
 		}

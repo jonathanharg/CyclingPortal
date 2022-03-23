@@ -13,12 +13,16 @@ public class Result{
 	private int sprintersPoints;
 	private int mountainPoints;
 
-	protected static final Comparator<Result> sortByElapsedTime = (Result result1, Result result2) -> result1.getElapsedTime().compareTo(result2.getElapsedTime());
+	protected static final Comparator<Result> sortByLastCheckpoint = (Result result1, Result result2) -> result1.getLastCheckpoint().compareTo(result2.getLastCheckpoint());
 
 	
 	public Result(LocalTime[] checkpoints) {
 		this.checkpointTimes = checkpoints;
 		this.elapsedTime = Duration.between(checkpoints[0], checkpoints[checkpoints.length - 1]);
+	}
+
+	public LocalTime getLastCheckpoint(){
+		return checkpointTimes[checkpointTimes.length - 1];
 	}
 
 	public Duration getElapsedTime() {
@@ -50,8 +54,10 @@ public class Result{
 		switch(pointType){
 			case MOUNTAIN:
 				this.mountainPoints = points;
+				break;
 			case SPRINTERS:
 				this.sprintersPoints = points;
+				break;
 		}
 	}
 	
