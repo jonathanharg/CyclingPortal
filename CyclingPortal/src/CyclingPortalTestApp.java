@@ -66,14 +66,19 @@ class CyclingPortalTestApp {
 		
 		@Test
 		public void getRiderAETreturnNull() {
+			int race, stage = -1, team, rider = -1;
 			try {
-				int race = portal.createRace("race1", "toboggan race");
-				int stage = portal.addStageToRace(race, "stage", "stage desc", 4.0, LocalDateTime.now(), StageType.FLAT);
-				int team = portal.createTeam("teame", "teamteam");
-				int rider = portal.createRider(team, "john smith", 1999);
-				LocalTime aet = portal.getRiderAdjustedElapsedTimeInStage(stage, rider);
-				assertNull(aet);
+				race = portal.createRace("race1", "toboggan race");
+				stage = portal.addStageToRace(race, "stage", "stage desc", 7.0, LocalDateTime.now(), StageType.FLAT);
+				team = portal.createTeam("teame", "teamteam");
+				rider = portal.createRider(team, "john smith", 1999);
 			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			try {
+				assertNull(portal.getRiderAdjustedElapsedTimeInStage(stage, rider));
+			} catch (IDNotRecognisedException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -310,7 +315,7 @@ class CyclingPortalTestApp {
 		@Test
 		public void basicResultsTest() {
 			try {
-				int teamId = portal.createTeam("Blue Team", null);
+				int teamId = portal.createTeam("BlueTeam", null);
 				int rider1Id = portal.createRider(teamId, "Andrew", 1999);
 				int rider2Id = portal.createRider(teamId, "Bart", 1999);
 				int rider3Id = portal.createRider(teamId, "Charlie", 1999);

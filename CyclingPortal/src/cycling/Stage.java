@@ -26,8 +26,8 @@ public class Stage extends CompetitiveEvent {
 	public Stage(Race race, String name, String description, double length, LocalDateTime startTime, StageType type)
 			throws InvalidNameException, InvalidLengthException {
 		super(EventType.STAGE);
-		if (name == null || name.isEmpty() || name.length() > 30) {
-			throw new InvalidNameException("Stage name cannot be null, empty or have more than 30 characters.");
+		if (name == null || name.isEmpty() || name.length() > 30 || CyclingPortal.containsWhitespace(name)) {
+			throw new InvalidNameException("Stage name cannot be null, empty, have more than 30 characters or have white spaces.");
 		}
 		if (length < 5) {
 			throw new InvalidLengthException("Length is invalid, cannot be less than 5km.");
@@ -39,6 +39,7 @@ public class Stage extends CompetitiveEvent {
 		this.startTime = startTime;
 		this.type = type;
 		this.id = Stage.count++;
+		this.race.invalidateResults();
 	}
 
 	public int getId() {
@@ -69,6 +70,12 @@ public class Stage extends CompetitiveEvent {
 		return startTime;
 	}
 
+	void invalidateResults() {
+		calculatedPoints = false;
+		calculatedPositions = false;
+		this.race.invalidateResults();
+	}
+
 	public void addSegment(Segment segment) {
 		for (int i = 0; i < segments.size(); i++) {
 			if (segment.getLocation() < segments.get(i).getLocation()) {
@@ -77,16 +84,15 @@ public class Stage extends CompetitiveEvent {
 			}
 		}
 		segments.add(segment);
-
-		// !!!
-		// latestResultsCalculated = false;
+		this.invalidateResults();
 	}
 
-	public void removeSegment(Segment segment) {
+	public void removeSegment(Segment segment) throws InvalidStageStateException {
+		if (waitingForResults == true){
+			throw new InvalidStageStateException("The stage cannot be removed as it is waiting for results.");
+		}
 		segments.remove(segment);
-
-		// !!!
-		// latestResultsCalculated = false;
+		invalidateResults();
 	}
 
 	public void registerResult(Rider rider, LocalTime[] checkpoints)
@@ -104,15 +110,15 @@ public class Stage extends CompetitiveEvent {
 		}
 
 		Result result = new Result(checkpoints);
+		// Save Riders result for the Stage
 		results.put(rider, result);
 
+		// Propogate all of the Riders results for each segment
 		for (int i = 0; i < segments.size(); i++) {
 			segments.get(i).registerResults(rider, checkpoints[i + 1]);
 		}
 
-		// !!!
-		// ridersByElapsedTime = null;
-		// latestResultsCalculated = false;
+		invalidateResults();
 	}
 
 	public void concludePreparation() throws InvalidStageStateException {
@@ -126,28 +132,32 @@ public class Stage extends CompetitiveEvent {
 		return waitingForResults;
 	}
 
+	public Result getRiderPointsResult(Rider rider){
+		getRiderPoints(PointType.MOUNTAIN, rider);
+		getRiderPoints(PointType.SPRINTERS, rider);
+		return getRiderPointsResult(rider);
+	}
+
+	// TODO: Clean up
 	public int getRiderPoints(PointType pointType, Rider rider){
-		// System.out.println(segments.toString());
-		// System.out.println("---------" + rider.getName() + "---------");
-		Result stageResult = getRiderResults(rider);
+		// ** Three stages of results: 1. checkpoints only 2. positions calculated 3. points calculated
+		Result stageResult = this.getRiderPositionResults(rider);
 		int stagePoints = 0;
 		for(Segment segment:segments){
-			Result segmentResult = segment.getRiderResults(rider);
-			int segmentPoints = segment.calculatePoints(pointType, segmentResult.getPosition());
+			Result segmentResult = segment.getRiderPositionResults(rider);
+			int segmentPoints = segment.pointsByPosition(pointType, segmentResult.getPosition());
 			segmentResult.setPoints(pointType, segmentPoints);
 			stagePoints += segmentPoints;
-			// System.out.println("SEG" + segment.getId() + "(" + segment.getType() + "): " + segmentPoints + " " + pointType + " points, " + stagePoints + " total");
 		}
 		if(pointType.equals(PointType.SPRINTERS)){
-			int extraPoints = this.calculatePoints(stageResult.getPosition());
+			int extraPoints = this.pointsByPosition(stageResult.getPosition());
 			stagePoints += extraPoints;
-			// System.out.println("STG(" + this.type + "): " + extraPoints + " BONUS SPRINTERS points" + stagePoints + " total");
 		}
 		stageResult.setPoints(pointType, stagePoints);
 		return stagePoints;
 	}
 
-	private int calculatePoints(int position) {
+	private int pointsByPosition(int position) {
 		int[] pointsDistribution = {};
 		int points = 0;
 		switch (type) {
@@ -168,11 +178,5 @@ public class Stage extends CompetitiveEvent {
 			points = pointsDistribution[position - 1];
 		}
 		return points;
-	}
-
-	@Override
-	public String toString() {
-		// TODO Auto-generated method stub
-		return "Stage"+id;
 	}
 }

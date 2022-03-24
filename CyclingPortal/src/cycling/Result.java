@@ -5,24 +5,31 @@ import java.time.LocalTime;
 import java.util.Comparator;
 
 public class Result{
-	private LocalTime[] checkpointTimes;
+	private LocalTime[] checkpoints;
 	private Duration elapsedTime;
 	private Duration adjustedElapsedTime;
-	private LocalTime adjustedElapsedLocalTime;
 	private int position;
 	private int sprintersPoints;
 	private int mountainPoints;
 
-	protected static final Comparator<Result> sortByLastCheckpoint = (Result result1, Result result2) -> result1.getLastCheckpoint().compareTo(result2.getLastCheckpoint());
-
+	protected static final Comparator<Result> sortByElapsedTime = (Result result1, Result result2) -> result1.getLastCheckpoint().compareTo(result2.getLastCheckpoint());
 	
 	public Result(LocalTime[] checkpoints) {
-		this.checkpointTimes = checkpoints;
-		this.elapsedTime = Duration.between(checkpoints[0], checkpoints[checkpoints.length - 1]);
+		if (checkpoints == null){
+			this.checkpoints = null;
+			this.elapsedTime = null;
+		} else {
+			this.checkpoints = checkpoints;
+			this.elapsedTime = Duration.between(checkpoints[0], checkpoints[checkpoints.length - 1]);
+		}
+	}
+
+	public LocalTime[] getCheckpoints(){
+		return this.checkpoints;
 	}
 
 	public LocalTime getLastCheckpoint(){
-		return checkpointTimes[checkpointTimes.length - 1];
+		return checkpoints[checkpoints.length - 1];
 	}
 
 	public Duration getElapsedTime() {
@@ -35,7 +42,6 @@ public class Result{
 	
 	public void setAdjustedElapsedTime(Duration adjustedElapsedTime) {
 		this.adjustedElapsedTime = adjustedElapsedTime;
-		this.adjustedElapsedLocalTime = checkpointTimes[0].plus(adjustedElapsedTime);
 	}
 	
 	public int getPosition() {
@@ -47,7 +53,7 @@ public class Result{
 	}
 	
 	public LocalTime getAdjustedElapsedLocalTime() {
-		return adjustedElapsedLocalTime;
+		return checkpoints[0].plus(adjustedElapsedTime);
 	}
 	
 	public void setPoints(PointType pointType, int points) {
@@ -70,5 +76,12 @@ public class Result{
 			default:
 				return 0;
 		}
+	}
+
+	public void add(Result res){
+		this.elapsedTime = this.elapsedTime.plus(res.getElapsedTime());
+		this.adjustedElapsedTime = this.adjustedElapsedTime.plus(res.getAdjustedElapsedTime());
+		this.sprintersPoints += res.sprintersPoints;
+		this.mountainPoints += res.mountainPoints;
 	}
 }

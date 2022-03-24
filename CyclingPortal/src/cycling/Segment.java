@@ -34,6 +34,7 @@ public class Segment extends CompetitiveEvent{
 		this.id = Segment.count++;
 		this.type = type;
 		this.location = location;
+		this.stage.invalidateResults();
 	}
 
 	public SegmentType getType () {
@@ -52,15 +53,19 @@ public class Segment extends CompetitiveEvent{
 		return location;
 	}
 
+	void invalidateResults(){
+		calculatedPoints = false;
+		calculatedPositions = false;
+		this.stage.invalidateResults();
+	}
+
 	public void registerResults(Rider rider, LocalTime checkpoint) {
 		Result result = new Result(new LocalTime[]{checkpoint});
 		results.put(rider, result);
-
-		// !!!
-		// latestResultsCalculated = false;
+		invalidateResults();
 	}
 
-	public int calculatePoints(PointType requestingType, int position) {
+	public int pointsByPosition(PointType requestingType, int position) {
 		int[] pointsDistribution = {};
 		int points = 0;
 		switch(type) {
@@ -103,11 +108,5 @@ public class Segment extends CompetitiveEvent{
 			default:
 				return 0;
 		}
-	}
-
-	@Override
-	public String toString() {
-		// TODO Auto-generated method stub
-		return type+"Segment"+id;
 	}
 }

@@ -15,10 +15,7 @@ public class Race extends CompetitiveEvent{
 
 	public Race(String name, String description) throws InvalidNameException {
 		super(EventType.RACE);
-		// TODO: Check for whitespace!!!
-		if (name == null || name.isEmpty() || name.length() > 30 || name.contains(" ")
-				|| name.contains("\n") || name.contains("\t") || name.contains("\f")
-				|| name.contains("\r")) {
+		if (name == null || name.isEmpty() || name.length() > 30 || CyclingPortal.containsWhitespace(name)) {
 			throw new InvalidNameException(
 					"The name cannot be null, empty, have more than 30 characters, or have white spaces.");
 		}
@@ -35,8 +32,12 @@ public class Race extends CompetitiveEvent{
 		return name;
 	}
 
+	void invalidateResults(){
+		calculatedPoints = false;
+		calculatedPositions = false;
+	}
+
 	public void addStage(Stage stage) {
-		// TODO: TEST!!!!
 		for (int i = 0; i < stages.size(); i++) {
 			LocalDateTime iStartTime = stages.get(i).getStartTime();
 			if (stage.getStartTime().isBefore(iStartTime)) {
@@ -45,6 +46,7 @@ public class Race extends CompetitiveEvent{
 			}
 		}
 		stages.add(stage);
+		invalidateResults();
 	}
 
 	public ArrayList<Stage> getStages() {
@@ -53,6 +55,7 @@ public class Race extends CompetitiveEvent{
 
 	public void removeStage(Stage stage) {
 		stages.remove(stage);
+		invalidateResults();
 	}
 
 	public String getDetails() {
@@ -66,4 +69,15 @@ public class Race extends CompetitiveEvent{
 		return details;
 	}
 
+	// TODO: Up next
+	// TODO: SPLIT RESULTS INTO RACERESULT STAGERESULT SEGRESULT, & ADD COMPETITIVE EVENTS TO RACE, STAGE, SEGMENT??? - IN BRANCH?
+	// public Result getCumulativeResults(Rider rider){
+	// 	Result raceResult = new Result(null);
+	// 	for(Stage stage:stages){
+	// 		Result stageResult = stage.getRiderPointsResult(rider);
+	// 		raceResult.add(stageResult);
+	// 	}
+	// 	results.put(rider, raceResult);
+	// 	return raceResult;
+	// }
 }
