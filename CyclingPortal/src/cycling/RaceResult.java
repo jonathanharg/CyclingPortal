@@ -15,7 +15,6 @@ public class RaceResult{
 	// TODO: Test order Desc
 	protected static final Comparator<RaceResult> sortBySprintersPoints = (RaceResult result1, RaceResult result2) -> Integer.compare(result2.getCumulativeSprintersPoints(),result1.getCumulativeSprintersPoints());
 	protected static final Comparator<RaceResult> sortByMountainPoints = (RaceResult result1, RaceResult result2) -> Integer.compare(result2.getCumulativeMountainPoints(), result1.getCumulativeMountainPoints());
-	
 
 	public void setCumulativeAdjustedElapsedTime(Duration time){
 		this.cumulativeAdjustedElapsedTime = time;
@@ -32,6 +31,10 @@ public class RaceResult{
 	public Duration getCumulativeAdjustedElapsedTime(){
 		return this.cumulativeAdjustedElapsedTime;
 	}
+	
+	public LocalTime getCumulativeAdjustedElapsedLocalTime(){
+		return LocalTime.MIDNIGHT.plus(this.cumulativeAdjustedElapsedTime);
+	}
 
 	public int getCumulativeMountainPoints(){
 		return this.cumulativeMountainPoints;
@@ -39,5 +42,11 @@ public class RaceResult{
 
 	public int getCumulativeSprintersPoints() {
 		return this.cumulativeSprintersPoints;
+	}
+
+	public void addStageResult(StageResult stageResult) {
+		this.cumulativeAdjustedElapsedTime = this.cumulativeAdjustedElapsedTime.plus(stageResult.getAdjustedElapsedTime());
+		this.cumulativeSprintersPoints += stageResult.getSprintersPoints();
+		this.cumulativeMountainPoints += stageResult.getMountainPoints();
 	}
 }

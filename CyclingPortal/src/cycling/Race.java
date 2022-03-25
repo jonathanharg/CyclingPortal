@@ -75,6 +75,26 @@ public class Race {
 		return details;
 	}
 
+	public List<Rider> getRidersByAdjustedElapsedTime() {
+		calculateResults();
+		return sortRiderResultsBy(RaceResult.sortByAdjustedElapsedTime);
+	}
+
+	public List<Rider> getRidersBySpritersPoints() {
+		calculateResults();
+		return sortRiderResultsBy(RaceResult.sortBySprintersPoints);
+	}
+
+	public List<Rider> getRidersByMountainPoints() {
+		calculateResults();
+		return sortRiderResultsBy(RaceResult.sortByMountainPoints);
+	}
+
+	public RaceResult getRiderResults(Rider rider) {
+		calculateResults();
+		return results.get(rider);
+	}
+
 	private List<Rider> sortRiderResultsBy(Comparator<RaceResult> comparison) {
 		// if (ridersByElapsedTime == null) {
 		List<Rider> sortedRiders = results.entrySet()
@@ -86,8 +106,23 @@ public class Race {
 		return sortedRiders;
 	}
 
+	private void registerRiderResults(Rider rider, StageResult stageResult) {
+		if(results.containsKey(rider)) {
+			results.get(rider).addStageResult(stageResult);
+		} else {
+			RaceResult raceResult = new RaceResult();
+			raceResult.addStageResult(stageResult);
+			results.put(rider, raceResult);
+		}
+	}
+
 	// TODO: work out what to do for this.
 	private void calculateResults() {
-		return;
+		for(Stage stage: stages){
+			HashMap<Rider,StageResult> stageResults = stage.getStageResults();
+			for(Rider rider: stageResults.keySet()){
+				registerRiderResults(rider, stageResults.get(rider));
+			}
+		}
 	}
 }

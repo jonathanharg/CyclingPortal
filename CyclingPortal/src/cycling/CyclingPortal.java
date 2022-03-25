@@ -10,35 +10,11 @@ import java.util.stream.IntStream;
 
 //TODO:
 //		- Asserts !!!!
-//		- Inheritance -> IDable class? getId, invalid name etc?
 //		- Code Formatting
 //		- Documentation/Comments
 //		- Testing
 //		- test all removes are removing everything associated with that thing
 //		- each function public/private/protected/default
-
-//	REMAINING FUNCTIONS:
-//	---- Results ----
-//	getRiderAdjustedElapsedTimeInStage
-//	getRankedAdjustedElapsedTimesInStage
-
-//	getRidersPointsInStage
-//	getRidersPointsInRace - after stage
-
-//	getRidersRankInStage - Ez
-//	getRidersGeneralClassificationRank - last
-
-//	getRidersMountainPointsInStage
-//	getRidersMountainPointsInRace
-//	getRidersMountainPointClassificationRank
-
-//	getRidersPointClassificationRank
-//	getGeneralClassificationTimesInRace - last
-//	
-//	---- Saving/Loading ---- 
-//	eraseCyclingPortal
-//	saveCyclingPortal
-//	loadCyclingPortal
 
 public class CyclingPortal implements CyclingPortalInterface {
 
@@ -430,37 +406,67 @@ public class CyclingPortal implements CyclingPortalInterface {
 
 	@Override
 	public int[] getRidersGeneralClassificationRank(int raceId) throws IDNotRecognisedException {
-		// TODO Auto-generated method stub
-		return null;
+		Race race = getRaceById(raceId);
+		List<Rider> riders = race.getRidersByAdjustedElapsedTime();
+		int[] riderIds = new int[riders.size()];
+		for (int i = 0; i < riders.size(); i++) {
+			riderIds[i] = riders.get(i).getId();
+		}
+		return riderIds;
 	}
 
 	@Override
 	public LocalTime[] getGeneralClassificationTimesInRace(int raceId) throws IDNotRecognisedException {
-		// TODO Auto-generated method stub
-		return null;
+		Race race = getRaceById(raceId);
+		List<Rider> riders = race.getRidersByAdjustedElapsedTime();
+		LocalTime[] riderTimes = new LocalTime[riders.size()];
+		for (int i = 0; i < riders.size(); i++) {
+			riderTimes[i] = race.getRiderResults(riders.get(i)).getCumulativeAdjustedElapsedLocalTime();
+		}
+		return riderTimes;
 	}
 
 	@Override
 	public int[] getRidersPointsInRace(int raceId) throws IDNotRecognisedException {
-		// TODO Auto-generated method stub
-		return null;
+		Race race = getRaceById(raceId);
+		List<Rider> riders = race.getRidersByAdjustedElapsedTime();
+		int[] riderIds = new int[riders.size()];
+		for (int i = 0; i < riders.size(); i++) {
+			riderIds[i] = race.getRiderResults(riders.get(i)).getCumulativeSprintersPoints();
+		}
+		return riderIds;
 	}
 
 	@Override
 	public int[] getRidersMountainPointsInRace(int raceId) throws IDNotRecognisedException {
-		// TODO Auto-generated method stub
-		return null;
+		Race race = getRaceById(raceId);
+		List<Rider> riders = race.getRidersByAdjustedElapsedTime();
+		int[] riderIds = new int[riders.size()];
+		for (int i = 0; i < riders.size(); i++) {
+			riderIds[i] = race.getRiderResults(riders.get(i)).getCumulativeMountainPoints();
+		}
+		return riderIds;
 	}
 
 	@Override
 	public int[] getRidersPointClassificationRank(int raceId) throws IDNotRecognisedException {
-		// TODO Auto-generated method stub
-		return null;
+		Race race = getRaceById(raceId);
+		List<Rider> riders = race.getRidersBySpritersPoints();
+		int[] riderIds = new int[riders.size()];
+		for (int i = 0; i < riders.size(); i++) {
+			riderIds[i] = riders.get(i).getId();
+		}
+		return riderIds;
 	}
 
 	@Override
 	public int[] getRidersMountainPointClassificationRank(int raceId) throws IDNotRecognisedException {
-		// TODO Auto-generated method stub
-		return null;
+		Race race = getRaceById(raceId);
+		List<Rider> riders = race.getRidersByMountainPoints();
+		int[] riderIds = new int[riders.size()];
+		for (int i = 0; i < riders.size(); i++) {
+			riderIds[i] = riders.get(i).getId();
+		}
+		return riderIds;
 	}
 }

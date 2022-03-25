@@ -157,6 +157,11 @@ public class Stage {
 		return sortRiderResults();
 	}
 
+	public HashMap<Rider, StageResult> getStageResults() {
+		calculateResults();
+		return results;
+	}
+
 	private List<Rider> sortRiderResults() {
 		// if (ridersByElapsedTime == null) {
 		List<Rider> ridersByElapsedTime = results.entrySet()
