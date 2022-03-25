@@ -1,20 +1,26 @@
 package cycling;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import java.time.LocalDateTime;
 
-public class Race extends CompetitiveEvent{
+public class Race {
 
 	private String name;
 	private String description;
 
 	private ArrayList<Stage> stages = new ArrayList<>();
 
+	private HashMap<Rider, RaceResult> results = new HashMap<Rider, RaceResult>();
+
 	private static int count = 0;
 	private int id;
 
 	public Race(String name, String description) throws InvalidNameException {
-		super(EventType.RACE);
 		if (name == null || name.isEmpty() || name.length() > 30 || CyclingPortal.containsWhitespace(name)) {
 			throw new InvalidNameException(
 					"The name cannot be null, empty, have more than 30 characters, or have white spaces.");
@@ -32,10 +38,10 @@ public class Race extends CompetitiveEvent{
 		return name;
 	}
 
-	void invalidateResults(){
-		calculatedPoints = false;
-		calculatedPositions = false;
-	}
+	// void invalidateResults(){
+	// calculatedPoints = false;
+	// calculatedPositions = false;
+	// }
 
 	public void addStage(Stage stage) {
 		for (int i = 0; i < stages.size(); i++) {
@@ -46,7 +52,7 @@ public class Race extends CompetitiveEvent{
 			}
 		}
 		stages.add(stage);
-		invalidateResults();
+		// invalidateResults();
 	}
 
 	public ArrayList<Stage> getStages() {
@@ -55,7 +61,7 @@ public class Race extends CompetitiveEvent{
 
 	public void removeStage(Stage stage) {
 		stages.remove(stage);
-		invalidateResults();
+		// invalidateResults();
 	}
 
 	public String getDetails() {
@@ -69,15 +75,19 @@ public class Race extends CompetitiveEvent{
 		return details;
 	}
 
-	// TODO: Up next
-	// TODO: SPLIT RESULTS INTO RACERESULT STAGERESULT SEGRESULT, & ADD COMPETITIVE EVENTS TO RACE, STAGE, SEGMENT??? - IN BRANCH?
-	// public Result getCumulativeResults(Rider rider){
-	// 	Result raceResult = new Result(null);
-	// 	for(Stage stage:stages){
-	// 		Result stageResult = stage.getRiderPointsResult(rider);
-	// 		raceResult.add(stageResult);
-	// 	}
-	// 	results.put(rider, raceResult);
-	// 	return raceResult;
-	// }
+	private List<Rider> sortRiderResultsBy(Comparator<RaceResult> comparison) {
+		// if (ridersByElapsedTime == null) {
+		List<Rider> sortedRiders = results.entrySet()
+				.stream()
+				.sorted(Comparator.comparing(Map.Entry::getValue, comparison))
+				.map(Map.Entry::getKey)
+				.collect(Collectors.toList());
+		// }
+		return sortedRiders;
+	}
+
+	// TODO: work out what to do for this.
+	private void calculateResults() {
+		return;
+	}
 }

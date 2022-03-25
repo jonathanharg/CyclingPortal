@@ -314,7 +314,7 @@ public class CyclingPortal implements CyclingPortalInterface {
 	public LocalTime[] getRiderResultsInStage(int stageId, int riderId) throws IDNotRecognisedException {
 		Stage stage = getStageById(stageId);
 		Rider rider = getRiderById(riderId);
-		Result result = stage.getRiderPositionResults(rider);
+		StageResult result = stage.getRiderResult(rider);
 
 		if (result == null) {
 			return new LocalTime[]{};
@@ -337,7 +337,7 @@ public class CyclingPortal implements CyclingPortalInterface {
 	public LocalTime getRiderAdjustedElapsedTimeInStage(int stageId, int riderId) throws IDNotRecognisedException {
 		Stage stage = getStageById(stageId);
 		Rider rider = getRiderById(riderId);
-		Result result = stage.getRiderPositionResults(rider);
+		StageResult result = stage.getRiderResult(rider);
 		if (result == null) {
 			return null;
 		} else {
@@ -370,7 +370,7 @@ public class CyclingPortal implements CyclingPortalInterface {
 		LocalTime[] riderAETs = new LocalTime[riders.size()];
 		for (int i = 0; i < riders.size(); i++) {
 			Rider rider = riders.get(i);
-			riderAETs[i] = stage.getRiderPositionResults(rider).getAdjustedElapsedLocalTime();
+			riderAETs[i] = stage.getRiderResult(rider).getAdjustedElapsedLocalTime();
 		}
 		return riderAETs;
 	}
@@ -382,7 +382,7 @@ public class CyclingPortal implements CyclingPortalInterface {
 		int[] riderSprinterPoints = new int[riders.size()];
 		for (int i = 0; i < riders.size(); i++) {
 			Rider rider = riders.get(i);
-			riderSprinterPoints[i] = stage.getRiderPoints(PointType.SPRINTERS, rider);
+			riderSprinterPoints[i] = stage.getRiderResult(rider).getSprintersPoints();
 		}
 		return riderSprinterPoints;
 	}
@@ -394,7 +394,7 @@ public class CyclingPortal implements CyclingPortalInterface {
 		int[] riderMountainPoints = new int[riders.size()];
 		for (int i = 0; i < riders.size(); i++) {
 			Rider rider = riders.get(i);
-			riderMountainPoints[i] = stage.getRiderPoints(PointType.MOUNTAIN, rider);
+			riderMountainPoints[i] = stage.getRiderResult(rider).getMountainPoints();
 		}
 		return riderMountainPoints;
 	}
