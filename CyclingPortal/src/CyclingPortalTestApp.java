@@ -9,7 +9,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 
 import cycling.CyclingPortal;
+import cycling.DuplicatedResultException;
 import cycling.IllegalNameException;
+import cycling.InvalidCheckpointsException;
 import cycling.InvalidLengthException;
 import cycling.InvalidLocationException;
 import cycling.InvalidNameException;
@@ -367,17 +369,12 @@ class CyclingPortalTestApp {
 				stage2Id = portal.addStageToRace(race1Id, "Giraffe", null, 10, LocalDateTime.now(),
 						StageType.FLAT);
 				intspr1 = portal.addIntermediateSprintToStage(stage2Id, 7.0);
-				intspr2 = portal.addIntermediateSprintToStage(stage2Id,7.2);
-
+				intspr2 = portal.addIntermediateSprintToStage(stage2Id,7.2);	
 				
-				
-			} catch (Exception e ) {
-				
-			}
+			} catch (Exception e ) {}
 	
 		}
-	
-		
+
 		//viewRaceDetails 
 		
 		@Test
@@ -693,9 +690,9 @@ class CyclingPortalTestApp {
 				System.out.println(Arrays.toString(ans));
 				System.out.println(Arrays.toString(segments));
 				assertArrayEquals(segments, ans);
-//				assertEquals(segments[0], seg2);
+//				assertEquals(segments[0], seg1);
 //				assertEquals(segments[1], seg3);
-//				assertEquals(segments[2], seg1);
+//				assertEquals(segments[2], seg2);
 
 			}catch (Exception e) {}
 		}
@@ -727,6 +724,134 @@ class CyclingPortalTestApp {
 		public void createTeamReturnsId() {
 			
 		}
+		
+		
+		//removeTeam
+		
+		@Test
+		public void removeTeamThrowsId() {
+			assertThrows(IDNotRecognisedException.class, () -> {
+				portal.removeSegment(3000);
+			});
+		}
+
+		@Test
+		public void removeTeamDoesIt() {
+
+		}
+		
+		
+		//getTeams
+		
+		@Test
+		public void getTeamsGetsTeams() {
+			
+		}
+		
+		
+		//createRider
+		
+		@Test
+		public void creatRiderThrowsTd() {
+			assertThrows(IDNotRecognisedException.class, () -> {
+				portal.createRider(3000, "Penis Head", 2000);
+			});
+		}
+		
+		@Test
+		public void createRiderThrowsIllegalArgumentException() {
+			assertThrows(IllegalArgumentException.class, () -> {
+				portal.createRider(teamId, null, 2000);
+			});
+			assertThrows(IllegalArgumentException.class, () -> {
+				portal.createRider(teamId, "Penis Head", 1899);
+			});
+		}
+		
+		@Test
+		public void createRiderCreatesRider() {
+			
+		}
+		
+		
+		//removeRider
+		
+		@Test
+		public void removeRiderThrowsId() {
+			assertThrows(IDNotRecognisedException.class, () -> {
+				portal.removeRider(3000);
+			});
+		}
+		
+		@Test
+		public void removeRiderRemovesRider() {
+			
+		}
+		
+		
+		//registerRiderResultsInStage
+		
+		@Test
+		public void registerRiderResultsInStageThrowsId() {
+			assertThrows(IDNotRecognisedException.class, () -> {
+				/////
+			});
+		}
+		
+		@Test
+		public void registerRiderResultsInStageThrowsDup() {
+			assertThrows(DuplicatedResultException.class, () -> {
+				/////
+			});
+		}
+		
+		@Test
+		public void registerRiderResultsInStageThrowsCheckpoint() {
+			assertThrows(InvalidCheckpointsException.class, () -> {
+				/////
+			});
+		}
+		
+		@Test
+		public void registerRiderResultsInStageThrowsStageState() {
+			assertThrows(InvalidStageStateException.class, () -> {
+				/////
+			});
+		}
+		
+		//getRiderResultsInStage
+		
+		//getRiderAdjustedElapsedTimeInStage
+		
+		//deleteRiderResultsInStage
+		
+		//getRidersRankInStage
+		
+		//getRankedAdjustedElapsedTimesInStage
+		
+		//getRidersPointsInStage
+		
+		//getRidersMountainPointsInStage
+		
+		//eraseCyclingPortal
+		
+		//saveCyclingPortal
+		
+		//loadCyclingPortal
+		
+		//removeRaceByName
+		
+		//getGeneralClassificationTimesInRace
+		
+		//getRidersPointsInRace
+		
+		//getRidersMountainPointsInRace
+		
+		//getRidersGeneralClassificationRank
+		
+		//getRidersPointClassificationRank
+		
+		//getRidersMountainPointClassificationRank
 		
 
 	}
