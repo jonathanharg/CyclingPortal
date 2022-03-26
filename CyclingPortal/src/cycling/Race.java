@@ -38,11 +38,6 @@ public class Race {
 		return name;
 	}
 
-	// void invalidateResults(){
-	// calculatedPoints = false;
-	// calculatedPositions = false;
-	// }
-
 	public void addStage(Stage stage) {
 		for (int i = 0; i < stages.size(); i++) {
 			LocalDateTime iStartTime = stages.get(i).getStartTime();
@@ -52,7 +47,6 @@ public class Race {
 			}
 		}
 		stages.add(stage);
-		// invalidateResults();
 	}
 
 	public ArrayList<Stage> getStages() {
@@ -61,7 +55,6 @@ public class Race {
 
 	public void removeStage(Stage stage) {
 		stages.remove(stage);
-		// invalidateResults();
 	}
 
 	public String getDetails() {
@@ -80,7 +73,7 @@ public class Race {
 		return sortRiderResultsBy(RaceResult.sortByAdjustedElapsedTime);
 	}
 
-	public List<Rider> getRidersBySpritersPoints() {
+	public List<Rider> getRidersBySprintersPoints() {
 		calculateResults();
 		return sortRiderResultsBy(RaceResult.sortBySprintersPoints);
 	}
@@ -95,19 +88,21 @@ public class Race {
 		return results.get(rider);
 	}
 
+	public void removeRiderResults(Rider rider) {
+		results.remove(rider);
+	}
+
 	private List<Rider> sortRiderResultsBy(Comparator<RaceResult> comparison) {
-		// if (ridersByElapsedTime == null) {
 		List<Rider> sortedRiders = results.entrySet()
 				.stream()
 				.sorted(Comparator.comparing(Map.Entry::getValue, comparison))
 				.map(Map.Entry::getKey)
 				.collect(Collectors.toList());
-		// }
 		return sortedRiders;
 	}
 
 	private void registerRiderResults(Rider rider, StageResult stageResult) {
-		if(results.containsKey(rider)) {
+		if (results.containsKey(rider)) {
 			results.get(rider).addStageResult(stageResult);
 		} else {
 			RaceResult raceResult = new RaceResult();
@@ -116,11 +111,10 @@ public class Race {
 		}
 	}
 
-	// TODO: work out what to do for this.
 	private void calculateResults() {
-		for(Stage stage: stages){
-			HashMap<Rider,StageResult> stageResults = stage.getStageResults();
-			for(Rider rider: stageResults.keySet()){
+		for (Stage stage : stages) {
+			HashMap<Rider, StageResult> stageResults = stage.getStageResults();
+			for (Rider rider : stageResults.keySet()) {
 				registerRiderResults(rider, stageResults.get(rider));
 			}
 		}

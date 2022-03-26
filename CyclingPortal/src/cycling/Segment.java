@@ -25,7 +25,6 @@ public class Segment {
 
 	public Segment(Stage stage, SegmentType type, double location)
 			throws InvalidLocationException, InvalidStageStateException, InvalidStageTypeException {
-		// super(EventType.SEGMENT);
 		if (location > stage.getLength()) {
 			throw new InvalidLocationException("The location is out of bounds of the stage length.");
 		}
@@ -39,7 +38,6 @@ public class Segment {
 		this.id = Segment.count++;
 		this.type = type;
 		this.location = location;
-		// this.stage.invalidateResults();
 	}
 
 	public SegmentType getType() {
@@ -58,39 +56,26 @@ public class Segment {
 		return location;
 	}
 
-	// void invalidateResults(){
-	// calculatedPoints = false;
-	// calculatedPositions = false;
-	// this.stage.invalidateResults();
-	// }
-
 	public void registerResults(Rider rider, LocalTime finishTime) {
 		SegmentResult result = new SegmentResult(finishTime);
 		results.put(rider, result);
-		// invalidateResults();
 	}
 
-	public void deleteRiderResults(Rider rider) {
-		results.remove(rider);
-		// calculatedPositions = false;
-		// calculatedPoints = false;
-		// ridersByElapsedTime = null;
-	}
-
-	public SegmentResult getRiderResult(Rider rider){
-		// TODO: Optimise
+	public SegmentResult getRiderResult(Rider rider) {
 		calculateResults();
 		return results.get(rider);
 	}
 
+	public void removeRiderResults(Rider rider) {
+		results.remove(rider);
+	}
+
 	private List<Rider> sortRiderResults() {
-		// if (ridersByElapsedTime == null) {
 		List<Rider> ridersByFinishTime = results.entrySet()
 				.stream()
 				.sorted(Comparator.comparing(Map.Entry::getValue, SegmentResult.sortByFinishTime))
 				.map(Map.Entry::getKey)
 				.collect(Collectors.toList());
-		// }
 		return ridersByFinishTime;
 	}
 
@@ -108,7 +93,7 @@ public class Segment {
 			int[] pointsDistribution = getPointsDistribution();
 			if (position <= pointsDistribution.length) {
 				int points = pointsDistribution[i];
-				if(this.type.equals(SegmentType.SPRINT)){
+				if (this.type.equals(SegmentType.SPRINT)) {
 					result.setSprintersPoints(points);
 					result.setMountainPoints(0);
 				} else {
@@ -120,10 +105,9 @@ public class Segment {
 				result.setSprintersPoints(0);
 			}
 		}
-		// calculatedPositions = true;
 	}
 
-	private int[] getPointsDistribution(){
+	private int[] getPointsDistribution() {
 		switch (type) {
 			case HC:
 				return HC_POINTS;
@@ -138,7 +122,7 @@ public class Segment {
 			case SPRINT:
 				return SPRINT_POINTS;
 			default:
-				return new int[]{};
+				return new int[] {};
 		}
 	}
 }

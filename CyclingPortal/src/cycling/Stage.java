@@ -31,8 +31,6 @@ public class Stage {
 
 	public Stage(Race race, String name, String description, double length, LocalDateTime startTime, StageType type)
 			throws InvalidNameException, InvalidLengthException {
-		// super(EventType.STAGE);
-		// TODO: Delete EventType
 		if (name == null || name.isEmpty() || name.length() > 30 || CyclingPortal.containsWhitespace(name)) {
 			throw new InvalidNameException(
 					"Stage name cannot be null, empty, have more than 30 characters or have white spaces.");
@@ -47,7 +45,6 @@ public class Stage {
 		this.startTime = startTime;
 		this.type = type;
 		this.id = Stage.count++;
-		// this.race.invalidateResults();
 	}
 
 	public int getId() {
@@ -78,12 +75,6 @@ public class Stage {
 		return startTime;
 	}
 
-	// void invalidateResults() {
-	// calculatedPoints = false;
-	// calculatedPositions = false;
-	// this.race.invalidateResults();
-	// }
-
 	public void addSegment(Segment segment) {
 		for (int i = 0; i < segments.size(); i++) {
 			if (segment.getLocation() < segments.get(i).getLocation()) {
@@ -92,7 +83,6 @@ public class Stage {
 			}
 		}
 		segments.add(segment);
-		// this.invalidateResults();
 	}
 
 	public void removeSegment(Segment segment) throws InvalidStageStateException {
@@ -100,7 +90,6 @@ public class Stage {
 			throw new InvalidStageStateException("The stage cannot be removed as it is waiting for results.");
 		}
 		segments.remove(segment);
-		// invalidateResults();
 	}
 
 	public void registerResult(Rider rider, LocalTime[] checkpoints)
@@ -125,15 +114,6 @@ public class Stage {
 		for (int i = 0; i < segments.size(); i++) {
 			segments.get(i).registerResults(rider, checkpoints[i + 1]);
 		}
-
-		// invalidateResults();
-	}
-
-	public void deleteRiderResults(Rider rider) {
-		results.remove(rider);
-		// calculatedPositions = false;
-		// calculatedPoints = false;
-		// ridersByElapsedTime = null;
 	}
 
 	public void concludePreparation() throws InvalidStageStateException {
@@ -152,6 +132,10 @@ public class Stage {
 		return results.get(rider);
 	}
 
+	public void removeRiderResults(Rider rider) {
+		results.remove(rider);
+	}
+
 	public List<Rider> getRidersByElapsedTime() {
 		calculateResults();
 		return sortRiderResults();
@@ -163,13 +147,11 @@ public class Stage {
 	}
 
 	private List<Rider> sortRiderResults() {
-		// if (ridersByElapsedTime == null) {
 		List<Rider> ridersByElapsedTime = results.entrySet()
 				.stream()
 				.sorted(Comparator.comparing(Map.Entry::getValue, StageResult.sortByElapsedTime))
 				.map(Map.Entry::getKey)
 				.collect(Collectors.toList());
-		// }
 		return ridersByElapsedTime;
 	}
 
@@ -206,7 +188,7 @@ public class Stage {
 			// Points Calculation
 			int sprintersPoints = 0;
 			int mountainPoints = 0;
-			for (Segment segment: segments){
+			for (Segment segment : segments) {
 				SegmentResult segmentResult = segment.getRiderResult(rider);
 				sprintersPoints += segmentResult.getSprintersPoints();
 				mountainPoints += segmentResult.getMountainPoints();
@@ -218,7 +200,6 @@ public class Stage {
 			result.setSprintersPoints(sprintersPoints);
 			result.setMountainPoints(mountainPoints);
 		}
-		// calculatedPositions = true;
 	}
 
 	private int[] getPointDistribution() {
@@ -232,7 +213,7 @@ public class Stage {
 			case TT:
 				return TT_POINTS;
 			default:
-				return new int[]{};
+				return new int[] {};
 		}
 
 	}

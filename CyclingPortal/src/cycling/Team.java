@@ -12,7 +12,8 @@ public class Team {
 
 	public Team(String name, String description) throws InvalidNameException {
 		if (name == null || name.isEmpty() || name.length() > 30 || CyclingPortal.containsWhitespace(name)) {
-			throw new InvalidNameException("Team name cannot be null, empty, have more than 30 characters or have white spaces.");
+			throw new InvalidNameException(
+					"Team name cannot be null, empty, have more than 30 characters or have white spaces.");
 		}
 		this.name = name;
 		this.description = description;
