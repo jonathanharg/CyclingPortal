@@ -6,7 +6,7 @@ public class Team {
 	private final String name;
 	private final String description;
 
-	private final ArrayList<Rider> riders = new ArrayList<Rider>();
+	private final ArrayList<Rider> riders = new ArrayList<>();
 	private static int count = 0;
 	private final int id;
 
@@ -20,21 +20,24 @@ public class Team {
 		this.id = Team.count++;
 	}
 
+	static void resetIdCounter() {
+		count = 0;
+	}
+
+	static int getIdCounter() {
+		return count;
+	}
+
+	static void setIdCounter(int newCount){
+		count = newCount;
+	}
+
 	public String getName() {
 		return name;
 	}
 
 	public int getId() {
 		return id;
-	}
-
-	public Rider getRiderByID(int ID) throws IDNotRecognisedException {
-		for (Rider rider : riders) {
-			if (rider.getId() == ID) {
-				return rider;
-			}
-		}
-		throw new IDNotRecognisedException("Rider ID not found.");
 	}
 
 	public void removeRider(Rider rider) {

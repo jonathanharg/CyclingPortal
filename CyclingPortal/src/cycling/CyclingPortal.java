@@ -1,6 +1,10 @@
 package cycling;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -17,11 +21,13 @@ import java.util.List;
 
 public class CyclingPortal implements CyclingPortalInterface {
 
-	private final ArrayList<Team> teams = new ArrayList<>();
-	private final ArrayList<Rider> riders = new ArrayList<>();
-	private final ArrayList<Race> races = new ArrayList<>();
-	private final ArrayList<Stage> stages = new ArrayList<>();
-	private final ArrayList<Segment> segments = new ArrayList<>();
+	private ArrayList<Team> teams = new ArrayList<>();
+	private ArrayList<Rider> riders = new ArrayList<>();
+	private ArrayList<Race> races = new ArrayList<>();
+	private ArrayList<Stage> stages = new ArrayList<>();
+	private ArrayList<Segment> segments = new ArrayList<>();
+
+	private record SavedCyclingPortal(ArrayList<Team> teams, ArrayList<Rider> riders, ArrayList<Race> races, ArrayList<Stage> stages, ArrayList<Segment> segments, int teamIdCount, int riderIdCount, int raceIdCount, int stageIdCount, int segmentIdCount) {}
 
 	public static boolean containsWhitespace(String str) {
 		for (int i = 0; i < str.length(); ++i) {
@@ -268,7 +274,7 @@ public class CyclingPortal implements CyclingPortalInterface {
 	public int createRider(int teamID, String name, int yearOfBirth)
 			throws IDNotRecognisedException, IllegalArgumentException {
 		Team team = getTeamById(teamID);
-		Rider rider = new Rider(teamID, team, name, yearOfBirth);
+		Rider rider = new Rider(team, name, yearOfBirth);
 		team.addRider(rider);
 		riders.add(rider);
 		return rider.getId();
@@ -382,20 +388,49 @@ public class CyclingPortal implements CyclingPortalInterface {
 
 	@Override
 	public void eraseCyclingPortal() {
-		// TODO Auto-generated method stub
-
+		teams = new ArrayList<>();
+		riders = new ArrayList<>();
+		races = new ArrayList<>();
+		stages = new ArrayList<>();
+		segments = new ArrayList<>();
+		Rider.resetIdCounter();
+		Team.resetIdCounter();
+		Race.resetIdCounter();
+		Stage.resetIdCounter();
+		Segment.resetIdCounter();
 	}
 
 	@Override
 	public void saveCyclingPortal(String filename) throws IOException {
-		// TODO Auto-generated method stub
-
+		FileOutputStream file = new FileOutputStream(filename);
+		ObjectOutputStream output = new ObjectOutputStream(file);
+		SavedCyclingPortal savedCyclingPortal = new SavedCyclingPortal(teams, riders, races, stages, segments, Team.getIdCounter(), Rider.getIdCounter(), Race.getIdCounter(), Stage.getIdCounter(), Segment.getIdCounter());
+		output.writeObject(savedCyclingPortal);
+		output.close();
+		file.close();
 	}
 
 	@Override
 	public void loadCyclingPortal(String filename) throws IOException, ClassNotFoundException {
-		// TODO Auto-generated method stub
+		eraseCyclingPortal();
+		FileInputStream file = new FileInputStream(filename);
+		ObjectInputStream input = new ObjectInputStream(file);
 
+		SavedCyclingPortal savedCyclingPortal = (SavedCyclingPortal)input.readObject();
+		teams = savedCyclingPortal.teams;
+		riders = savedCyclingPortal.riders;
+		races = savedCyclingPortal.races;
+		stages = savedCyclingPortal.stages;
+		segments = savedCyclingPortal.segments;
+
+		Team.setIdCounter(savedCyclingPortal.teamIdCount);
+		Rider.setIdCounter(savedCyclingPortal.riderIdCount);
+		Race.setIdCounter(savedCyclingPortal.raceIdCount);
+		Stage.setIdCounter(savedCyclingPortal.stageIdCount);
+		Segment.setIdCounter(savedCyclingPortal.segmentIdCount);
+
+		input.close();
+		file.close();
 	}
 
 	@Override

@@ -15,7 +15,7 @@ public class Race {
 
 	private final ArrayList<Stage> stages = new ArrayList<>();
 
-	private final HashMap<Rider, RaceResult> results = new HashMap<Rider, RaceResult>();
+	private final HashMap<Rider, RaceResult> results = new HashMap<>();
 
 	private static int count = 0;
 	private final int id;
@@ -28,6 +28,18 @@ public class Race {
 		this.name = name;
 		this.description = description;
 		this.id = Race.count++;
+	}
+
+	static void resetIdCounter() {
+		count = 0;
+	}
+
+	static int getIdCounter() {
+		return count;
+	}
+
+	static void setIdCounter(int newCount){
+		count = newCount;
 	}
 
 	public int getId() {
@@ -94,7 +106,7 @@ public class Race {
 	private List<Rider> sortRiderResultsBy(Comparator<RaceResult> comparison) {
 		return results.entrySet()
 				.stream()
-				.sorted(Comparator.comparing(Map.Entry::getValue, comparison))
+				.sorted(Map.Entry.comparingByValue(comparison))
 				.map(Map.Entry::getKey)
 				.collect(Collectors.toList());
 	}

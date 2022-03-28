@@ -1,7 +1,6 @@
 package cycling;
 
 import java.time.LocalTime;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +13,7 @@ public class Segment {
 	private final SegmentType type;
 	private final double location;
 
-	private final HashMap<Rider, SegmentResult> results = new HashMap<Rider, SegmentResult>();
+	private final HashMap<Rider, SegmentResult> results = new HashMap<>();
 
 	private static final int[] SPRINT_POINTS = { 20, 17, 15, 13, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 };
 	private static final int[] HC_POINTS = { 20, 15, 12, 10, 8, 6, 4, 2 };
@@ -40,9 +39,21 @@ public class Segment {
 		this.location = location;
 	}
 
-//	public SegmentType getType() {
-//		return type;
-//	}
+	static void resetIdCounter() {
+		count = 0;
+	}
+
+	static int getIdCounter() {
+		return count;
+	}
+
+	static void setIdCounter(int newCount){
+		count = newCount;
+	}
+
+	public SegmentType getType() {
+		return type;
+	}
 
 	public int getId() {
 		return id;
@@ -73,7 +84,7 @@ public class Segment {
 	private List<Rider> sortRiderResults() {
 		return results.entrySet()
 				.stream()
-				.sorted(Comparator.comparing(Map.Entry::getValue, SegmentResult.sortByFinishTime))
+				.sorted(Map.Entry.comparingByValue(SegmentResult.sortByFinishTime))
 				.map(Map.Entry::getKey)
 				.collect(Collectors.toList());
 	}
@@ -107,21 +118,13 @@ public class Segment {
 	}
 
 	private int[] getPointsDistribution() {
-		switch (type) {
-			case HC:
-				return HC_POINTS;
-			case C1:
-				return C1_POINTS;
-			case C2:
-				return C2_POINTS;
-			case C3:
-				return C3_POINTS;
-			case C4:
-				return C4_POINTS;
-			case SPRINT:
-				return SPRINT_POINTS;
-			default:
-				return new int[] {};
-		}
+		return switch (type) {
+			case HC -> HC_POINTS;
+			case C1 -> C1_POINTS;
+			case C2 -> C2_POINTS;
+			case C3 -> C3_POINTS;
+			case C4 -> C4_POINTS;
+			case SPRINT -> SPRINT_POINTS;
+		};
 	}
 }

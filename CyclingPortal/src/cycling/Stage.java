@@ -4,7 +4,6 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +21,7 @@ public class Stage {
 	private boolean waitingForResults = false;
 	private final ArrayList<Segment> segments = new ArrayList<>();
 
-	private final HashMap<Rider, StageResult> results = new HashMap<Rider, StageResult>();
+	private final HashMap<Rider, StageResult> results = new HashMap<>();
 
 	private static final int[] FLAT_POINTS = { 50, 30, 20, 18, 16, 14, 12, 10, 8, 7, 6, 5, 4, 3, 2 };
 	private static final int[] MEDIUM_POINTS = { 30, 25, 22, 19, 17, 15, 13, 11, 9, 7, 6, 5, 4, 3, 2 };
@@ -45,6 +44,18 @@ public class Stage {
 		this.startTime = startTime;
 		this.type = type;
 		this.id = Stage.count++;
+	}
+
+	static void resetIdCounter() {
+		count = 0;
+	}
+
+	static int getIdCounter() {
+		return count;
+	}
+
+	static void setIdCounter(int newCount){
+		count = newCount;
 	}
 
 	public int getId() {
@@ -149,7 +160,7 @@ public class Stage {
 	private List<Rider> sortRiderResults() {
 		return results.entrySet()
 				.stream()
-				.sorted(Comparator.comparing(Map.Entry::getValue, StageResult.sortByElapsedTime))
+				.sorted(Map.Entry.comparingByValue(StageResult.sortByElapsedTime))
 				.map(Map.Entry::getKey)
 				.collect(Collectors.toList());
 	}
@@ -202,18 +213,12 @@ public class Stage {
 	}
 
 	private int[] getPointDistribution() {
-		switch (type) {
-			case FLAT:
-				return FLAT_POINTS;
-			case MEDIUM_MOUNTAIN:
-				return MEDIUM_POINTS;
-			case HIGH_MOUNTAIN:
-				return HIGH_POINTS;
-			case TT:
-				return TT_POINTS;
-			default:
-				return new int[] {};
-		}
+		return switch (type) {
+			case FLAT -> FLAT_POINTS;
+			case MEDIUM_MOUNTAIN -> MEDIUM_POINTS;
+			case HIGH_MOUNTAIN -> HIGH_POINTS;
+			case TT -> TT_POINTS;
+		};
 
 	}
 }
