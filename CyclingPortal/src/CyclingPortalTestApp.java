@@ -367,6 +367,7 @@ class CyclingPortalTestApp {
 				e.printStackTrace();
 			}
 		}
+		
 	}
 
 	@Nested
@@ -374,10 +375,22 @@ class CyclingPortalTestApp {
 
 		int teamId, rider1Id, race1Id, race2Id, stage1Id, stage2Id, intspr1, intspr2, race3Id, stage3Id, seg1, seg2,
 				seg3;
-
+		int teamIdRESULTS;
+		int rider1IdR;
+		int rider2IdR;
+		int rider3IdR;
+		int rider4IdR;
+		int rider5IdR;
+		int raceIdR;
+		int stageIdR;
+		int mountIdR;
+		int sprintIdR;
+	
 		@BeforeEach
 		void b4() {
 
+
+			
 			try {
 				teamId = portal.createTeam("BlueTeam", null);
 				race1Id = portal.createRace("BasicRace", null);
@@ -389,6 +402,36 @@ class CyclingPortalTestApp {
 				intspr1 = portal.addIntermediateSprintToStage(stage2Id, 7.0);
 				intspr2 = portal.addIntermediateSprintToStage(stage2Id, 7.2);
 
+				teamIdRESULTS = portal.createTeam("RTEAM", null);
+				rider1IdR = portal.createRider(teamId, "Andrew", 1999);
+				rider2IdR = portal.createRider(teamId, "Bart", 1999);
+				rider3IdR = portal.createRider(teamId, "Charlie", 1999);
+				rider4IdR = portal.createRider(teamId, "Doug", 1999);
+				rider5IdR = portal.createRider(teamId, "Earnie", 1999);
+
+				raceIdR = portal.createRace("BasicRace", null);
+				stageIdR = portal.addStageToRace(raceIdR, "BasicStage", null, 10, LocalDateTime.now(),
+						StageType.FLAT);
+				mountIdR = portal.addCategorizedClimbToStage(stageIdR, 7.0, SegmentType.HC, 5.2, 2.0);
+				sprintIdR = portal.addIntermediateSprintToStage(stageIdR, 2.0);
+				portal.concludeStagePreparation(stageIdR);
+				portal.registerRiderResultsInStage(stageIdR, rider1Id, LocalTime.of(0, 10, 00, 00),
+						LocalTime.of(0, 10, 11, 00),
+						LocalTime.of(0, 10, 17, 00), LocalTime.of(0, 10, 54, 00));
+				portal.registerRiderResultsInStage(stageIdR, rider2IdR, LocalTime.of(0, 10, 00, 00),
+						LocalTime.of(0, 10, 13, 00),
+						LocalTime.of(0, 10, 18, 00), LocalTime.of(0, 10, 52, 00));
+				portal.registerRiderResultsInStage(stageIdR, rider3IdR, LocalTime.of(0, 10, 00, 00),
+						LocalTime.of(0, 10, 14, 00),
+						LocalTime.of(0, 10, 20, 00), LocalTime.of(0, 10, 51, 00));
+				portal.registerRiderResultsInStage(stageIdR, rider4IdR, LocalTime.of(0, 10, 00, 00),
+						LocalTime.of(0, 10, 10, 00),
+						LocalTime.of(0, 10, 15, 00), LocalTime.of(0, 10, 55, 00));
+				portal.registerRiderResultsInStage(stageIdR, rider5IdR, LocalTime.of(0, 10, 00, 00),
+						LocalTime.of(0, 10, 17, 00),
+						LocalTime.of(0, 10, 21, 00), LocalTime.of(0, 10, 50, 00));
+				
+				
 			} catch (Exception e) {
 
 			}
@@ -814,82 +857,159 @@ class CyclingPortalTestApp {
 		//registerRiderResultsInStage
 		
 		@Test
-		public void registerRiderResultsInStageThrowsId() {
+		public void registerRiderResultsInStageSThrowsId() {
 			assertThrows(IDNotRecognisedException.class, () -> {
-				/////
+				portal.registerRiderResultsInStage(3000, rider1Id, LocalTime.of(0, 10, 00, 00),
+						LocalTime.of(0, 10, 11, 00),
+						LocalTime.of(0, 10, 17, 00), LocalTime.of(0, 10, 54, 00));
 			});
 		}
 		
 		@Test
-		public void registerRiderResultsInStageThrowsDup() {
-			assertThrows(DuplicatedResultException.class, () -> {
-				/////
+		public void registerRiderResultsInStageRThrowsId() {
+			assertThrows(IDNotRecognisedException.class, () -> {
+				portal.registerRiderResultsInStage(stage1Id, 3000, LocalTime.of(0, 10, 00, 00),
+						LocalTime.of(0, 10, 11, 00),
+						LocalTime.of(0, 10, 17, 00), LocalTime.of(0, 10, 54, 00));
 			});
+		}
+
+		
+		@Test
+		public void registerRiderResultsInStageThrowsDup() {
+			try {
+				portal.registerRiderResultsInStage(stage1Id, rider1Id, LocalTime.of(0, 10, 00, 00),
+						LocalTime.of(0, 10, 11, 00),
+						LocalTime.of(0, 10, 17, 00), LocalTime.of(0, 10, 54, 00));	
+			}catch (Exception e) {}
+			assertThrows(DuplicatedResultException.class, () -> {
+				portal.registerRiderResultsInStage(stage1Id, rider1Id, LocalTime.of(0, 10, 00, 00),
+						LocalTime.of(0, 10, 11, 00),
+						LocalTime.of(0, 10, 17, 00), LocalTime.of(0, 10, 54, 00));	
+			});	
 		}
 		
 		@Test
 		public void registerRiderResultsInStageThrowsCheckpoint() {
 			assertThrows(InvalidCheckpointsException.class, () -> {
-				/////
+				portal.registerRiderResultsInStage(stage1Id, rider1Id, LocalTime.of(0, 10, 00, 00),
+						LocalTime.of(0, 10, 11, 00));	
 			});
 		}
 		
 		@Test
 		public void registerRiderResultsInStageThrowsStageState() {
 			assertThrows(InvalidStageStateException.class, () -> {
-				/////
+				int stage = portal.addStageToRace(race1Id, "PolarB", null, 10, LocalDateTime.now(),
+						StageType.FLAT);
+				portal.registerRiderResultsInStage(stage, rider1Id, LocalTime.of(0, 10, 00, 00),
+						LocalTime.of(0, 10, 11, 00));
 			});
 		}
 			
 		@Test
 		public void registerRiderResultsInStageDoesIt() {
-			
+			LocalTime[] times = null;
+			LocalTime eTime = null;
+			try {
+				portal.registerRiderResultsInStage(stage2Id, rider1Id, LocalTime.of(0, 10, 00, 00),
+						LocalTime.of(0, 10, 11, 00));
+				 times = portal.getRiderResultsInStage(stage2Id, rider1Id);
+				 eTime = portal.getRiderAdjustedElapsedTimeInStage(stage2Id,rider1Id);
+			} catch (Exception e){}
+				assertArrayEquals(times, new LocalTime[] {LocalTime.of(0, 10, 00, 00),
+						LocalTime.of(0, 10, 11, 00), eTime});
 		}
 		
 
 		//getRiderResultsInStage
 		
 		@Test
-		public void getRiderResultsInStageThrowsId() {
+		public void getRiderResultsInStageThrowsSId() {
 			assertThrows(IDNotRecognisedException.class, () -> {
-				/////
+				portal.getRiderResultsInStage(3000, rider1Id);
 			});
 		}
 		
 		@Test
-		public void getRiderResultsInStageReturns() {
-			
+		public void getRiderResultsInStageThrowsRId() {
+			assertThrows(IDNotRecognisedException.class, () -> {
+				portal.getRiderResultsInStage(stage1Id, 3000);
+			});
 		}
 		
 		//getRiderAdjustedElapsedTimeInStage
 		
 		@Test
-		public void getRiderAdjustedElapsedTimeInStageId() {
+		public void getRiderAdjustedElapsedTimeInStageSId() {
 			assertThrows(IDNotRecognisedException.class, () -> {
-				/////
+				portal.getRiderAdjustedElapsedTimeInStage(3000, rider1Id);
 			});
 		}
 		
 		@Test
-		public void getRiderAdjustedElapsedTimeInStageReturns() {
-			
+		public void getRiderAdjustedElapsedTimeInStageRId() {
+			assertThrows(IDNotRecognisedException.class, () -> {
+				portal.getRiderAdjustedElapsedTimeInStage(stage1Id, 3000);
+			});
+		}
+		
+		@Test
+		public void getRiderAdjustedElapsedTimeInStageReturns() throws IDNotRecognisedException {
+			assertEquals(portal.getRiderAdjustedElapsedTimeInStage(stageIdR, rider2IdR), LocalTime.of(0, 10, 50, 0));
 		}
 		
 		//deleteRiderResultsInStage
 		
 		@Test
-		public void deleteRiderResultsInStageThrowsId() {
+		public void deleteRiderResultsInStageThrowsSId() {
 			assertThrows(IDNotRecognisedException.class, () -> {
-				/////
+				portal.deleteRiderResultsInStage(3000, rider1Id);
+			});
+		}
+		
+		@Test
+		public void deleteRiderResultsInStageThrowsRId() {
+			assertThrows(IDNotRecognisedException.class, () -> {
+				portal.deleteRiderResultsInStage(stage1Id, 3000);
 			});
 		}
 		
 		@Test
 		public void deleteRiderResultsInStageDeletes() {
-
+			LocalTime[] resultsEmpty = null;
+			try {
+				portal.deleteRiderResultsInStage(stageIdR,rider2IdR);
+				resultsEmpty = portal.getRiderResultsInStage(stageIdR,rider2IdR);
+			} catch (Exception e) {}
+			assertArrayEquals(resultsEmpty, new LocalTime[] {});
 		}
 		
 		//getRidersRankInStage
+		
+		@Test
+		public void getRidersRankInStageThrowsId() {
+			assertThrows(IDNotRecognisedException.class, () -> {
+				portal.getRidersRankInStage(3000);
+			});
+		}
+		
+		@Test
+		public void getRidersRankInStageReturns() {
+			
+		}
+		
+		@Test
+		public void getRidersRankInStageReturnsEmpty() throws IDNotRecognisedException {
+			int newStage = 0;
+			try {
+				newStage = portal.addStageToRace(race1Id, "STAGES", null, 10, LocalDateTime.now(),
+						StageType.FLAT);
+			} catch (Exception e) {}
+			assertArrayEquals(portal.getRidersRankInStage(newStage), new int[] {});
+			
+		}
+		
 		
 		//getRankedAdjustedElapsedTimesInStage
 		
