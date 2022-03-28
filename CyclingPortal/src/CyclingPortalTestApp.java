@@ -818,12 +818,54 @@ class CyclingPortalTestApp {
 				/////
 			});
 		}
+			
+		@Test
+		public void registerRiderResultsInStageDoesIt() {
+			
+		}
 		
+
 		//getRiderResultsInStage
+		
+		@Test
+		public void getRiderResultsInStageThrowsId() {
+			assertThrows(IDNotRecognisedException.class, () -> {
+				/////
+			});
+		}
+		
+		@Test
+		public void getRiderResultsInStageReturns() {
+			
+		}
 		
 		//getRiderAdjustedElapsedTimeInStage
 		
+		@Test
+		public void getRiderAdjustedElapsedTimeInStageId() {
+			assertThrows(IDNotRecognisedException.class, () -> {
+				/////
+			});
+		}
+		
+		@Test
+		public void getRiderAdjustedElapsedTimeInStageReturns() {
+			
+		}
+		
 		//deleteRiderResultsInStage
+		
+		@Test
+		public void deleteRiderResultsInStageThrowsId() {
+			assertThrows(IDNotRecognisedException.class, () -> {
+				/////
+			});
+		}
+		
+		@Test
+		public void deleteRiderResultsInStageDeletes() {
+
+		}
 		
 		//getRidersRankInStage
 		
