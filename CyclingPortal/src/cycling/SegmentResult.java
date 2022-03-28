@@ -9,8 +9,7 @@ public class SegmentResult {
 	private int sprintersPoints;
 	private int mountainPoints;
 
-	protected static final Comparator<SegmentResult> sortByFinishTime = (SegmentResult result1,
-			SegmentResult result2) -> result1.getFinishTime().compareTo(result2.getFinishTime());
+	protected static final Comparator<SegmentResult> sortByFinishTime = Comparator.comparing(SegmentResult::getFinishTime);
 
 	public SegmentResult(LocalTime finishTime) {
 		this.finishTime = finishTime;
