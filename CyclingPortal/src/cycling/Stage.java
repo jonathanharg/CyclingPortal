@@ -1,12 +1,16 @@
 package cycling;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-public class Stage extends CompetitiveEvent {
+public class Stage {
 	private Race race;
 	private String name;
 	private String description;
@@ -18,6 +22,8 @@ public class Stage extends CompetitiveEvent {
 	private boolean waitingForResults = false;
 	private ArrayList<Segment> segments = new ArrayList<>();
 
+	private HashMap<Rider, StageResult> results = new HashMap<Rider, StageResult>();
+
 	private static final int[] FLAT_POINTS = { 50, 30, 20, 18, 16, 14, 12, 10, 8, 7, 6, 5, 4, 3, 2 };
 	private static final int[] MEDIUM_POINTS = { 30, 25, 22, 19, 17, 15, 13, 11, 9, 7, 6, 5, 4, 3, 2 };
 	private static final int[] HIGH_POINTS = { 20, 17, 15, 13, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 };
@@ -25,9 +31,9 @@ public class Stage extends CompetitiveEvent {
 
 	public Stage(Race race, String name, String description, double length, LocalDateTime startTime, StageType type)
 			throws InvalidNameException, InvalidLengthException {
-		super(EventType.STAGE);
-		if (name == null || name.isEmpty() || name.length() > 30) {
-			throw new InvalidNameException("Stage name cannot be null, empty or have more than 30 characters.");
+		if (name == null || name.isEmpty() || name.length() > 30 || CyclingPortal.containsWhitespace(name)) {
+			throw new InvalidNameException(
+					"Stage name cannot be null, empty, have more than 30 characters or have white spaces.");
 		}
 		if (length < 5) {
 			throw new InvalidLengthException("Length is invalid, cannot be less than 5km.");
@@ -77,16 +83,13 @@ public class Stage extends CompetitiveEvent {
 			}
 		}
 		segments.add(segment);
-
-		// !!!
-		// latestResultsCalculated = false;
 	}
 
-	public void removeSegment(Segment segment) {
+	public void removeSegment(Segment segment) throws InvalidStageStateException {
+		if (waitingForResults == true) {
+			throw new InvalidStageStateException("The stage cannot be removed as it is waiting for results.");
+		}
 		segments.remove(segment);
-
-		// !!!
-		// latestResultsCalculated = false;
 	}
 
 	public void registerResult(Rider rider, LocalTime[] checkpoints)
@@ -103,16 +106,14 @@ public class Stage extends CompetitiveEvent {
 					"The length of the checkpoint must equal number of Segments in the Stage + 2.");
 		}
 
-		Result result = new Result(checkpoints);
+		StageResult result = new StageResult(checkpoints);
+		// Save Riders result for the Stage
 		results.put(rider, result);
 
+		// Propogate all of the Riders results for each segment
 		for (int i = 0; i < segments.size(); i++) {
 			segments.get(i).registerResults(rider, checkpoints[i + 1]);
 		}
-
-		// !!!
-		// ridersByElapsedTime = null;
-		// latestResultsCalculated = false;
 	}
 
 	public void concludePreparation() throws InvalidStageStateException {
@@ -126,53 +127,94 @@ public class Stage extends CompetitiveEvent {
 		return waitingForResults;
 	}
 
-	public int getRiderPoints(PointType pointType, Rider rider){
-		// System.out.println(segments.toString());
-		// System.out.println("---------" + rider.getName() + "---------");
-		Result stageResult = getRiderResults(rider);
-		int stagePoints = 0;
-		for(Segment segment:segments){
-			Result segmentResult = segment.getRiderResults(rider);
-			int segmentPoints = segment.calculatePoints(pointType, segmentResult.getPosition());
-			segmentResult.setPoints(pointType, segmentPoints);
-			stagePoints += segmentPoints;
-			// System.out.println("SEG" + segment.getId() + "(" + segment.getType() + "): " + segmentPoints + " " + pointType + " points, " + stagePoints + " total");
-		}
-		if(pointType.equals(PointType.SPRINTERS)){
-			int extraPoints = this.calculatePoints(stageResult.getPosition());
-			stagePoints += extraPoints;
-			// System.out.println("STG(" + this.type + "): " + extraPoints + " BONUS SPRINTERS points" + stagePoints + " total");
-		}
-		stageResult.setPoints(pointType, stagePoints);
-		return stagePoints;
+	public StageResult getRiderResult(Rider rider) {
+		calculateResults();
+		return results.get(rider);
 	}
 
-	private int calculatePoints(int position) {
-		int[] pointsDistribution = {};
-		int points = 0;
+	public void removeRiderResults(Rider rider) {
+		results.remove(rider);
+	}
+
+	public List<Rider> getRidersByElapsedTime() {
+		calculateResults();
+		return sortRiderResults();
+	}
+
+	public HashMap<Rider, StageResult> getStageResults() {
+		calculateResults();
+		return results;
+	}
+
+	private List<Rider> sortRiderResults() {
+		List<Rider> ridersByElapsedTime = results.entrySet()
+				.stream()
+				.sorted(Comparator.comparing(Map.Entry::getValue, StageResult.sortByElapsedTime))
+				.map(Map.Entry::getKey)
+				.collect(Collectors.toList());
+		return ridersByElapsedTime;
+	}
+
+	private void calculateResults() {
+		List<Rider> riders = sortRiderResults();
+
+		for (int i = 0; i < results.size(); i++) {
+			Rider rider = riders.get(i);
+			StageResult result = results.get(rider);
+			int position = i + 1;
+
+			// Position Calculation
+			result.setPosition(position);
+
+			// Adjusted Elapsed Time Calculations
+			if (i == 0) {
+				result.setAdjustedElapsedTime(result.getElapsedTime());
+			} else {
+				Rider prevRider = riders.get(i - 1);
+				Duration prevTime = results.get(prevRider).getElapsedTime();
+				Duration time = results.get(rider).getElapsedTime();
+
+				int timeDiff = time.minus(prevTime).compareTo(Duration.ofSeconds(1));
+				if (timeDiff <= 0) {
+					// Close Finish Condition
+					Duration prevAdjustedTime = results.get(prevRider).getAdjustedElapsedTime();
+					result.setAdjustedElapsedTime(prevAdjustedTime);
+				} else {
+					// Far Finish Condition
+					result.setAdjustedElapsedTime(time);
+				}
+			}
+
+			// Points Calculation
+			int sprintersPoints = 0;
+			int mountainPoints = 0;
+			for (Segment segment : segments) {
+				SegmentResult segmentResult = segment.getRiderResult(rider);
+				sprintersPoints += segmentResult.getSprintersPoints();
+				mountainPoints += segmentResult.getMountainPoints();
+			}
+			int[] pointsDistribution = getPointDistribution();
+			if (position <= pointsDistribution.length) {
+				sprintersPoints += pointsDistribution[i];
+			}
+			result.setSprintersPoints(sprintersPoints);
+			result.setMountainPoints(mountainPoints);
+		}
+	}
+
+	private int[] getPointDistribution() {
 		switch (type) {
 			case FLAT:
-				pointsDistribution = FLAT_POINTS;
-				break;
+				return FLAT_POINTS;
 			case MEDIUM_MOUNTAIN:
-				pointsDistribution = MEDIUM_POINTS;
-				break;
+				return MEDIUM_POINTS;
 			case HIGH_MOUNTAIN:
-				pointsDistribution = HIGH_POINTS;
-				break;
+				return HIGH_POINTS;
 			case TT:
-				pointsDistribution = TT_POINTS;
-				break;
+				return TT_POINTS;
+			default:
+				return new int[] {};
 		}
-		if (position <= pointsDistribution.length) {
-			points = pointsDistribution[position - 1];
-		}
-		return points;
-	}
 
-	@Override
-	public String toString() {
-		// TODO Auto-generated method stub
-		return "Stage"+id;
 	}
 }
