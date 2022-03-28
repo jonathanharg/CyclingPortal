@@ -1,7 +1,5 @@
 package cycling;
 
-import java.lang.Double;
-
 public class CategorizedClimb extends Segment {
 	private final Double averageGradient;
 	private final Double length;
