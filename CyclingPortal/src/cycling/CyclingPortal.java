@@ -17,11 +17,11 @@ import java.util.List;
 
 public class CyclingPortal implements CyclingPortalInterface {
 
-	private ArrayList<Team> teams = new ArrayList<>();
-	private ArrayList<Rider> riders = new ArrayList<>();
-	private ArrayList<Race> races = new ArrayList<>();
-	private ArrayList<Stage> stages = new ArrayList<>();
-	private ArrayList<Segment> segments = new ArrayList<>();
+	private final ArrayList<Team> teams = new ArrayList<>();
+	private final ArrayList<Rider> riders = new ArrayList<>();
+	private final ArrayList<Race> races = new ArrayList<>();
+	private final ArrayList<Stage> stages = new ArrayList<>();
+	private final ArrayList<Segment> segments = new ArrayList<>();
 
 	public static boolean containsWhitespace(String str) {
 		for (int i = 0; i < str.length(); ++i) {
@@ -91,7 +91,7 @@ public class CyclingPortal implements CyclingPortalInterface {
 
 	@Override
 	public int[] getRaceIds() {
-		int raceIDs[] = new int[races.size()];
+		int[] raceIDs = new int[races.size()];
 		for (int i = 0; i < races.size(); i++) {
 			Race race = races.get(i);
 			raceIDs[i] = race.getId();
@@ -152,7 +152,7 @@ public class CyclingPortal implements CyclingPortalInterface {
 	public int[] getRaceStages(int raceId) throws IDNotRecognisedException {
 		Race race = getRaceById(raceId);
 		ArrayList<Stage> raceStages = race.getStages();
-		int raceStagesId[] = new int[raceStages.size()];
+		int[] raceStagesId = new int[raceStages.size()];
 		for (int i = 0; i < raceStages.size(); i++) {
 			Stage stage = race.getStages().get(i);
 			raceStagesId[i] = stage.getId();
@@ -213,7 +213,7 @@ public class CyclingPortal implements CyclingPortalInterface {
 	public int[] getStageSegments(int stageId) throws IDNotRecognisedException {
 		Stage stage = getStageById(stageId);
 		ArrayList<Segment> stageSegments = stage.getSegments();
-		int stageSegmentsId[] = new int[stageSegments.size()];
+		int[] stageSegmentsId = new int[stageSegments.size()];
 		for (int i = 0; i < stageSegments.size(); i++) {
 			Segment segment = stageSegments.get(i);
 			stageSegmentsId[i] = segment.getId();
@@ -245,7 +245,7 @@ public class CyclingPortal implements CyclingPortalInterface {
 
 	@Override
 	public int[] getTeams() {
-		int teamIDs[] = new int[teams.size()];
+		int[] teamIDs = new int[teams.size()];
 		for (int i = 0; i < teams.size(); i++) {
 			Team team = teams.get(i);
 			teamIDs[i] = team.getId();

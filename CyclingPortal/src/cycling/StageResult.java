@@ -5,7 +5,7 @@ import java.time.LocalTime;
 import java.util.Comparator;
 
 public class StageResult{
-	private LocalTime[] checkpoints;
+	private final LocalTime[] checkpoints;
 	private Duration elapsedTime;
 	private Duration adjustedElapsedTime;
 	private int position;

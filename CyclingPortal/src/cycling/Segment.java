@@ -9,12 +9,12 @@ import java.util.stream.Collectors;
 
 public class Segment {
 	private static int count = 0;
-	private Stage stage;
-	private int id;
-	private SegmentType type;
-	private double location;
+	private final Stage stage;
+	private final int id;
+	private final SegmentType type;
+	private final double location;
 
-	private HashMap<Rider, SegmentResult> results = new HashMap<Rider, SegmentResult>();
+	private final HashMap<Rider, SegmentResult> results = new HashMap<Rider, SegmentResult>();
 
 	private static final int[] SPRINT_POINTS = { 20, 17, 15, 13, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 };
 	private static final int[] HC_POINTS = { 20, 15, 12, 10, 8, 6, 4, 2 };
@@ -40,9 +40,9 @@ public class Segment {
 		this.location = location;
 	}
 
-	public SegmentType getType() {
-		return type;
-	}
+//	public SegmentType getType() {
+//		return type;
+//	}
 
 	public int getId() {
 		return id;
@@ -71,12 +71,11 @@ public class Segment {
 	}
 
 	private List<Rider> sortRiderResults() {
-		List<Rider> ridersByFinishTime = results.entrySet()
+		return results.entrySet()
 				.stream()
 				.sorted(Comparator.comparing(Map.Entry::getValue, SegmentResult.sortByFinishTime))
 				.map(Map.Entry::getKey)
 				.collect(Collectors.toList());
-		return ridersByFinishTime;
 	}
 
 	private void calculateResults() {
