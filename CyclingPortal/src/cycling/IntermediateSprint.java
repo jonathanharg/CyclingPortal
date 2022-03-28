@@ -1,7 +1,7 @@
 package cycling;
 
 public class IntermediateSprint extends Segment {
-	private double location;
+	private final double location;
 
 	public IntermediateSprint(Stage stage, double location)
 			throws InvalidLocationException, InvalidStageTypeException, InvalidStageStateException {

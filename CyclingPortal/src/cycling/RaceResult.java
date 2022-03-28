@@ -22,17 +22,17 @@ public class RaceResult {
 			RaceResult result2) -> Integer.compare(result2.getCumulativeMountainPoints(),
 					result1.getCumulativeMountainPoints());
 
-	public void setCumulativeAdjustedElapsedTime(Duration time) {
-		this.cumulativeAdjustedElapsedTime = time;
-	}
+//	public void setCumulativeAdjustedElapsedTime(Duration time) {
+//		this.cumulativeAdjustedElapsedTime = time;
+//	}
 
-	public void setCumulativeMountainPoints(int points) {
-		this.cumulativeMountainPoints = points;
-	}
+//	public void setCumulativeMountainPoints(int points) {
+//		this.cumulativeMountainPoints = points;
+//	}
 
-	public void setCumulativeSprintersPoints(int points) {
-		this.cumulativeSprintersPoints = points;
-	}
+//	public void setCumulativeSprintersPoints(int points) {
+//		this.cumulativeSprintersPoints = points;
+//	}
 
 	public Duration getCumulativeAdjustedElapsedTime() {
 		return this.cumulativeAdjustedElapsedTime;

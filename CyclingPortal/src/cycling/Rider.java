@@ -1,13 +1,13 @@
 package cycling;
 
 public class Rider {
-	private int teamID;
-	private Team team;
-	private String name;
-	private int yearOfBirth;
+	private final int teamID;
+	private final Team team;
+	private final String name;
+	private final int yearOfBirth;
 
 	private static int count = 0;
-	private int id;
+	private final int id;
 
 	public Rider(int teamID, Team team, String name, int yearOfBirth) throws IllegalArgumentException {
 		if (name == null) {
@@ -29,15 +29,15 @@ public class Rider {
 		return id;
 	}
 
-	public int getTeamId() {
-		return teamID;
-	}
+//	public int getTeamId() {
+//		return teamID;
+//	}
 
 	public Team getTeam() {
 		return team;
 	}
 
-	public String getName() {
-		return name;
-	}
+//	public String getName() {
+//		return name;
+//	}
 }

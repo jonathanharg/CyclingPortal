@@ -10,15 +10,15 @@ import java.time.LocalDateTime;
 
 public class Race {
 
-	private String name;
-	private String description;
+	private final String name;
+	private final String description;
 
-	private ArrayList<Stage> stages = new ArrayList<>();
+	private final ArrayList<Stage> stages = new ArrayList<>();
 
-	private HashMap<Rider, RaceResult> results = new HashMap<Rider, RaceResult>();
+	private final HashMap<Rider, RaceResult> results = new HashMap<Rider, RaceResult>();
 
 	private static int count = 0;
-	private int id;
+	private final int id;
 
 	public Race(String name, String description) throws InvalidNameException {
 		if (name == null || name.isEmpty() || name.length() > 30 || CyclingPortal.containsWhitespace(name)) {
@@ -62,10 +62,9 @@ public class Race {
 		for (final Stage stage : stages) {
 			currentLength = currentLength + stage.getLength();
 		}
-		String details = ("Race ID: " + id + System.lineSeparator() + "Name: " + name + System.lineSeparator()
+		return ("Race ID: " + id + System.lineSeparator() + "Name: " + name + System.lineSeparator()
 				+ "Description: " + description + System.lineSeparator() + "Number of Stages: " + stages.size()
 				+ System.lineSeparator() + "Total length: " + currentLength);
-		return details;
 	}
 
 	public List<Rider> getRidersByAdjustedElapsedTime() {
@@ -93,12 +92,11 @@ public class Race {
 	}
 
 	private List<Rider> sortRiderResultsBy(Comparator<RaceResult> comparison) {
-		List<Rider> sortedRiders = results.entrySet()
+		return results.entrySet()
 				.stream()
 				.sorted(Comparator.comparing(Map.Entry::getValue, comparison))
 				.map(Map.Entry::getKey)
 				.collect(Collectors.toList());
-		return sortedRiders;
 	}
 
 	private void registerRiderResults(Rider rider, StageResult stageResult) {

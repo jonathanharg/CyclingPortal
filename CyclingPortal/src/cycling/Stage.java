@@ -11,18 +11,18 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Stage {
-	private Race race;
-	private String name;
-	private String description;
-	private double length;
-	private LocalDateTime startTime;
-	private StageType type;
-	private int id;
+	private final Race race;
+	private final String name;
+	private final String description;
+	private final double length;
+	private final LocalDateTime startTime;
+	private final StageType type;
+	private final int id;
 	private static int count = 0;
 	private boolean waitingForResults = false;
-	private ArrayList<Segment> segments = new ArrayList<>();
+	private final ArrayList<Segment> segments = new ArrayList<>();
 
-	private HashMap<Rider, StageResult> results = new HashMap<Rider, StageResult>();
+	private final HashMap<Rider, StageResult> results = new HashMap<Rider, StageResult>();
 
 	private static final int[] FLAT_POINTS = { 50, 30, 20, 18, 16, 14, 12, 10, 8, 7, 6, 5, 4, 3, 2 };
 	private static final int[] MEDIUM_POINTS = { 30, 25, 22, 19, 17, 15, 13, 11, 9, 7, 6, 5, 4, 3, 2 };
@@ -86,7 +86,7 @@ public class Stage {
 	}
 
 	public void removeSegment(Segment segment) throws InvalidStageStateException {
-		if (waitingForResults == true) {
+		if (waitingForResults) {
 			throw new InvalidStageStateException("The stage cannot be removed as it is waiting for results.");
 		}
 		segments.remove(segment);
@@ -94,7 +94,7 @@ public class Stage {
 
 	public void registerResult(Rider rider, LocalTime[] checkpoints)
 			throws InvalidStageStateException, DuplicatedResultException, InvalidCheckpointsException {
-		if (waitingForResults == false) {
+		if (!waitingForResults) {
 			throw new InvalidStageStateException(
 					"Results can only be added to a stage while it is waiting for results.");
 		}
@@ -110,7 +110,7 @@ public class Stage {
 		// Save Riders result for the Stage
 		results.put(rider, result);
 
-		// Propogate all of the Riders results for each segment
+		// Propagate all the Riders results for each segment
 		for (int i = 0; i < segments.size(); i++) {
 			segments.get(i).registerResults(rider, checkpoints[i + 1]);
 		}
@@ -147,12 +147,11 @@ public class Stage {
 	}
 
 	private List<Rider> sortRiderResults() {
-		List<Rider> ridersByElapsedTime = results.entrySet()
+		return results.entrySet()
 				.stream()
 				.sorted(Comparator.comparing(Map.Entry::getValue, StageResult.sortByElapsedTime))
 				.map(Map.Entry::getKey)
 				.collect(Collectors.toList());
-		return ridersByElapsedTime;
 	}
 
 	private void calculateResults() {

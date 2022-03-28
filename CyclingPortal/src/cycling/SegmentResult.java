@@ -4,7 +4,7 @@ import java.time.LocalTime;
 import java.util.Comparator;
 
 public class SegmentResult {
-	private LocalTime finishTime;
+	private final LocalTime finishTime;
 	private int position;
 	private int sprintersPoints;
 	private int mountainPoints;

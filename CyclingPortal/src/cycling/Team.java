@@ -3,12 +3,12 @@ package cycling;
 import java.util.ArrayList;
 
 public class Team {
-	private String name;
-	private String description;
+	private final String name;
+	private final String description;
 
-	private ArrayList<Rider> riders = new ArrayList<Rider>();
+	private final ArrayList<Rider> riders = new ArrayList<Rider>();
 	private static int count = 0;
-	private int id;
+	private final int id;
 
 	public Team(String name, String description) throws InvalidNameException {
 		if (name == null || name.isEmpty() || name.length() > 30 || CyclingPortal.containsWhitespace(name)) {
