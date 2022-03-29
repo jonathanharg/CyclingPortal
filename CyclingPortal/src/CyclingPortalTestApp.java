@@ -13,7 +13,6 @@ import cycling.InvalidStageTypeException;
 import cycling.NameNotRecognisedException;
 import cycling.SegmentType;
 import cycling.StageType;
-
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -493,13 +492,16 @@ class CyclingPortalTestApp {
     public void registerRiderDuplicateThrows() {
       registerStageEresults();
       assertThrows(
-        DuplicatedResultException.class,
-        () -> {
-          portal.registerRiderResultsInStage(stageE, rider1Id, LocalTime.of(0, 10, 00, 00),
-        LocalTime.of(0, 10, 14, 00),
-        LocalTime.of(0, 10, 20, 00),
-        LocalTime.of(0, 10, 51, 00));
-        });
+          DuplicatedResultException.class,
+          () -> {
+            portal.registerRiderResultsInStage(
+                stageE,
+                rider1Id,
+                LocalTime.of(0, 10, 00, 00),
+                LocalTime.of(0, 10, 14, 00),
+                LocalTime.of(0, 10, 20, 00),
+                LocalTime.of(0, 10, 51, 00));
+          });
     }
 
     @Test
@@ -518,7 +520,7 @@ class CyclingPortalTestApp {
     }
 
     @Test
-    public void savePortal(){
+    public void savePortal() {
       registerStageEresults();
       try {
         portal.saveCyclingPortal("testSavePortal");
@@ -565,9 +567,13 @@ class CyclingPortalTestApp {
     public void testRiderResultsInStage() {
       registerStageEresults();
       LocalTime[] actual = null;
-      LocalTime[] ans = new LocalTime[]{LocalTime.of(0, 10, 14, 00), LocalTime.of(0, 10, 20, 00), LocalTime.of(0, 0,51,0)};
+      LocalTime[] ans =
+          new LocalTime[] {
+            LocalTime.of(0, 10, 14, 00), LocalTime.of(0, 10, 20, 00), LocalTime.of(0, 0, 51, 0)
+          };
       try {
-        // assertEquals(portal.getStageSegments(stageE).length + 1, portal.getRiderResultsInStage(stageE, rider3Id).length);
+        // assertEquals(portal.getStageSegments(stageE).length + 1,
+        // portal.getRiderResultsInStage(stageE, rider3Id).length);
         actual = portal.getRiderResultsInStage(stageE, rider3Id);
       } catch (Exception e) {
         e.printStackTrace();
@@ -587,9 +593,11 @@ class CyclingPortalTestApp {
 
     @Test
     public void testRemoveRaceByNameException() {
-      assertThrows(NameNotRecognisedException.class, ()->{
-        portal.removeRaceByName("AUniqueNameFSDljfsdljfasd");
-      });
+      assertThrows(
+          NameNotRecognisedException.class,
+          () -> {
+            portal.removeRaceByName("AUniqueNameFSDljfsdljfasd");
+          });
     }
   }
 

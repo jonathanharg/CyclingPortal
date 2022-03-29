@@ -1,0 +1,19 @@
+#!/bin/sh
+
+cd $(dirname $0)
+
+google-java-format -r ./CyclingPortal/src/CyclingPortalTestApp.java
+google-java-format -r ./CyclingPortal/src/cycling/CategorizedClimb.java
+google-java-format -r ./CyclingPortal/src/cycling/CyclingPortal.java
+google-java-format -r ./CyclingPortal/src/cycling/IntermediateSprint.java
+google-java-format -r ./CyclingPortal/src/cycling/Race.java
+google-java-format -r ./CyclingPortal/src/cycling/RaceResult.java
+google-java-format -r ./CyclingPortal/src/cycling/Rider.java
+google-java-format -r ./CyclingPortal/src/cycling/Segment.java
+google-java-format -r ./CyclingPortal/src/cycling/SegmentResult.java
+google-java-format -r ./CyclingPortal/src/cycling/Stage.java
+google-java-format -r ./CyclingPortal/src/cycling/StageResult.java
+google-java-format -r ./CyclingPortal/src/cycling/Team.java
+
+pdflatex --shell-escape printout.tex
+pdflatex --shell-escape printout.tex

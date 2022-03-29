@@ -16,14 +16,16 @@ import java.util.List;
 
 public class CyclingPortal implements CyclingPortalInterface {
   // ArrayLists for all of a cycling portal instances teams, riders, races, stages and segments.
-  // Although HashMaps could have been used here to get riders by int ID, it would be slower in the long run as we would need to constantly convert it back to arrays to output results.
+  // Although HashMaps could have been used here to get riders by int ID, it would be slower in the
+  // long run as we would need to constantly convert it back to arrays to output results.
   private ArrayList<Team> teams = new ArrayList<>();
   private ArrayList<Rider> riders = new ArrayList<>();
   private ArrayList<Race> races = new ArrayList<>();
   private ArrayList<Stage> stages = new ArrayList<>();
   private ArrayList<Segment> segments = new ArrayList<>();
 
-  // Record that will hold all the CyclingPortals teams, riders, races, stages & segments as well as all the Id counts for each object.
+  // Record that will hold all the CyclingPortals teams, riders, races, stages & segments as well as
+  // all the Id counts for each object.
   private record SavedCyclingPortal(
       ArrayList<Team> teams,
       ArrayList<Rider> riders,
@@ -38,6 +40,7 @@ public class CyclingPortal implements CyclingPortalInterface {
 
   /**
    * Determine if a string contains any illegal whitespace characters.
+   *
    * @param string The input string to be tested for whitespace.
    * @return A boolean, true if the input string contains whitespace, false if not.
    */
@@ -52,6 +55,7 @@ public class CyclingPortal implements CyclingPortalInterface {
 
   /**
    * Get a Team object by a Team ID.
+   *
    * @param ID The int ID of the Team to be looked up.
    * @return The Team object of the team, if one is found.
    * @throws IDNotRecognisedException Thrown if no team is found with the given Team ID.
@@ -67,6 +71,7 @@ public class CyclingPortal implements CyclingPortalInterface {
 
   /**
    * Get a Rider object by a Rider ID.
+   *
    * @param ID The int ID of the Rider to be looked up.
    * @return The Rider object of the Rider, if one is found.
    * @throws IDNotRecognisedException Thrown if no rider is found with the given Rider ID.
@@ -82,6 +87,7 @@ public class CyclingPortal implements CyclingPortalInterface {
 
   /**
    * Get a Race object by a Race ID.
+   *
    * @param ID The int ID of the Race to be looked up.
    * @return The Race object of the race, if one is found.
    * @throws IDNotRecognisedException Thrown if no race is found with the given Race ID.
@@ -97,6 +103,7 @@ public class CyclingPortal implements CyclingPortalInterface {
 
   /**
    * Get a Stage object by a Stage ID.
+   *
    * @param ID The int ID of the Stage to be looked up.
    * @return The Stage object of the stage, if one is found.
    * @throws IDNotRecognisedException Thrown if no stage is found with the given Stage ID.
@@ -112,6 +119,7 @@ public class CyclingPortal implements CyclingPortalInterface {
 
   /**
    * Get a Segment object by a Segment ID.
+   *
    * @param ID The int ID of the Segment to be looked up.
    * @return The Segment object of the segment, if one is found.
    * @throws IDNotRecognisedException Thrown if no segment is found with the given Segment ID.
@@ -127,6 +135,7 @@ public class CyclingPortal implements CyclingPortalInterface {
 
   /**
    * Loops over all races, stages and segments to remove all of a given riders results.
+   *
    * @param rider The Rider object whose results will be removed from the Cycling Portal.
    */
   public void removeRiderResults(Rider rider) {
@@ -382,7 +391,8 @@ public class CyclingPortal implements CyclingPortalInterface {
     } else {
       LocalTime[] checkpoints = result.getCheckpoints();
       // Rider Results will always be 1 shorter than the checkpoint length because
-      // the finish time checkpoint will be replaced with the Elapsed Time and the start time checkpoint will be ignored.
+      // the finish time checkpoint will be replaced with the Elapsed Time and the start time
+      // checkpoint will be ignored.
       LocalTime[] resultsInStage = new LocalTime[checkpoints.length - 1];
       LocalTime elapsedTime = LocalTime.MIDNIGHT.plus(result.getElapsedTime());
       for (int i = 0; i < resultsInStage.length; i++) {
@@ -390,7 +400,8 @@ public class CyclingPortal implements CyclingPortalInterface {
           // Adds the Elapsed Time to the end of the array of Results.
           resultsInStage[i] = elapsedTime;
         } else {
-          // Adds each checkpoint to the array of Results until all have been added, skipping the Start time checkpoint.
+          // Adds each checkpoint to the array of Results until all have been added, skipping the
+          // Start time checkpoint.
           resultsInStage[i] = checkpoints[i + 1];
         }
       }
@@ -569,7 +580,8 @@ public class CyclingPortal implements CyclingPortalInterface {
     // Gets a list of Riders from the Stage ordered by their Adjusted Elapsed Times.
     List<Rider> riders = race.getRidersByAdjustedElapsedTime();
     LocalTime[] riderTimes = new LocalTime[riders.size()];
-    // Gathers Riders' Cumulative Adjusted Elapsed LocalTimes ordered by their Adjusted Elapsed Times.
+    // Gathers Riders' Cumulative Adjusted Elapsed LocalTimes ordered by their Adjusted Elapsed
+    // Times.
     for (int i = 0; i < riders.size(); i++) {
       riderTimes[i] = race.getRiderResults(riders.get(i)).getCumulativeAdjustedElapsedLocalTime();
     }
@@ -593,7 +605,7 @@ public class CyclingPortal implements CyclingPortalInterface {
     Race race = getRaceById(raceId);
     List<Rider> riders = race.getRidersByAdjustedElapsedTime();
     int[] riderIds = new int[riders.size()];
-    //Gathers Riders' Cumulative Mountain Points ordered by their Adjusted Elapsed Times.
+    // Gathers Riders' Cumulative Mountain Points ordered by their Adjusted Elapsed Times.
     for (int i = 0; i < riders.size(); i++) {
       riderIds[i] = race.getRiderResults(riders.get(i)).getCumulativeMountainPoints();
     }

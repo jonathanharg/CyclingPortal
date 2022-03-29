@@ -5,8 +5,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- *  Race Class. This represents a Race that holds a Race's Stages and Riders, and also
- *  contains methods that deal with these.
+ * Race Class. This represents a Race that holds a Race's Stages and Riders, and also contains
+ * methods that deal with these.
  */
 public class Race {
 
@@ -22,11 +22,11 @@ public class Race {
 
   /**
    * Constructor method that sets up Rider with a name and a description.
-   * @param name: Cannot be empty, null, have a length greater than 30 or contain
-   * any whitespace.
+   *
+   * @param name: Cannot be empty, null, have a length greater than 30 or contain any whitespace.
    * @param description: A description of the race.
-   * @throws InvalidNameException Thrown if the Race name is does not meet name requirements
-   * stated above.
+   * @throws InvalidNameException Thrown if the Race name is does not meet name requirements stated
+   *     above.
    */
   public Race(String name, String description) throws InvalidNameException {
     if (name == null
@@ -43,15 +43,14 @@ public class Race {
     this.id = Race.count++;
   }
 
-  /**
-   * Method that resets the static ID counter of the Race. Used for erasing and loading.
-   */
+  /** Method that resets the static ID counter of the Race. Used for erasing and loading. */
   static void resetIdCounter() {
     count = 0;
   }
 
   /**
    * Method to get the current state of the static ID counter.
+   *
    * @return the highest race ID stored currently.
    */
   static int getIdCounter() {
@@ -60,6 +59,7 @@ public class Race {
 
   /**
    * Method that sets the static ID counter to an inputted value.
+   *
    * @param newCount: new value of the static ID counter.
    */
   static void setIdCounter(int newCount) {
@@ -68,6 +68,7 @@ public class Race {
 
   /**
    * Method to get the ID of the Race object.
+   *
    * @return int id: the Race's unique ID value.
    */
   public int getId() {
@@ -76,6 +77,7 @@ public class Race {
 
   /**
    * Method to get the name of the Race.
+   *
    * @return String name: the given name of the Race.
    */
   public String getName() {
@@ -83,8 +85,9 @@ public class Race {
   }
 
   /**
-   * Method that adds a Stage to the Race object's ordered list of Stages. It is added 
-   * to the correct position based on its start time.
+   * Method that adds a Stage to the Race object's ordered list of Stages. It is added to the
+   * correct position based on its start time.
+   *
    * @param stage: The stage to be added to the Race.
    */
   public void addStage(Stage stage) {
@@ -104,6 +107,7 @@ public class Race {
 
   /**
    * Method to get the list of Stages in the Race ordered by their start times.
+   *
    * @return Arraylist<Stages> stages: The ordered list of Stages.
    */
   public ArrayList<Stage> getStages() {
@@ -112,6 +116,7 @@ public class Race {
 
   /**
    * Method that removes a given Stage from the list of Stages.
+   *
    * @param stage: the Stage to be deleted.
    */
   public void removeStage(Stage stage) {
@@ -119,8 +124,9 @@ public class Race {
   }
 
   /**
-   * Method to get then details of a Race including Race ID, name, description
-   * number of stages and total length.
+   * Method to get then details of a Race including Race ID, name, description number of stages and
+   * total length.
+   *
    * @return String: concatenated paragraph of details.
    */
   public String getDetails() {
@@ -146,6 +152,7 @@ public class Race {
 
   /**
    * Method to get a list of Riders in the Race, sorted by their Adjusted Elapsed Time.
+   *
    * @return List<Rider>: correctly sorted Riders.
    */
   public List<Rider> getRidersByAdjustedElapsedTime() {
@@ -155,6 +162,7 @@ public class Race {
 
   /**
    * Method to get a list of Riders in the Race, sorted by their Sprinters Points.
+   *
    * @return List<Rider>: correctly sorted Riders.
    */
   public List<Rider> getRidersBySprintersPoints() {
@@ -164,6 +172,7 @@ public class Race {
 
   /**
    * Method to get a list of Riders in the Race, sorted by their Mountain Points.
+   *
    * @return List<Rider>: correctly sorted Riders.
    */
   public List<Rider> getRidersByMountainPoints() {
@@ -173,6 +182,7 @@ public class Race {
 
   /**
    * Method to get the results of a given Rider.
+   *
    * @param rider: Rider to get the results of.
    * @return RaceResult: Result of the Rider.
    */
@@ -183,6 +193,7 @@ public class Race {
 
   /**
    * Method to remove the Results of a given Rider.
+   *
    * @param rider: Rider whose Results will be removed.
    */
   public void removeRiderResults(Rider rider) {
@@ -191,6 +202,7 @@ public class Race {
 
   /**
    * Method to get a list of Riders sorted by a given comparator of their Results.
+   *
    * @param comparison: a comparator on the Riders' Results to sort the Riders by.
    * @return List<Rider>: List of Riders sorted by the comparator on the Results.
    */
@@ -203,6 +215,7 @@ public class Race {
 
   /**
    * Method to register the Rider's Result to the Stage.
+   *
    * @param rider: Rider whose Result needs to be registered.
    * @param stageResult: Stage that the Result will be added to.
    */
@@ -220,9 +233,7 @@ public class Race {
     }
   }
 
-  /**
-   * Method that calculates the results for each Rider.
-   */
+  /** Method that calculates the results for each Rider. */
   private void calculateResults() {
     for (Stage stage : stages) {
       HashMap<Rider, StageResult> stageResults = stage.getStageResults();

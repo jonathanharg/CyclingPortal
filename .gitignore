@@ -2,3 +2,8 @@
 CyclingPortal/.idea/*
 .DS_Store
 *.ser
+printout.aux
+printout.log
+printout.out
+printout.toc
+_minted-printout/*
