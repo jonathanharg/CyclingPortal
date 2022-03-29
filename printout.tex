@@ -1,0 +1,69 @@
+\documentclass[a4paper, 12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper]{geometry}
+\usepackage{sectsty}
+\renewcommand{\familydefault}{\sfdefault}
+\allsectionsfont{\fontsize{12}{15}\normalfont\sffamily\bfseries}
+\geometry{top=1.0in, bottom=1.0in, left=1.0in, right=1.0in}
+
+\usepackage{minted}
+% \usepackage{titlesec}
+
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=black
+}
+
+\usepackage{tocloft}
+
+\renewcommand{\cfttoctitlefont}{\normalfont\Large}% Remove \bfseries from ToC title
+\renewcommand{\cftsecfont}{}% Remove \bfseries from section titles in ToC
+\renewcommand{\cftsecpagefont}{}% Remove \bfseries from section titles' page in ToC
+
+
+\usepackage{nameref}
+\makeatletter
+\newcommand*{\currentname}{\@currentlabelname}
+\makeatother
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\currentname}
+\fancyhead[R]{123456789 \& 987654321}
+\fancyfoot[C]{\textrm{\thepage}}
+
+
+% \usemintedstyle{material}
+% \usepackage{xcolor}
+
+\newcommand{\includesrc}[1]{
+    \section{#1}
+    \inputminted[linenos,fontsize=\footnotesize, breaklines, obeytabs=true,tabsize=2]{java}{./CyclingPortal/src/cycling/#1}
+}
+
+\begin{document}
+    \title{\textrm{CyclingPortal Printout}}
+    \author{\textrm{123456789 \& 987654321}}
+    \date{}
+    \maketitle
+    \tableofcontents
+    \newpage
+    \includesrc{CategorizedClimb.java}
+    \includesrc{CyclingPortal.java}
+    \includesrc{IntermediateSprint.java}
+    \includesrc{Race.java}
+    \includesrc{RaceResult.java}
+    \includesrc{Rider.java}
+    \includesrc{Segment.java}
+    \includesrc{SegmentResult.java}
+    \includesrc{Stage.java}
+    \includesrc{StageResult.java}
+    \includesrc{Team.java}
+\end{document}
+
+
