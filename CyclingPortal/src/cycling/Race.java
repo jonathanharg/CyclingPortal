@@ -22,9 +22,9 @@ public class Race {
 
   /**
    * Constructor method that sets up Rider with a name and a description.
-   * @param String name: Cannot be empty, null, have a length greater than 30 or contain
+   * @param name: Cannot be empty, null, have a length greater than 30 or contain
    * any whitespace.
-   * @param String description: A description of the race.
+   * @param description: A description of the race.
    * @throws InvalidNameException Thrown if the Race name is does not meet name requirements
    * stated above.
    */
@@ -59,8 +59,8 @@ public class Race {
   }
 
   /**
-   * Method that sets the static ID counter to an inputed value.
-   * @param int newCount: new value of the static ID counter.
+   * Method that sets the static ID counter to an inputted value.
+   * @param newCount: new value of the static ID counter.
    */
   static void setIdCounter(int newCount) {
     count = newCount;
@@ -85,15 +85,15 @@ public class Race {
   /**
    * Method that adds a Stage to the Race object's ordered list of Stages. It is added 
    * to the correct position based on its start time.
-   * @param Stage stage: The stage to be added to the Race.
+   * @param stage: The stage to be added to the Race.
    */
   public void addStage(Stage stage) {
     for (int i = 0; i < stages.size(); i++) {
-      // Retrives the start time of each Stage in the Race's current Stages one by one.
+      // Retrieves the start time of each Stage in the Race's current Stages one by one.
       // These are already ordered by their start times.
       LocalDateTime iStartTime = stages.get(i).getStartTime();
       // Adds the new Stage to the list of stages in the correct position based on
-      // it's start time.
+      // its start time.
       if (stage.getStartTime().isBefore(iStartTime)) {
         stages.add(i, stage);
         return;
@@ -112,7 +112,7 @@ public class Race {
 
   /**
    * Method that removes a given Stage from the list of Stages.
-   * @param Stage stage: the Stage to be deleted.
+   * @param stage: the Stage to be deleted.
    */
   public void removeStage(Stage stage) {
     stages.remove(stage);
@@ -173,7 +173,7 @@ public class Race {
 
   /**
    * Method to get the results of a given Rider.
-   * @param Rider rider: Rider to get the results of.
+   * @param rider: Rider to get the results of.
    * @return RaceResult: Result of the Rider.
    */
   public RaceResult getRiderResults(Rider rider) {
@@ -183,7 +183,7 @@ public class Race {
 
   /**
    * Method to remove the Results of a given Rider.
-   * @param Rider rider: Rider whose Results will be removed.
+   * @param rider: Rider whose Results will be removed.
    */
   public void removeRiderResults(Rider rider) {
     results.remove(rider);
@@ -191,8 +191,7 @@ public class Race {
 
   /**
    * Method to get a list of Riders sorted by a given comparator of their Results.
-   * @param Comparator<RaceResult> comparison: a comparator on the Riders' Results
-   * to sort the Riders by.
+   * @param comparison: a comparator on the Riders' Results to sort the Riders by.
    * @return List<Rider>: List of Riders sorted by the comparator on the Results.
    */
   private List<Rider> sortRiderResultsBy(Comparator<RaceResult> comparison) {
@@ -204,8 +203,8 @@ public class Race {
 
   /**
    * Method to register the Rider's Result to the Stage.
-   * @param Rider rider: Rider whose Result needs to be registered.
-   * @param Stage stageResult: Stage that the Result will be added to.
+   * @param rider: Rider whose Result needs to be registered.
+   * @param stageResult: Stage that the Result will be added to.
    */
   private void registerRiderResults(Rider rider, StageResult stageResult) {
     if (results.containsKey(rider)) {
