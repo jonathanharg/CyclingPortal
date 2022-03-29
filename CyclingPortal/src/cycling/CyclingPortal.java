@@ -174,6 +174,7 @@ public class CyclingPortal implements CyclingPortalInterface {
   @Override
   public void removeRaceById(int raceId) throws IDNotRecognisedException {
     Race race = getRaceById(raceId);
+    // Remove all the races stages from the CyclingPortal
     for (final Stage stage : race.getStages()) {
       stages.remove(stage);
     }
@@ -197,6 +198,7 @@ public class CyclingPortal implements CyclingPortalInterface {
       throws IDNotRecognisedException, IllegalNameException, InvalidNameException,
           InvalidLengthException {
     Race race = getRaceById(raceId);
+    // Check a stage with this name does not already exist in the system.
     for (final Stage stage : stages) {
       if (stage.getName().equals(stageName)) {
         throw new IllegalNameException("A stage with the name " + stageName + " already exists.");
