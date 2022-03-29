@@ -209,7 +209,8 @@ public class Race {
    */
   private void registerRiderResults(Rider rider, StageResult stageResult) {
     if (results.containsKey(rider)) {
-      // If the hashmap of Results already contains the Results for the given Rider.
+      // When the hashmap of Results already contains the Results for the given Rider,
+      // results are not re-added.
       results.get(rider).addStageResult(stageResult);
     } else {
       // If the hashmap of Results does not contain the Results for the given Rider,
@@ -220,6 +221,9 @@ public class Race {
     }
   }
 
+  /**
+   * Method that calculates the results for each Rider.
+   */
   private void calculateResults() {
     for (Stage stage : stages) {
       HashMap<Rider, StageResult> stageResults = stage.getStageResults();
