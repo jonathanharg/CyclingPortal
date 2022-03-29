@@ -1,6 +1,7 @@
 import static org.junit.jupiter.api.Assertions.*;
 
 import cycling.CyclingPortal;
+import cycling.DuplicatedResultException;
 import cycling.IDNotRecognisedException;
 import cycling.IllegalNameException;
 import cycling.InvalidCheckpointsException;
@@ -9,8 +10,11 @@ import cycling.InvalidLocationException;
 import cycling.InvalidNameException;
 import cycling.InvalidStageStateException;
 import cycling.InvalidStageTypeException;
+import cycling.NameNotRecognisedException;
 import cycling.SegmentType;
 import cycling.StageType;
+
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
@@ -282,15 +286,42 @@ class CyclingPortalTestApp {
   }
 
   @Nested
-  class ResultsTests {
-    @Test
-    public void stagesAreOrdered() {
+  class JTests {
+    int raceId,
+        stageA,
+        stageB,
+        stageC,
+        stageD,
+        stageE,
+        segmentA1,
+        segmentA2,
+        segmentA3,
+        segmentA4,
+        segmentA5,
+        segmentA6,
+        segmentEmnt,
+        segmentEsprint,
+        teamId,
+        rider1Id,
+        rider2Id,
+        rider3Id,
+        rider4Id,
+        rider5Id;
+
+    @BeforeEach
+    public void createRacesStagesSegments() {
       try {
-        int raceId = portal.createRace("RacerRacer", "racerRacingRace");
-        int stage2 =
+        raceId = portal.createRace("RacerRacer", "racerRacingRace");
+        teamId = portal.createTeam("BlueTeam", null);
+        rider1Id = portal.createRider(teamId, "Andrew", 1999);
+        rider2Id = portal.createRider(teamId, "Bart", 1999);
+        rider3Id = portal.createRider(teamId, "Charlie", 1999);
+        rider4Id = portal.createRider(teamId, "Doug", 1999);
+        rider5Id = portal.createRider(teamId, "Earnie", 1999);
+        stageB =
             portal.addStageToRace(
                 raceId, "stage2", "tt", 50.0, LocalDateTime.now().plusHours(1), StageType.TT);
-        int stage3 =
+        stageC =
             portal.addStageToRace(
                 raceId,
                 "stage3",
@@ -298,7 +329,7 @@ class CyclingPortalTestApp {
                 50.0,
                 LocalDateTime.now().plusHours(2),
                 StageType.HIGH_MOUNTAIN);
-        int stage4 =
+        stageD =
             portal.addStageToRace(
                 raceId,
                 "stage4",
@@ -306,23 +337,34 @@ class CyclingPortalTestApp {
                 50.0,
                 LocalDateTime.now().plusHours(3),
                 StageType.MEDIUM_MOUNTAIN);
-        int stage1 =
+        stageA =
             portal.addStageToRace(
                 raceId, "stage1", "ft", 50.0, LocalDateTime.now(), StageType.FLAT);
 
-        int segment6 = portal.addIntermediateSprintToStage(stage1, 22.0);
-        int segment4 = portal.addCategorizedClimbToStage(stage1, 17.0, SegmentType.C4, 0.2, 1.0);
-        int segment3 = portal.addCategorizedClimbToStage(stage1, 12.0, SegmentType.C3, 0.1, 3.0);
-        int segment1 =
-            portal.addCategorizedClimbToStage(stage1, 4.0, SegmentType.SPRINT, 12.0, 6.0);
-        int segment2 = portal.addCategorizedClimbToStage(stage1, 9.0, SegmentType.C2, 8.3, 2.0);
-        int segment5 = portal.addCategorizedClimbToStage(stage1, 19.0, SegmentType.HC, 6.9, 1.0);
+        stageE =
+            portal.addStageToRace(
+                raceId, "BasicStage", null, 10, LocalDateTime.now().plusHours(4), StageType.FLAT);
 
+        segmentA6 = portal.addIntermediateSprintToStage(stageA, 22.0);
+
+        segmentA4 = portal.addCategorizedClimbToStage(stageA, 17.0, SegmentType.C4, 0.2, 1.0);
+        segmentA3 = portal.addCategorizedClimbToStage(stageA, 12.0, SegmentType.C3, 0.1, 3.0);
+        segmentA1 = portal.addCategorizedClimbToStage(stageA, 4.0, SegmentType.SPRINT, 12.0, 6.0);
+        segmentA2 = portal.addCategorizedClimbToStage(stageA, 9.0, SegmentType.C2, 8.3, 2.0);
+        segmentA5 = portal.addCategorizedClimbToStage(stageA, 19.0, SegmentType.HC, 6.9, 1.0);
+        segmentEmnt = portal.addCategorizedClimbToStage(stageE, 7.0, SegmentType.HC, 5.2, 2.0);
+        segmentEsprint = portal.addIntermediateSprintToStage(stageE, 2.0);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+
+    @Test
+    public void stagesAreOrdered() {
+      try {
         int[] result = portal.getRaceStages(raceId);
-        int[] ans = new int[] {stage1, stage2, stage3, stage4};
-
+        int[] ans = new int[] {stageA, stageB, stageC, stageD, stageE};
         assertArrayEquals(result, ans);
-
       } catch (Exception e) {
         e.printStackTrace();
       }
@@ -331,111 +373,89 @@ class CyclingPortalTestApp {
     @Test
     public void segmentsAreOrdered() {
       try {
-        int raceId = portal.createRace("RacerRacer", "racerRacingRace");
-        int stage2 =
-            portal.addStageToRace(
-                raceId, "stage2", "tt", 50.0, LocalDateTime.now().plusHours(1), StageType.TT);
-        int stage3 =
-            portal.addStageToRace(
-                raceId,
-                "stage3",
-                "hm",
-                50.0,
-                LocalDateTime.now().plusHours(2),
-                StageType.HIGH_MOUNTAIN);
-        int stage4 =
-            portal.addStageToRace(
-                raceId,
-                "stage4",
-                "mm",
-                50.0,
-                LocalDateTime.now().plusHours(3),
-                StageType.MEDIUM_MOUNTAIN);
-        int stage1 =
-            portal.addStageToRace(
-                raceId, "stage1", "ft", 50.0, LocalDateTime.now(), StageType.FLAT);
-
-        int segment6 = portal.addIntermediateSprintToStage(stage1, 22.0);
-        int segment4 = portal.addCategorizedClimbToStage(stage1, 17.0, SegmentType.C4, 0.2, 1.0);
-        int segment3 = portal.addCategorizedClimbToStage(stage1, 12.0, SegmentType.C3, 0.1, 3.0);
-        int segment1 =
-            portal.addCategorizedClimbToStage(stage1, 4.0, SegmentType.SPRINT, 12.0, 6.0);
-        int segment2 = portal.addCategorizedClimbToStage(stage1, 9.0, SegmentType.C2, 8.3, 2.0);
-        int segment5 = portal.addCategorizedClimbToStage(stage1, 19.0, SegmentType.HC, 6.9, 1.0);
-
-        int[] result = portal.getStageSegments(stage1);
-        int[] ans = new int[] {segment1, segment2, segment3, segment4, segment5, segment6};
+        int[] result = portal.getStageSegments(stageA);
+        int[] ans = new int[] {segmentA1, segmentA2, segmentA3, segmentA4, segmentA5, segmentA6};
 
         assertArrayEquals(result, ans);
-
       } catch (Exception e) {
         e.printStackTrace();
       }
     }
 
     @Test
-    public void basicResultsTest() {
+    public void registerStageEresults() {
       try {
-        int teamId = portal.createTeam("BlueTeam", null);
-        int rider1Id = portal.createRider(teamId, "Andrew", 1999);
-        int rider2Id = portal.createRider(teamId, "Bart", 1999);
-        int rider3Id = portal.createRider(teamId, "Charlie", 1999);
-        int rider4Id = portal.createRider(teamId, "Doug", 1999);
-        int rider5Id = portal.createRider(teamId, "Earnie", 1999);
-
-        int raceId = portal.createRace("BasicRace", null);
-        int stageId =
-            portal.addStageToRace(
-                raceId, "BasicStage", null, 10, LocalDateTime.now(), StageType.FLAT);
-        int mountId = portal.addCategorizedClimbToStage(stageId, 7.0, SegmentType.HC, 5.2, 2.0);
-        int sprintId = portal.addIntermediateSprintToStage(stageId, 2.0);
-        portal.concludeStagePreparation(stageId);
+        portal.concludeStagePreparation(stageE);
         portal.registerRiderResultsInStage(
-            stageId,
+            stageE,
             rider1Id,
             LocalTime.of(0, 10, 00, 00),
             LocalTime.of(0, 10, 11, 00),
             LocalTime.of(0, 10, 17, 00),
             LocalTime.of(0, 10, 54, 00));
         portal.registerRiderResultsInStage(
-            stageId,
+            stageE,
             rider2Id,
             LocalTime.of(0, 10, 00, 00),
             LocalTime.of(0, 10, 13, 00),
             LocalTime.of(0, 10, 18, 00),
             LocalTime.of(0, 10, 52, 00));
         portal.registerRiderResultsInStage(
-            stageId,
+            stageE,
             rider3Id,
             LocalTime.of(0, 10, 00, 00),
             LocalTime.of(0, 10, 14, 00),
             LocalTime.of(0, 10, 20, 00),
             LocalTime.of(0, 10, 51, 00));
         portal.registerRiderResultsInStage(
-            stageId,
+            stageE,
             rider4Id,
             LocalTime.of(0, 10, 00, 00),
             LocalTime.of(0, 10, 10, 00),
             LocalTime.of(0, 10, 15, 00),
             LocalTime.of(0, 10, 55, 00));
         portal.registerRiderResultsInStage(
-            stageId,
+            stageE,
             rider5Id,
             LocalTime.of(0, 10, 00, 00),
             LocalTime.of(0, 10, 17, 00),
             LocalTime.of(0, 10, 21, 00),
             LocalTime.of(0, 10, 50, 00));
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
 
-        // portal.testResults(stageId);
-
+    @Test
+    public void getAETinStage() {
+      registerStageEresults();
+      try {
         assertEquals(
-            portal.getRiderAdjustedElapsedTimeInStage(stageId, rider2Id),
+            portal.getRiderAdjustedElapsedTimeInStage(stageE, rider2Id),
             LocalTime.of(0, 10, 50, 0));
+      } catch (IDNotRecognisedException e) {
+        e.printStackTrace();
+      }
+    }
+
+    @Test
+    public void getRankInStageE() {
+      registerStageEresults();
+      try {
         assertArrayEquals(
-            portal.getRidersRankInStage(stageId),
+            portal.getRidersRankInStage(stageE),
             new int[] {rider5Id, rider3Id, rider2Id, rider1Id, rider4Id});
+      } catch (IDNotRecognisedException e) {
+        e.printStackTrace();
+      }
+    }
+
+    @Test
+    public void getRankedAETInStageE() {
+      registerStageEresults();
+      try {
         assertArrayEquals(
-            portal.getRankedAdjustedElapsedTimesInStage(stageId),
+            portal.getRankedAdjustedElapsedTimesInStage(stageE),
             new LocalTime[] {
               LocalTime.of(0, 10, 50, 00),
               LocalTime.of(0, 10, 50, 00),
@@ -443,17 +463,134 @@ class CyclingPortalTestApp {
               LocalTime.of(0, 10, 54, 00),
               LocalTime.of(0, 10, 54, 00)
             });
+      } catch (IDNotRecognisedException e) {
+        e.printStackTrace();
+      }
+    }
 
+    @Test
+    public void getMountainPointsInStageE() {
+      registerStageEresults();
+      try {
         assertArrayEquals(
-            portal.getRidersMountainPointsInStage(stageId), new int[] {8, 10, 12, 15, 20});
-        assertArrayEquals(portal.getRidersPointsInStage(stageId), new int[] {61, 43, 35, 35, 36});
+            portal.getRidersMountainPointsInStage(stageE), new int[] {8, 10, 12, 15, 20});
+      } catch (IDNotRecognisedException e) {
+        e.printStackTrace();
+      }
+    }
+
+    @Test
+    public void getSprintersPointsInStageE() {
+      registerStageEresults();
+      try {
+        assertArrayEquals(portal.getRidersPointsInStage(stageE), new int[] {61, 43, 35, 35, 36});
+      } catch (IDNotRecognisedException e) {
+        e.printStackTrace();
+      }
+    }
+
+    @Test
+    public void registerRiderDuplicateThrows() {
+      registerStageEresults();
+      assertThrows(
+        DuplicatedResultException.class,
+        () -> {
+          portal.registerRiderResultsInStage(stageE, rider1Id, LocalTime.of(0, 10, 00, 00),
+        LocalTime.of(0, 10, 14, 00),
+        LocalTime.of(0, 10, 20, 00),
+        LocalTime.of(0, 10, 51, 00));
+        });
+    }
+
+    @Test
+    public void erasePortal() {
+      registerStageEresults();
+      portal.eraseCyclingPortal();
+      assertEquals(0, portal.getTeams().length);
+      assertEquals(0, portal.getRaceIds().length);
+      try {
+        assertEquals(0, portal.createRace("race", "description"));
+        assertEquals(0, portal.createTeam("name", "description"));
+        assertEquals(0, portal.createRider(0, "name", 1999));
       } catch (Exception e) {
         e.printStackTrace();
       }
     }
 
-    //		TODO: registerRiderResultsInStageThrowsDup
+    @Test
+    public void savePortal(){
+      registerStageEresults();
+      try {
+        portal.saveCyclingPortal("testSavePortal");
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
 
+    @Test
+    public void saveLoadPortal() {
+      registerStageEresults();
+      int teamslen = portal.getTeams().length;
+      int racelen = portal.getRaceIds().length;
+      try {
+        portal.saveCyclingPortal("testSaveLoadPortal");
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+      portal.eraseCyclingPortal();
+      try {
+        portal.loadCyclingPortal("testSaveLoadPortal");
+      } catch (ClassNotFoundException | IOException e) {
+        e.printStackTrace();
+      }
+      assertEquals(teamslen, portal.getTeams().length);
+      assertEquals(racelen, portal.getRaceIds().length);
+    }
+
+    @Test
+    public void viewRaceDetails() {
+      try {
+        String details = portal.viewRaceDetails(raceId);
+        assertTrue(details.contains(String.valueOf(raceId)));
+        assertTrue(details.contains("RacerRacer"));
+        assertTrue(details.contains("racerRacingRace"));
+        assertTrue(details.contains("5"));
+        assertTrue(details.contains("210"));
+      } catch (IDNotRecognisedException e) {
+        e.printStackTrace();
+      }
+    }
+
+    @Test
+    public void testRiderResultsInStage() {
+      registerStageEresults();
+      LocalTime[] actual = null;
+      LocalTime[] ans = new LocalTime[]{LocalTime.of(0, 10, 14, 00), LocalTime.of(0, 10, 20, 00), LocalTime.of(0, 0,51,0)};
+      try {
+        // assertEquals(portal.getStageSegments(stageE).length + 1, portal.getRiderResultsInStage(stageE, rider3Id).length);
+        actual = portal.getRiderResultsInStage(stageE, rider3Id);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+      assertArrayEquals(ans, actual);
+    }
+
+    @Test
+    public void testRemoveRaceByName() {
+      try {
+        portal.removeRaceByName("RacerRacer");
+        assertEquals(0, portal.getRaceIds().length);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+
+    @Test
+    public void testRemoveRaceByNameException() {
+      assertThrows(NameNotRecognisedException.class, ()->{
+        portal.removeRaceByName("AUniqueNameFSDljfsdljfasd");
+      });
+    }
   }
 
   @Nested

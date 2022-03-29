@@ -1,9 +1,4 @@
-
-.idea/workspace.xml
-.idea/vcs.xml
-.idea/modules.xml
-.idea/misc.xml
-.idea/CyclingPortal.iml
-CyclingPortal/.idea/misc.xml
-CyclingPortal/.idea/vcs.xml
-CyclingPortal/.idea/workspace.xml
+.idea/*
+CyclingPortal/.idea/*
+.DS_Store
+*.ser

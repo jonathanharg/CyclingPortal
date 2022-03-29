@@ -11,7 +11,6 @@ import java.util.List;
 //		- Code Formatting
 //		- Documentation/Comments
 //		- Testing
-//		- test all removes are removing everything associated with that thing
 //		- each function public/private/protected/default
 // 		- Optimise results?
 
@@ -382,17 +381,17 @@ public class CyclingPortal implements CyclingPortalInterface {
       return new LocalTime[] {};
     } else {
       LocalTime[] checkpoints = result.getCheckpoints();
-      // Rider Results will always be 1 longer than the checkpoint length because
-      // the last element will be the Elapsed Time.
-      LocalTime[] resultsInStage = new LocalTime[checkpoints.length + 1];
+      // Rider Results will always be 1 shorter than the checkpoint length because
+      // the finish time checkpoint will be replaced with the Elapsed Time and the start time checkpoint will be ignored.
+      LocalTime[] resultsInStage = new LocalTime[checkpoints.length - 1];
       LocalTime elapsedTime = LocalTime.MIDNIGHT.plus(result.getElapsedTime());
-      for (int i = 0; i <= resultsInStage.length; i++) {
-        if (i == resultsInStage.length) {
+      for (int i = 0; i < resultsInStage.length; i++) {
+        if (i == resultsInStage.length - 1) {
           // Adds the Elapsed Time to the end of the array of Results.
           resultsInStage[i] = elapsedTime;
         } else {
-          // Adds each checkpoint to the array of Results until all have been added.
-          resultsInStage[i] = checkpoints[i];
+          // Adds each checkpoint to the array of Results until all have been added, skipping the Start time checkpoint.
+          resultsInStage[i] = checkpoints[i + 1];
         }
       }
       return resultsInStage;
