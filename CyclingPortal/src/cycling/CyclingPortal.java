@@ -16,13 +16,15 @@ import java.util.List;
 // 		- Optimise results?
 
 public class CyclingPortal implements CyclingPortalInterface {
-
+  // ArrayLists for all of a cycling portal instances teams, riders, races, stages and segments.
+  // Although HashMaps could have been used here to get riders by int ID, it would be slower in the long run as we would need to constantly convert it back to arrays to output results.
   private ArrayList<Team> teams = new ArrayList<>();
   private ArrayList<Rider> riders = new ArrayList<>();
   private ArrayList<Race> races = new ArrayList<>();
   private ArrayList<Stage> stages = new ArrayList<>();
   private ArrayList<Segment> segments = new ArrayList<>();
 
+  // Record that will hold all the CycingPortals teams, riders, races, stages & segments as well as all the Id counts for each object.
   private record SavedCyclingPortal(
       ArrayList<Team> teams,
       ArrayList<Rider> riders,
@@ -35,15 +37,26 @@ public class CyclingPortal implements CyclingPortalInterface {
       int stageIdCount,
       int segmentIdCount) {}
 
-  public static boolean containsWhitespace(String str) {
-    for (int i = 0; i < str.length(); ++i) {
-      if (Character.isWhitespace(str.charAt(i))) {
+  /**
+   * Determine if a string contains any illegal whitespace characters.
+   * @param string The input string to be tested for whitespace.
+   * @return A boolean, true if the input string contains whitespace, false if not.
+   */
+  public static boolean containsWhitespace(String string) {
+    for (int i = 0; i < string.length(); ++i) {
+      if (Character.isWhitespace(string.charAt(i))) {
         return true;
       }
     }
     return false;
   }
 
+  /**
+   * Get a Team object by a Team ID.
+   * @param ID The int ID of the Team to be looked up.
+   * @return The Team object of the team, if one is found.
+   * @throws IDNotRecognisedException Thrown if no team is found with the given Team ID.
+   */
   public Team getTeamById(int ID) throws IDNotRecognisedException {
     for (Team team : teams) {
       if (team.getId() == ID) {
@@ -53,6 +66,12 @@ public class CyclingPortal implements CyclingPortalInterface {
     throw new IDNotRecognisedException("Team ID not found.");
   }
 
+  /**
+   * Get a Rider object by a Rider ID.
+   * @param ID The int ID of the Rider to be looked up.
+   * @return The Rider object of the Rider, if one is found.
+   * @throws IDNotRecognisedException Thrown if no rider is found with the given Rider ID.
+   */
   public Rider getRiderById(int ID) throws IDNotRecognisedException {
     for (Rider rider : riders) {
       if (rider.getId() == ID) {
@@ -62,6 +81,12 @@ public class CyclingPortal implements CyclingPortalInterface {
     throw new IDNotRecognisedException("Racer ID not found.");
   }
 
+  /**
+   * Get a Race object by a Race ID.
+   * @param ID The int ID of the Race to be looked up.
+   * @return The Race object of the race, if one is found.
+   * @throws IDNotRecognisedException Thrown if no race is found with the given Race ID.
+   */
   public Race getRaceById(int ID) throws IDNotRecognisedException {
     for (Race race : races) {
       if (race.getId() == ID) {
@@ -71,6 +96,12 @@ public class CyclingPortal implements CyclingPortalInterface {
     throw new IDNotRecognisedException("Race ID not found.");
   }
 
+  /**
+   * Get a Stage object by a Stage ID.
+   * @param ID The int ID of the Stage to be looked up.
+   * @return The Stage object of the stage, if one is found.
+   * @throws IDNotRecognisedException Thrown if no stage is found with the given Stage ID.
+   */
   public Stage getStageById(int ID) throws IDNotRecognisedException {
     for (Stage stage : stages) {
       if (stage.getId() == ID) {
@@ -80,6 +111,12 @@ public class CyclingPortal implements CyclingPortalInterface {
     throw new IDNotRecognisedException("Stage ID not found.");
   }
 
+  /**
+   * Get a Segment object by a Segment ID.
+   * @param ID The int ID of the Segment to be looked up.
+   * @return The Segment object of the segment, if one is found.
+   * @throws IDNotRecognisedException Thrown if no segment is found with the given Segment ID.
+   */
   public Segment getSegmentById(int ID) throws IDNotRecognisedException {
     for (Segment segment : segments) {
       if (segment.getId() == ID) {
@@ -89,6 +126,10 @@ public class CyclingPortal implements CyclingPortalInterface {
     throw new IDNotRecognisedException("Segment ID not found.");
   }
 
+  /**
+   * Loops over all races, stages and segments to remove all of a given riders results.
+   * @param rider The Rider object whose results will be removed from the Cycling Portal.
+   */
   public void removeRiderResults(Rider rider) {
     for (Race race : races) {
       race.removeRiderResults(rider);
