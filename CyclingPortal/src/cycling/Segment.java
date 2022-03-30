@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 /**
  * Segment Class. This represents a segment of a stage in a rice in the cycling portal. This deals
- * with details about the segment as well as well as the segments results.
+ * with details about the segment as well as the segments results.
  */
 public class Segment implements Serializable {
   private static int count = 0;
