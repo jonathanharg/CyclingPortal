@@ -6,7 +6,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * Race Class. This represents a Race that holds a Race's Stages and Riders, and also contains
+ * Race Class. This represents a Race that holds a Race's Stages, Riders Results, and also contains
  * methods that deal with these.
  */
 public class Race implements Serializable {
@@ -26,7 +26,7 @@ public class Race implements Serializable {
    *
    * @param name: Cannot be empty, null, have a length greater than 30 or contain any whitespace.
    * @param description: A description of the race.
-   * @throws InvalidNameException Thrown if the Race name is does not meet name requirements stated
+   * @throws InvalidNameException Thrown if the Race name does not meet name requirements stated
    *     above.
    */
   public Race(String name, String description) throws InvalidNameException {
@@ -59,7 +59,8 @@ public class Race implements Serializable {
   }
 
   /**
-   * Method that sets the static ID counter to an inputted value.
+   * Method that sets the static ID counter to a given value. Used when loading to avoid ID
+   * collisions.
    *
    * @param newCount: new value of the static ID counter.
    */
@@ -92,6 +93,8 @@ public class Race implements Serializable {
    * @param stage: The stage to be added to the Race.
    */
   public void addStage(Stage stage) {
+    // Loops over stages in the race to insert the new stage in the correct place such that
+    // all of the stages are sorted by their start time.
     for (int i = 0; i < stages.size(); i++) {
       // Retrieves the start time of each Stage in the Race's current Stages one by one.
       // These are already ordered by their start times.
@@ -112,6 +115,7 @@ public class Race implements Serializable {
    * @return Arraylist<Stages> stages: The ordered list of Stages.
    */
   public ArrayList<Stage> getStages() {
+    // stages is already sorted, so no sorting needs to be done.
     return stages;
   }
 
@@ -128,7 +132,7 @@ public class Race implements Serializable {
    * Method to get then details of a Race including Race ID, name, description number of stages and
    * total length.
    *
-   * @return String: concatenated paragraph of details.
+   * @return String: concatenated paragraph of race details.
    */
   public String getDetails() {
     double currentLength = 0;
@@ -157,7 +161,9 @@ public class Race implements Serializable {
    * @return List<Rider>: correctly sorted Riders.
    */
   public List<Rider> getRidersByAdjustedElapsedTime() {
+    // First generate the race result to calculate each riders Adjusted Elapsed Time.
     calculateResults();
+    // Then return the riders sorted by their Adjusted Elapsed Time.
     return sortRiderResultsBy(RaceResult.sortByAdjustedElapsedTime);
   }
 
@@ -167,7 +173,9 @@ public class Race implements Serializable {
    * @return List<Rider>: correctly sorted Riders.
    */
   public List<Rider> getRidersBySprintersPoints() {
+    // First generate the race result to calculate each riders Sprinters Points.
     calculateResults();
+    // Then return the riders sorted by their sprinters points.
     return sortRiderResultsBy(RaceResult.sortBySprintersPoints);
   }
 
@@ -177,7 +185,9 @@ public class Race implements Serializable {
    * @return List<Rider>: correctly sorted Riders.
    */
   public List<Rider> getRidersByMountainPoints() {
+    // First generate the race result to calculate each riders Mountain Points.
     calculateResults();
+    // Then return the riders sorted by their mountain points.
     return sortRiderResultsBy(RaceResult.sortByMountainPoints);
   }
 
@@ -188,7 +198,9 @@ public class Race implements Serializable {
    * @return RaceResult: Result of the Rider.
    */
   public RaceResult getRiderResults(Rider rider) {
+    // First generate the race result to calculate each riders results.
     calculateResults();
+    // Then return the riders result object.
     return results.get(rider);
   }
 
@@ -202,15 +214,21 @@ public class Race implements Serializable {
   }
 
   /**
-   * Method to get a list of Riders sorted by a given comparator of their Results.
+   * Method to get a list of Riders sorted by a given comparator of their Results. Will only return
+   * riders who have results registered in their name.
    *
    * @param comparison: a comparator on the Riders' Results to sort the Riders by.
-   * @return List<Rider>: List of Riders sorted by the comparator on the Results.
+   * @return List<Rider>: List of Riders (who posses recorded results) sorted by the comparator on
+   *     the Results.
    */
-  private List<Rider> sortRiderResultsBy(Comparator<RaceResult> comparison) {
+  private List<Rider> sortRiderResultsBy(Comparator<RaceResult> comparator) {
+    // convert the hashmap into a set
     return results.entrySet().stream()
-        .sorted(Map.Entry.comparingByValue(comparison))
+        // Sort the set by the comparator on the results.
+        .sorted(Map.Entry.comparingByValue(comparator))
+        // Get the rider element of the set and ignore the results now they have been sorted.
         .map(Map.Entry::getKey)
+        // Convert to a list of riders.
         .collect(Collectors.toList());
   }
 
@@ -222,21 +240,24 @@ public class Race implements Serializable {
    */
   private void registerRiderResults(Rider rider, StageResult stageResult) {
     if (results.containsKey(rider)) {
-      // When the hashmap of Results already contains the Results for the given Rider,
-      // results are not re-added.
+      // If results already exist for a given rider add the current stage results
+      // to the existing total race results.
       results.get(rider).addStageResult(stageResult);
     } else {
-      // If the hashmap of Results does not contain the Results for the given Rider,
-      // they then are added now.
+      // If no race results exists, create a new RaceResult object based on the current
+      // stage results.
       RaceResult raceResult = new RaceResult();
       raceResult.addStageResult(stageResult);
       results.put(rider, raceResult);
     }
   }
 
-  /** Method that calculates the results for each Rider. */
+  /** Private method that calculates the results for each Rider. */
   private void calculateResults() {
+    // Clear existing results.
     results = new HashMap<>();
+    // We must loop over all stages and collect their results for each rider as each riders results
+    // are dependent on their position in the race, and thus the results of the other riders.
     for (Stage stage : stages) {
       HashMap<Rider, StageResult> stageResults = stage.getStageResults();
       for (Rider rider : stageResults.keySet()) {

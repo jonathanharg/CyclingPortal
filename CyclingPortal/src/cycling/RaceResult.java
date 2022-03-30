@@ -10,19 +10,14 @@ public class RaceResult implements Serializable {
   private int cumulativeSprintersPoints = 0;
   private int cumulativeMountainPoints = 0;
 
-  // TODO: Test ordered Asc
   protected static final Comparator<RaceResult> sortByAdjustedElapsedTime =
       Comparator.comparing(RaceResult::getCumulativeAdjustedElapsedTime);
 
-  // TODO: Test order Desc
-  // protected static final Comparator<RaceResult> sortBySprintersPoints =
-  //     Comparator.comparing(RaceResult::getCumulativeSprintersPoints).reversed();
   protected static final Comparator<RaceResult> sortBySprintersPoints =
       (RaceResult result1, RaceResult result2) ->
           Integer.compare(
               result2.getCumulativeSprintersPoints(), result1.getCumulativeSprintersPoints());
-  // protected static final Comparator<RaceResult> sortByMountainPoints =
-  //     Comparator.comparing(RaceResult::getCumulativeMountainPoints).reversed();
+
   protected static final Comparator<RaceResult> sortByMountainPoints =
       (RaceResult result1, RaceResult result2) ->
           Integer.compare(

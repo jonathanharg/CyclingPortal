@@ -1,5 +1,0 @@
-#!/bin/sh
-
-cd $(dirname $0)
-
-javac -verbose -d bin/ src/cycling/*.java

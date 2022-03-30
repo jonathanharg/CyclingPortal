@@ -1,8 +1,0 @@
-#!/bin/sh
-
-cd $(dirname $0)
-
-mkdir ./JAR_EXTRACT
-cd ./JAR_EXTRACT
-
-jar -xvf ../cycling.jar
