@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-/** Stage Class. */
+/** Stage Class. This represents a stage in a race of the CyclingPortal */
 public class Stage implements Serializable {
   private final Race race;
   private final String name;
@@ -25,6 +25,7 @@ public class Stage implements Serializable {
 
   private final HashMap<Rider, StageResult> results = new HashMap<>();
 
+  // Segment sprinters/mountain points.
   private static final int[] FLAT_POINTS = {50, 30, 20, 18, 16, 14, 12, 10, 8, 7, 6, 5, 4, 3, 2};
   private static final int[] MEDIUM_POINTS = {30, 25, 22, 19, 17, 15, 13, 11, 9, 7, 6, 5, 4, 3, 2};
   private static final int[] HIGH_POINTS = {20, 17, 15, 13, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
@@ -35,11 +36,12 @@ public class Stage implements Serializable {
    * type.
    *
    * @param race: Race that the Stage is in.
-   * @param name: name of the Stage.
+   * @param name: name of the Stage, cannot be null, empty, have more than 30 characters or have
+   *     white space.
    * @param description: description of the Stage.
-   * @param length: length of the Stage.
+   * @param length: length of the Stage in kilometers, cannot be less than 5km.
    * @param startTime: start time of the Stage.
-   * @param type: the type of Stage.
+   * @param type: the type of Stage, can be either FLAT, MEDIUM_MOUNTAIN, HIGH_MOUNTAIN, TT.
    * @throws InvalidNameException Thrown if the name is empty, null, longer than 30 characters or
    *     contains whitespace.
    * @throws InvalidLengthException Thrown if the length is less than 5km.
@@ -273,20 +275,30 @@ public class Stage implements Serializable {
   }
 
   /**
-   * Method to
+   * Method to get a list of Riders sorted by their Elapsed Time in the stage.
    *
-   * @return
+   * @return List of Riders sorted by their Elapsed Time in the stage.
    */
   public List<Rider> getRidersByElapsedTime() {
     calculateResults();
     return sortRiderResults();
   }
 
+  /**
+   * Method to get the HashMap of Riders and their associated Results in the stage.
+   *
+   * @return The HashMap of Riders and their associated Results in the stage.
+   */
   public HashMap<Rider, StageResult> getStageResults() {
     calculateResults();
     return results;
   }
 
+  /**
+   * Sort all the riders with a registered result in the stage by their elapsed time.
+   *
+   * @return A list of riders sorted in ascending order of their elapsed time in the stage.
+   */
   private List<Rider> sortRiderResults() {
     return results.entrySet().stream()
         .sorted(Map.Entry.comparingByValue(StageResult.sortByElapsedTime))
@@ -294,7 +306,9 @@ public class Stage implements Serializable {
         .collect(Collectors.toList());
   }
 
+  /** A private method to calculate all riders results in the stage. */
   private void calculateResults() {
+    // Get a list of all riders with registered results sorted by their elapsed time.
     List<Rider> riders = sortRiderResults();
 
     for (int i = 0; i < results.size(); i++) {
@@ -303,23 +317,30 @@ public class Stage implements Serializable {
       int position = i + 1;
 
       // Position Calculation
-      result.setPosition(position);
+      result.setPosition(position); // Assign the rider their position.
 
       // Adjusted Elapsed Time Calculations
       if (i == 0) {
+        // If the rider is the first in the race then their adjusted time = elapsed time.
         result.setAdjustedElapsedTime(result.getElapsedTime());
       } else {
+        // Get the previous riders & current riders times.
         Rider prevRider = riders.get(i - 1);
         Duration prevTime = results.get(prevRider).getElapsedTime();
         Duration time = results.get(rider).getElapsedTime();
 
+        // If the difference between the current riders time and the previous time is less than 1
+        // second.
         int timeDiff = time.minus(prevTime).compareTo(Duration.ofSeconds(1));
         if (timeDiff <= 0) {
           // Close Finish Condition
+          // Set the current riders adjusted time to be the same as the previous riders adjusted
+          // time.
           Duration prevAdjustedTime = results.get(prevRider).getAdjustedElapsedTime();
           result.setAdjustedElapsedTime(prevAdjustedTime);
         } else {
           // Far Finish Condition
+          // Set the current riders adjusted time = elapsed time.
           result.setAdjustedElapsedTime(time);
         }
       }
@@ -328,12 +349,14 @@ public class Stage implements Serializable {
       int sprintersPoints = 0;
       int mountainPoints = 0;
       for (Segment segment : segments) {
+        // Sum the riders points in each segment.
         SegmentResult segmentResult = segment.getRiderResult(rider);
         sprintersPoints += segmentResult.getSprintersPoints();
         mountainPoints += segmentResult.getMountainPoints();
       }
       int[] pointsDistribution = getPointDistribution();
       if (position <= pointsDistribution.length) {
+        // Add any sprinters points the rider may have gained for the stage.
         sprintersPoints += pointsDistribution[i];
       }
       result.setSprintersPoints(sprintersPoints);
@@ -341,6 +364,11 @@ public class Stage implements Serializable {
     }
   }
 
+  /**
+   * Private method to get the point distribution based on the stage type.
+   *
+   * @return the distribution of points based on the stage type.
+   */
   private int[] getPointDistribution() {
     return switch (type) {
       case FLAT -> FLAT_POINTS;
