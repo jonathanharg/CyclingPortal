@@ -10,7 +10,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class Stage implements Serializable {
+/**
+ * Stage Class.
+ */
+public class Stage  implements Serializable {
   private final Race race;
   private final String name;
   private final String description;
@@ -29,6 +32,18 @@ public class Stage implements Serializable {
   private static final int[] HIGH_POINTS = {20, 17, 15, 13, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
   private static final int[] TT_POINTS = {20, 17, 15, 13, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
 
+  /**
+   * Constructor method that sets a Stage up with a race, name, description, length
+   * startTime and type.
+   * @param Race race: Race that the Stage is in.
+   * @param String name: name of the Stage.
+   * @param String description: description of the Stage.
+   * @param double length:
+   * @param startTime
+   * @param type
+   * @throws InvalidNameException
+   * @throws InvalidLengthException
+   */
   public Stage(
       Race race,
       String name,
