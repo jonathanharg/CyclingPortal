@@ -20,7 +20,7 @@ public class Segment implements Serializable {
 
   private final HashMap<Rider, SegmentResult> results = new HashMap<>();
 
-  // Segment sprinters/mountain points .
+  // Segment sprinters/mountain points.
   private static final int[] SPRINT_POINTS = {20, 17, 15, 13, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
   private static final int[] HC_POINTS = {20, 15, 12, 10, 8, 6, 4, 2};
   private static final int[] C1_POINTS = {10, 8, 6, 4, 2, 1};
