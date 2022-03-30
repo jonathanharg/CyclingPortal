@@ -71,7 +71,7 @@ public class Race implements Serializable {
   /**
    * Method to get the ID of the Race object.
    *
-   * @return int id: the Race's unique ID value.
+   * @return id: the Race's unique ID value.
    */
   public int getId() {
     return id;
@@ -80,7 +80,7 @@ public class Race implements Serializable {
   /**
    * Method to get the name of the Race.
    *
-   * @return String name: the given name of the Race.
+   * @return name: the given name of the Race.
    */
   public String getName() {
     return name;
@@ -112,7 +112,7 @@ public class Race implements Serializable {
   /**
    * Method to get the list of Stages in the Race ordered by their start times.
    *
-   * @return Arraylist<Stages> stages: The ordered list of Stages.
+   * @return stages: The ordered list of Stages.
    */
   public ArrayList<Stage> getStages() {
     // stages is already sorted, so no sorting needs to be done.
@@ -132,7 +132,7 @@ public class Race implements Serializable {
    * Method to get then details of a Race including Race ID, name, description number of stages and
    * total length.
    *
-   * @return String: concatenated paragraph of race details.
+   * @return Concatenated paragraph of race details.
    */
   public String getDetails() {
     double currentLength = 0;
@@ -158,7 +158,7 @@ public class Race implements Serializable {
   /**
    * Method to get a list of Riders in the Race, sorted by their Adjusted Elapsed Time.
    *
-   * @return List<Rider>: correctly sorted Riders.
+   * @return The correctly sorted Riders.
    */
   public List<Rider> getRidersByAdjustedElapsedTime() {
     // First generate the race result to calculate each riders Adjusted Elapsed Time.
@@ -170,7 +170,7 @@ public class Race implements Serializable {
   /**
    * Method to get a list of Riders in the Race, sorted by their Sprinters Points.
    *
-   * @return List<Rider>: correctly sorted Riders.
+   * @return The correctly sorted Riders.
    */
   public List<Rider> getRidersBySprintersPoints() {
     // First generate the race result to calculate each riders Sprinters Points.
@@ -182,7 +182,7 @@ public class Race implements Serializable {
   /**
    * Method to get a list of Riders in the Race, sorted by their Mountain Points.
    *
-   * @return List<Rider>: correctly sorted Riders.
+   * @return The correctly sorted Riders.
    */
   public List<Rider> getRidersByMountainPoints() {
     // First generate the race result to calculate each riders Mountain Points.
