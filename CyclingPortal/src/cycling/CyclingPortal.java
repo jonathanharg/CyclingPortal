@@ -8,11 +8,7 @@ import java.util.List;
 
 // TODO:
 //		- Asserts !!!!
-//		- Code Formatting
 //		- Documentation/Comments
-//		- Testing
-//		- each function public/private/protected/default
-// 		- Optimise results?
 
 public class CyclingPortal implements CyclingPortalInterface {
   // ArrayLists for all of a cycling portal instances teams, riders, races, stages and segments.
