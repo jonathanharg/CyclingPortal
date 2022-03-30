@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 // TODO:
-//		- Asserts !!!!
 //		- Documentation/Comments
 
 public class CyclingPortal implements CyclingPortalInterface {
@@ -326,6 +325,9 @@ public class CyclingPortal implements CyclingPortalInterface {
     int[] teamRiderIds = new int[teamRiders.size()];
     // Gathers ID's of Riders in the Team.
     for (int i = 0; i < teamRiderIds.length; i++) {
+      // Assert the rider is actually on the team.
+      assert teamRiders.get(i).getTeam().equals(team);
+      // Return the rider id.
       teamRiderIds[i] = teamRiders.get(i).getId();
     }
     return teamRiderIds;
@@ -339,6 +341,10 @@ public class CyclingPortal implements CyclingPortalInterface {
     // Adds Rider to both the Team and the list of Riders.
     team.addRider(rider);
     riders.add(rider);
+
+    // Assert at least one rider has been added
+    assert riders.size() > 0;
+
     return rider.getId();
   }
 
@@ -482,6 +488,10 @@ public class CyclingPortal implements CyclingPortalInterface {
     Race.resetIdCounter();
     Stage.resetIdCounter();
     Segment.resetIdCounter();
+
+    // Assert the portal is erased.
+    assert teams.size() == 0;
+    assert races.size() == 0;
   }
 
   @Override

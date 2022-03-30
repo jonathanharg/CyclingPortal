@@ -10,10 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-/**
- * Stage Class.
- */
-public class Stage  implements Serializable {
+/** Stage Class. */
+public class Stage implements Serializable {
   private final Race race;
   private final String name;
   private final String description;
@@ -33,8 +31,8 @@ public class Stage  implements Serializable {
   private static final int[] TT_POINTS = {20, 17, 15, 13, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
 
   /**
-   * Constructor method that sets a Stage up with a race, name, description, length
-   * startTime and type.
+   * Constructor method that sets a Stage up with a race, name, description, length startTime and
+   * type.
    *
    * @param race: Race that the Stage is in.
    * @param name: name of the Stage.
@@ -42,8 +40,8 @@ public class Stage  implements Serializable {
    * @param length: length of the Stage.
    * @param startTime: start time of the Stage.
    * @param type: the type of Stage.
-   * @throws InvalidNameException Thrown if the name is empty, null, longer than 30
-   * characters or contains whitespace.
+   * @throws InvalidNameException Thrown if the name is empty, null, longer than 30 characters or
+   *     contains whitespace.
    * @throws InvalidLengthException Thrown if the length is less than 5km.
    */
   public Stage(
@@ -119,7 +117,7 @@ public class Stage  implements Serializable {
 
   /**
    * Method to get the length of the Stage.
-   * 
+   *
    * @return length: the given length of the Stage.
    */
   public double getLength() {
@@ -128,7 +126,7 @@ public class Stage  implements Serializable {
 
   /**
    * Method to get the Stage's Race.
-   * 
+   *
    * @return race: the given Race that the Stage is in.
    */
   public Race getRace() {
@@ -137,7 +135,7 @@ public class Stage  implements Serializable {
 
   /**
    * Method to get the Stage's type.
-   * 
+   *
    * @return type: the given type of the Stage
    */
   public StageType getType() {
@@ -146,7 +144,7 @@ public class Stage  implements Serializable {
 
   /**
    * Method to get the Segments in the Stage.
-   * 
+   *
    * @return segments: a list of Segments in the Stage.
    */
   public ArrayList<Segment> getSegments() {
@@ -155,7 +153,7 @@ public class Stage  implements Serializable {
 
   /**
    * Method to get the start time of the Stage.
-   * 
+   *
    * @return startTime: the given start time of the Stage.
    */
   public LocalDateTime getStartTime() {
@@ -163,9 +161,9 @@ public class Stage  implements Serializable {
   }
 
   /**
-   * Method that adds a Segment to the Stage. It is added to the list of Segments
-   * based on its location in the Stage.
-   * 
+   * Method that adds a Segment to the Stage. It is added to the list of Segments based on its
+   * location in the Stage.
+   *
    * @param segment: Segment that will be added to the Stage.
    */
   public void addSegment(Segment segment) {
@@ -173,7 +171,7 @@ public class Stage  implements Serializable {
     // Segment to be added.
     for (int i = 0; i < segments.size(); i++) {
       // Compares the Segments based on their locations.
-      // The new Segment is inserted if its location is less than the location of the 
+      // The new Segment is inserted if its location is less than the location of the
       // current Segment it is being compared to.
       if (segment.getLocation() < segments.get(i).getLocation()) {
         segments.add(i, segment);
@@ -185,7 +183,7 @@ public class Stage  implements Serializable {
 
   /**
    * Method that removes a given Segment from the Stage's Segments.
-   * 
+   *
    * @param segment: the Segment intended to be removed.
    * @throws InvalidStageStateException Thrown if the Stage is waiting for results.
    */
@@ -199,14 +197,14 @@ public class Stage  implements Serializable {
 
   /**
    * Method that registers a Rider's result and adds it to the Stage.
-   * 
+   *
    * @param rider: the Rider whose results will be registered.
    * @param checkpoints: the Rider's results.
    * @throws InvalidStageStateException Thrown if the Stage is not waiting for results.
-   * @throws DuplicatedResultException Thrown if the Rider already has results registered
-   * in the Stage.
-   * @throws InvalidCheckpointsException Thrown if the number checkpoints doesn't equal the
-   * number of Segments in the Stage + 2
+   * @throws DuplicatedResultException Thrown if the Rider already has results registered in the
+   *     Stage.
+   * @throws InvalidCheckpointsException Thrown if the number checkpoints doesn't equal the number
+   *     of Segments in the Stage + 2
    */
   public void registerResult(Rider rider, LocalTime[] checkpoints)
       throws InvalidStageStateException, DuplicatedResultException, InvalidCheckpointsException {
@@ -233,9 +231,9 @@ public class Stage  implements Serializable {
   }
 
   /**
-   * Method that concludes the Stage preparation and ensures that the Stage is now
-   * waiting for results.
-   * 
+   * Method that concludes the Stage preparation and ensures that the Stage is now waiting for
+   * results.
+   *
    * @throws InvalidStageStateException Thrown if the Stage is already waiting for results.
    */
   public void concludePreparation() throws InvalidStageStateException {
@@ -247,7 +245,7 @@ public class Stage  implements Serializable {
 
   /**
    * Method to identify whether the Stage is waiting for results.
-   * 
+   *
    * @return A boolean, true if the Stage is waiting for results, false if it is not.
    */
   public boolean isWaitingForResults() {
@@ -256,7 +254,7 @@ public class Stage  implements Serializable {
 
   /**
    * Method to calculate and return the results of a given Rider.
-   * 
+   *
    * @param rider: Rider whose results are desired.
    * @return results of the Rider.
    */
@@ -267,7 +265,7 @@ public class Stage  implements Serializable {
 
   /**
    * Method to remove the results of a Rider.
-   * 
+   *
    * @param rider whose results are to be removed.
    */
   public void removeRiderResults(Rider rider) {
@@ -275,7 +273,8 @@ public class Stage  implements Serializable {
   }
 
   /**
-   * Method to 
+   * Method to
+   *
    * @return
    */
   public List<Rider> getRidersByElapsedTime() {
