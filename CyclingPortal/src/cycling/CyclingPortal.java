@@ -6,9 +6,6 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO:
-//		- Documentation/Comments
-
 public class CyclingPortal implements CyclingPortalInterface {
   // ArrayLists for all of a cycling portal instances teams, riders, races, stages and segments.
   // Although HashMaps could have been used here to get riders by int ID, it would be slower in the

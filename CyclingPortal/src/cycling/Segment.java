@@ -36,9 +36,10 @@ public class Segment implements Serializable {
    * @param type The type of segment, can be either SPRINT, C4, C3, C2, C1, or HC.
    * @param location The location of the segment in the stage in kilometers, cannot be longer than
    *     the length of the stage.
-   * @throws InvalidLocationException
-   * @throws InvalidStageStateException
-   * @throws InvalidStageTypeException
+   * @throws InvalidLocationException Thrown if the location is out of bounds of the stage length.
+   * @throws InvalidStageStateException Thrown if the stage is waiting for results.
+   * @throws InvalidStageTypeException Thrown if a segment is attempted to be added to a time trial
+   *     stage.
    */
   public Segment(Stage stage, SegmentType type, double location)
       throws InvalidLocationException, InvalidStageStateException, InvalidStageTypeException {
@@ -87,7 +88,7 @@ public class Segment implements Serializable {
   /**
    * Method to get the ID of the segment object.
    *
-   * @return id: the Segments's unique ID value.
+   * @return id: the Segments unique ID value.
    */
   public int getId() {
     return id;

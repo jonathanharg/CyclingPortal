@@ -94,7 +94,7 @@ public class Race implements Serializable {
    */
   public void addStage(Stage stage) {
     // Loops over stages in the race to insert the new stage in the correct place such that
-    // all of the stages are sorted by their start time.
+    // all the stages are sorted by their start time.
     for (int i = 0; i < stages.size(); i++) {
       // Retrieves the start time of each Stage in the Race's current Stages one by one.
       // These are already ordered by their start times.
@@ -217,9 +217,8 @@ public class Race implements Serializable {
    * Method to get a list of Riders sorted by a given comparator of their Results. Will only return
    * riders who have results registered in their name.
    *
-   * @param comparison: a comparator on the Riders' Results to sort the Riders by.
-   * @return List<Rider>: List of Riders (who posses recorded results) sorted by the comparator on
-   *     the Results.
+   * @param comparator comparator on the Riders' Results to sort the Riders by.
+   * @return List of Riders (who posses recorded results) sorted by the comparator on the Results.
    */
   private List<Rider> sortRiderResultsBy(Comparator<RaceResult> comparator) {
     // convert the hashmap into a set
