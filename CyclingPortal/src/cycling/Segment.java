@@ -8,9 +8,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * Segment Class. This represents a segment of a stage in a rice in the cycling
- * portal. This deals with details about the segment as well as well as the
- * segments results.
+ * Segment Class. This represents a segment of a stage in a rice in the cycling portal. This deals
+ * with details about the segment as well as well as the segments results.
  */
 public class Segment implements Serializable {
   private static int count = 0;
@@ -22,23 +21,21 @@ public class Segment implements Serializable {
   private final HashMap<Rider, SegmentResult> results = new HashMap<>();
 
   // Segment sprinters/mountain points .
-  private static final int[] SPRINT_POINTS = { 20, 17, 15, 13, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 };
-  private static final int[] HC_POINTS = { 20, 15, 12, 10, 8, 6, 4, 2 };
-  private static final int[] C1_POINTS = { 10, 8, 6, 4, 2, 1 };
-  private static final int[] C2_POINTS = { 5, 3, 2, 1 };
-  private static final int[] C3_POINTS = { 2, 1 };
-  private static final int[] C4_POINTS = { 1 };
+  private static final int[] SPRINT_POINTS = {20, 17, 15, 13, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
+  private static final int[] HC_POINTS = {20, 15, 12, 10, 8, 6, 4, 2};
+  private static final int[] C1_POINTS = {10, 8, 6, 4, 2, 1};
+  private static final int[] C2_POINTS = {5, 3, 2, 1};
+  private static final int[] C3_POINTS = {2, 1};
+  private static final int[] C4_POINTS = {1};
 
   /**
-   * Constructor method that creates a segment for a given stage, segment type and
-   * location.
-   * 
-   * @param stage    The stage object which this segment is in. The stage cannot
-   *                 be waiting for results or be a time-trial stage.
-   * @param type     The type of segment, can be either SPRINT, C4, C3, C2, C1, or
-   *                 HC.
-   * @param location The location of the segment in the stage in kilometers,
-   *                 cannot be longer than the length of the stage.
+   * Constructor method that creates a segment for a given stage, segment type and location.
+   *
+   * @param stage The stage object which this segment is in. The stage cannot be waiting for results
+   *     or be a time-trial stage.
+   * @param type The type of segment, can be either SPRINT, C4, C3, C2, C1, or HC.
+   * @param location The location of the segment in the stage in kilometers, cannot be longer than
+   *     the length of the stage.
    * @throws InvalidLocationException
    * @throws InvalidStageStateException
    * @throws InvalidStageTypeException
@@ -63,10 +60,7 @@ public class Segment implements Serializable {
     this.location = location;
   }
 
-  /**
-   * Reset the static segment ID counter. Used for erasing/loading the
-   * CyclingPortal.
-   */
+  /** Reset the static segment ID counter. Used for erasing/loading the CyclingPortal. */
   static void resetIdCounter() {
     count = 0;
   }
@@ -81,8 +75,7 @@ public class Segment implements Serializable {
   }
 
   /**
-   * Method that sets the static ID counter to a given value. Used when loading to
-   * avoid ID
+   * Method that sets the static ID counter to a given value. Used when loading to avoid ID
    * collisions.
    *
    * @param newCount: new value of the static ID counter.
@@ -102,7 +95,7 @@ public class Segment implements Serializable {
 
   /**
    * Method to get the Stage which the segment exists in.
-   * 
+   *
    * @return The stage object.
    */
   public Stage getStage() {
@@ -111,7 +104,7 @@ public class Segment implements Serializable {
 
   /**
    * Method to get the location of the segment within the stage.
-   * 
+   *
    * @return the location in kilometers as a double.
    */
   public double getLocation() {
@@ -120,8 +113,8 @@ public class Segment implements Serializable {
 
   /**
    * Method to register the time which a given rider completed the segment.
-   * 
-   * @param rider      The rider which finished the segment.
+   *
+   * @param rider The rider which finished the segment.
    * @param finishTime The time which the rider finished the segment.
    */
   public void registerResults(Rider rider, LocalTime finishTime) {
@@ -133,7 +126,7 @@ public class Segment implements Serializable {
 
   /**
    * Method to get a given riders results in this segment.
-   * 
+   *
    * @param rider The rider whose results will be returned.
    * @return The results the rider received in the segment.
    */
@@ -146,7 +139,7 @@ public class Segment implements Serializable {
 
   /**
    * Method to remove a given riders results from the segment.
-   * 
+   *
    * @param rider The rider object whose results should be removed.
    */
   public void removeRiderResults(Rider rider) {
@@ -154,9 +147,9 @@ public class Segment implements Serializable {
   }
 
   /**
-   * Private function to sort all the riders who have results registered by their
-   * finish time. Useful for getting each riders position.
-   * 
+   * Private function to sort all the riders who have results registered by their finish time.
+   * Useful for getting each riders position.
+   *
    * @return All riders who have a registered result sorted by their finish time.
    */
   private List<Rider> sortRiderResults() {
@@ -170,9 +163,7 @@ public class Segment implements Serializable {
         .collect(Collectors.toList());
   }
 
-  /**
-   *  Private method to calculate the results for this segment.
-   */
+  /** Private method to calculate the results for this segment. */
   private void calculateResults() {
     // First get a list of riders sorted by their finish time.
     List<Rider> riders = sortRiderResults();
@@ -185,7 +176,8 @@ public class Segment implements Serializable {
       result.setPosition(position); // Set the riders position
 
       // Points Calculation
-      int[] pointsDistribution = getPointsDistribution(); // Get the point distribution based on the segment type.
+      int[] pointsDistribution =
+          getPointsDistribution(); // Get the point distribution based on the segment type.
       if (position <= pointsDistribution.length) {
         // Get the riders points based on their position
         int points = pointsDistribution[i];
@@ -208,7 +200,9 @@ public class Segment implements Serializable {
 
   /**
    * Private method to get the point distribution of the segment based on the type of segment.
-   * @return an array of integers that represent the points that should be rewarded based on the segment type.
+   *
+   * @return an array of integers that represent the points that should be rewarded based on the
+   *     segment type.
    */
   private int[] getPointsDistribution() {
     return switch (type) {
