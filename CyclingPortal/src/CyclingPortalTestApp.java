@@ -292,6 +292,7 @@ class CyclingPortalTestApp {
         stageC,
         stageD,
         stageE,
+        stageF,
         segmentA1,
         segmentA2,
         segmentA3,
@@ -300,12 +301,28 @@ class CyclingPortalTestApp {
         segmentA6,
         segmentEmnt,
         segmentEsprint,
+        segmentF,
         teamId,
         rider1Id,
         rider2Id,
         rider3Id,
         rider4Id,
-        rider5Id;
+        rider5Id,
+        rider6Id,
+        rider7Id,
+        rider8Id,
+        rider9Id,
+        rider10Id,
+        rider11Id,
+        rider12Id,
+        rider13Id,
+        rider14Id,
+        rider15Id,
+        rider16Id,
+        rider17Id,
+        rider18Id,
+        rider19Id,
+        rider20Id;
 
     @BeforeEach
     public void createRacesStagesSegments() {
@@ -317,6 +334,21 @@ class CyclingPortalTestApp {
         rider3Id = portal.createRider(teamId, "Charlie", 1999);
         rider4Id = portal.createRider(teamId, "Doug", 1999);
         rider5Id = portal.createRider(teamId, "Earnie", 1999);
+        rider6Id = portal.createRider(teamId, "Frank", 1999);
+        rider7Id = portal.createRider(teamId, "Greg", 1999);
+        rider8Id = portal.createRider(teamId, "Hugh", 1999);
+        rider9Id = portal.createRider(teamId, "Issac", 1999);
+        rider10Id = portal.createRider(teamId, "Jack", 1999);
+        rider11Id = portal.createRider(teamId, "Kyle", 1999);
+        rider12Id = portal.createRider(teamId, "Lenny", 1999);
+        rider13Id = portal.createRider(teamId, "Max", 1999);
+        rider14Id = portal.createRider(teamId, "Ned", 1999);
+        rider15Id = portal.createRider(teamId, "Oliver", 1999);
+        rider16Id = portal.createRider(teamId, "Patrick", 1999);
+        rider17Id = portal.createRider(teamId, "Quentin", 1999);
+        rider18Id = portal.createRider(teamId, "Richard", 1999);
+        rider19Id = portal.createRider(teamId, "Sam", 1999);
+        rider20Id = portal.createRider(teamId, "Trevor", 1999);
         stageB =
             portal.addStageToRace(
                 raceId, "stage2", "tt", 50.0, LocalDateTime.now().plusHours(1), StageType.TT);
@@ -343,9 +375,11 @@ class CyclingPortalTestApp {
         stageE =
             portal.addStageToRace(
                 raceId, "BasicStage", null, 10, LocalDateTime.now().plusHours(4), StageType.FLAT);
+        stageF =
+            portal.addStageToRace(
+                raceId, "stage6", "flat", 8.0, LocalDateTime.now().plusHours(5), StageType.FLAT);
 
         segmentA6 = portal.addIntermediateSprintToStage(stageA, 22.0);
-
         segmentA4 = portal.addCategorizedClimbToStage(stageA, 17.0, SegmentType.C4, 0.2, 1.0);
         segmentA3 = portal.addCategorizedClimbToStage(stageA, 12.0, SegmentType.C3, 0.1, 3.0);
         segmentA1 = portal.addCategorizedClimbToStage(stageA, 4.0, SegmentType.SPRINT, 12.0, 6.0);
@@ -353,6 +387,7 @@ class CyclingPortalTestApp {
         segmentA5 = portal.addCategorizedClimbToStage(stageA, 19.0, SegmentType.HC, 6.9, 1.0);
         segmentEmnt = portal.addCategorizedClimbToStage(stageE, 7.0, SegmentType.HC, 5.2, 2.0);
         segmentEsprint = portal.addIntermediateSprintToStage(stageE, 2.0);
+        segmentF = portal.addCategorizedClimbToStage(stageF, 2.0, SegmentType.C1, 6.9, 3.0);
       } catch (Exception e) {
         e.printStackTrace();
       }
@@ -362,7 +397,7 @@ class CyclingPortalTestApp {
     public void stagesAreOrdered() {
       try {
         int[] result = portal.getRaceStages(raceId);
-        int[] ans = new int[] {stageA, stageB, stageC, stageD, stageE};
+        int[] ans = new int[] {stageA, stageB, stageC, stageD, stageE, stageF};
         assertArrayEquals(result, ans);
       } catch (Exception e) {
         e.printStackTrace();
@@ -421,6 +456,548 @@ class CyclingPortalTestApp {
             LocalTime.of(0, 10, 21, 00),
             LocalTime.of(0, 10, 50, 00));
       } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+
+    @Test
+    public void pointsTestResults() {
+      try {
+        portal.concludeStagePreparation(stageA);
+        portal.concludeStagePreparation(stageB);
+        portal.concludeStagePreparation(stageC);
+        portal.concludeStagePreparation(stageD);
+        portal.concludeStagePreparation(stageE);
+        portal.concludeStagePreparation(stageF);
+
+        // !INSERT HERE
+
+        portal.registerRiderResultsInStage(
+            stageA,
+            rider1Id,
+            LocalTime.of(1, 0),
+            LocalTime.of(1, 47),
+            LocalTime.of(2, 19),
+            LocalTime.of(3, 0),
+            LocalTime.of(3, 28),
+            LocalTime.of(3, 33),
+            LocalTime.of(4, 3),
+            LocalTime.of(4, 44));
+        portal.registerRiderResultsInStage(
+            stageB, rider1Id, LocalTime.of(9, 0), LocalTime.of(9, 13));
+        portal.registerRiderResultsInStage(
+            stageC, rider1Id, LocalTime.of(10, 0), LocalTime.of(10, 25));
+        portal.registerRiderResultsInStage(
+            stageD, rider1Id, LocalTime.of(11, 0), LocalTime.of(11, 40));
+        portal.registerRiderResultsInStage(
+            stageE,
+            rider1Id,
+            LocalTime.of(12, 0),
+            LocalTime.of(12, 49),
+            LocalTime.of(13, 10),
+            LocalTime.of(13, 13));
+        portal.registerRiderResultsInStage(
+            stageF, rider1Id, LocalTime.of(13, 0), LocalTime.of(13, 33), LocalTime.of(14, 20));
+        portal.registerRiderResultsInStage(
+            stageA,
+            rider2Id,
+            LocalTime.of(1, 0),
+            LocalTime.of(1, 7),
+            LocalTime.of(1, 15),
+            LocalTime.of(1, 26),
+            LocalTime.of(2, 21),
+            LocalTime.of(2, 54),
+            LocalTime.of(3, 7),
+            LocalTime.of(3, 11));
+        portal.registerRiderResultsInStage(
+            stageB, rider2Id, LocalTime.of(9, 0), LocalTime.of(9, 53));
+        portal.registerRiderResultsInStage(
+            stageC, rider2Id, LocalTime.of(10, 0), LocalTime.of(10, 24));
+        portal.registerRiderResultsInStage(
+            stageD, rider2Id, LocalTime.of(11, 0), LocalTime.of(11, 36));
+        portal.registerRiderResultsInStage(
+            stageE,
+            rider2Id,
+            LocalTime.of(12, 0),
+            LocalTime.of(12, 25),
+            LocalTime.of(12, 30),
+            LocalTime.of(13, 6));
+        portal.registerRiderResultsInStage(
+            stageF, rider2Id, LocalTime.of(13, 0), LocalTime.of(13, 18), LocalTime.of(13, 56));
+        portal.registerRiderResultsInStage(
+            stageA,
+            rider3Id,
+            LocalTime.of(1, 0),
+            LocalTime.of(1, 37),
+            LocalTime.of(1, 51),
+            LocalTime.of(2, 22),
+            LocalTime.of(2, 46),
+            LocalTime.of(3, 31),
+            LocalTime.of(4, 10),
+            LocalTime.of(4, 35));
+        portal.registerRiderResultsInStage(
+            stageB, rider3Id, LocalTime.of(9, 0), LocalTime.of(9, 17));
+        portal.registerRiderResultsInStage(
+            stageC, rider3Id, LocalTime.of(10, 0), LocalTime.of(10, 28));
+        portal.registerRiderResultsInStage(
+            stageD, rider3Id, LocalTime.of(11, 0), LocalTime.of(11, 38));
+        portal.registerRiderResultsInStage(
+            stageE,
+            rider3Id,
+            LocalTime.of(12, 0),
+            LocalTime.of(12, 33),
+            LocalTime.of(12, 52),
+            LocalTime.of(13, 45));
+        portal.registerRiderResultsInStage(
+            stageF, rider3Id, LocalTime.of(13, 0), LocalTime.of(13, 42), LocalTime.of(14, 22));
+        portal.registerRiderResultsInStage(
+            stageA,
+            rider4Id,
+            LocalTime.of(1, 0),
+            LocalTime.of(1, 13),
+            LocalTime.of(1, 47),
+            LocalTime.of(1, 51),
+            LocalTime.of(2, 20),
+            LocalTime.of(2, 32),
+            LocalTime.of(3, 13),
+            LocalTime.of(3, 49));
+        portal.registerRiderResultsInStage(
+            stageB, rider4Id, LocalTime.of(9, 0), LocalTime.of(9, 24));
+        portal.registerRiderResultsInStage(
+            stageC, rider4Id, LocalTime.of(10, 0), LocalTime.of(10, 16));
+        portal.registerRiderResultsInStage(
+            stageD, rider4Id, LocalTime.of(11, 0), LocalTime.of(11, 46));
+        portal.registerRiderResultsInStage(
+            stageE,
+            rider4Id,
+            LocalTime.of(12, 0),
+            LocalTime.of(12, 19),
+            LocalTime.of(12, 29),
+            LocalTime.of(13, 12));
+        portal.registerRiderResultsInStage(
+            stageF, rider4Id, LocalTime.of(13, 0), LocalTime.of(13, 41), LocalTime.of(13, 43));
+        portal.registerRiderResultsInStage(
+            stageA,
+            rider5Id,
+            LocalTime.of(1, 0),
+            LocalTime.of(1, 6),
+            LocalTime.of(2, 0),
+            LocalTime.of(2, 27),
+            LocalTime.of(3, 22),
+            LocalTime.of(3, 46),
+            LocalTime.of(4, 33),
+            LocalTime.of(5, 20));
+        portal.registerRiderResultsInStage(
+            stageB, rider5Id, LocalTime.of(9, 0), LocalTime.of(9, 38));
+        portal.registerRiderResultsInStage(
+            stageC, rider5Id, LocalTime.of(10, 0), LocalTime.of(10, 54));
+        portal.registerRiderResultsInStage(
+            stageD, rider5Id, LocalTime.of(11, 0), LocalTime.of(11, 42));
+        portal.registerRiderResultsInStage(
+            stageE,
+            rider5Id,
+            LocalTime.of(12, 0),
+            LocalTime.of(12, 32),
+            LocalTime.of(12, 37),
+            LocalTime.of(13, 3));
+        portal.registerRiderResultsInStage(
+            stageF, rider5Id, LocalTime.of(13, 0), LocalTime.of(13, 4), LocalTime.of(13, 51));
+        portal.registerRiderResultsInStage(
+            stageA,
+            rider6Id,
+            LocalTime.of(1, 0),
+            LocalTime.of(1, 25),
+            LocalTime.of(1, 45),
+            LocalTime.of(2, 0),
+            LocalTime.of(2, 10),
+            LocalTime.of(2, 58),
+            LocalTime.of(3, 42),
+            LocalTime.of(3, 53));
+        portal.registerRiderResultsInStage(
+            stageB, rider6Id, LocalTime.of(9, 0), LocalTime.of(9, 10));
+        portal.registerRiderResultsInStage(
+            stageC, rider6Id, LocalTime.of(10, 0), LocalTime.of(10, 18));
+        portal.registerRiderResultsInStage(
+            stageD, rider6Id, LocalTime.of(11, 0), LocalTime.of(11, 54));
+        portal.registerRiderResultsInStage(
+            stageE,
+            rider6Id,
+            LocalTime.of(12, 0),
+            LocalTime.of(12, 12),
+            LocalTime.of(13, 7),
+            LocalTime.of(13, 25));
+        portal.registerRiderResultsInStage(
+            stageF, rider6Id, LocalTime.of(13, 0), LocalTime.of(13, 47), LocalTime.of(14, 16));
+        portal.registerRiderResultsInStage(
+            stageA,
+            rider7Id,
+            LocalTime.of(1, 0),
+            LocalTime.of(1, 3),
+            LocalTime.of(1, 16),
+            LocalTime.of(1, 46),
+            LocalTime.of(2, 22),
+            LocalTime.of(3, 17),
+            LocalTime.of(3, 27),
+            LocalTime.of(4, 10));
+        portal.registerRiderResultsInStage(
+            stageB, rider7Id, LocalTime.of(9, 0), LocalTime.of(9, 46));
+        portal.registerRiderResultsInStage(
+            stageC, rider7Id, LocalTime.of(10, 0), LocalTime.of(10, 23));
+        portal.registerRiderResultsInStage(
+            stageD, rider7Id, LocalTime.of(11, 0), LocalTime.of(11, 34));
+        portal.registerRiderResultsInStage(
+            stageE,
+            rider7Id,
+            LocalTime.of(12, 0),
+            LocalTime.of(12, 36),
+            LocalTime.of(12, 59),
+            LocalTime.of(13, 30));
+        portal.registerRiderResultsInStage(
+            stageF, rider7Id, LocalTime.of(13, 0), LocalTime.of(13, 29), LocalTime.of(13, 34));
+        portal.registerRiderResultsInStage(
+            stageA,
+            rider8Id,
+            LocalTime.of(1, 0),
+            LocalTime.of(1, 55),
+            LocalTime.of(2, 7),
+            LocalTime.of(2, 58),
+            LocalTime.of(3, 14),
+            LocalTime.of(4, 9),
+            LocalTime.of(4, 32),
+            LocalTime.of(5, 25));
+        portal.registerRiderResultsInStage(
+            stageB, rider8Id, LocalTime.of(9, 0), LocalTime.of(9, 40));
+        portal.registerRiderResultsInStage(
+            stageC, rider8Id, LocalTime.of(10, 0), LocalTime.of(10, 34));
+        portal.registerRiderResultsInStage(
+            stageD, rider8Id, LocalTime.of(11, 0), LocalTime.of(11, 55));
+        portal.registerRiderResultsInStage(
+            stageE,
+            rider8Id,
+            LocalTime.of(12, 0),
+            LocalTime.of(12, 24),
+            LocalTime.of(13, 17),
+            LocalTime.of(13, 26));
+        portal.registerRiderResultsInStage(
+            stageF, rider8Id, LocalTime.of(13, 0), LocalTime.of(13, 16), LocalTime.of(13, 27));
+        portal.registerRiderResultsInStage(
+            stageA,
+            rider9Id,
+            LocalTime.of(1, 0),
+            LocalTime.of(1, 32),
+            LocalTime.of(1, 34),
+            LocalTime.of(1, 43),
+            LocalTime.of(2, 5),
+            LocalTime.of(2, 14),
+            LocalTime.of(2, 36),
+            LocalTime.of(3, 19));
+        portal.registerRiderResultsInStage(
+            stageB, rider9Id, LocalTime.of(9, 0), LocalTime.of(9, 35));
+        portal.registerRiderResultsInStage(
+            stageC, rider9Id, LocalTime.of(10, 0), LocalTime.of(10, 44));
+        portal.registerRiderResultsInStage(
+            stageD, rider9Id, LocalTime.of(11, 0), LocalTime.of(11, 16));
+        portal.registerRiderResultsInStage(
+            stageE,
+            rider9Id,
+            LocalTime.of(12, 0),
+            LocalTime.of(12, 52),
+            LocalTime.of(12, 58),
+            LocalTime.of(13, 14));
+        portal.registerRiderResultsInStage(
+            stageF, rider9Id, LocalTime.of(13, 0), LocalTime.of(13, 24), LocalTime.of(14, 24));
+        portal.registerRiderResultsInStage(
+            stageA,
+            rider10Id,
+            LocalTime.of(1, 0),
+            LocalTime.of(1, 27),
+            LocalTime.of(1, 39),
+            LocalTime.of(2, 24),
+            LocalTime.of(2, 48),
+            LocalTime.of(3, 26),
+            LocalTime.of(3, 48),
+            LocalTime.of(4, 30));
+        portal.registerRiderResultsInStage(
+            stageB, rider10Id, LocalTime.of(9, 0), LocalTime.of(9, 28));
+        portal.registerRiderResultsInStage(
+            stageC, rider10Id, LocalTime.of(10, 0), LocalTime.of(10, 13));
+        portal.registerRiderResultsInStage(
+            stageD, rider10Id, LocalTime.of(11, 0), LocalTime.of(11, 17));
+        portal.registerRiderResultsInStage(
+            stageE,
+            rider10Id,
+            LocalTime.of(12, 0),
+            LocalTime.of(12, 11),
+            LocalTime.of(13, 5),
+            LocalTime.of(13, 54));
+        portal.registerRiderResultsInStage(
+            stageF, rider10Id, LocalTime.of(13, 0), LocalTime.of(13, 2), LocalTime.of(13, 10));
+        portal.registerRiderResultsInStage(
+            stageA,
+            rider11Id,
+            LocalTime.of(1, 0),
+            LocalTime.of(1, 31),
+            LocalTime.of(2, 14),
+            LocalTime.of(2, 46),
+            LocalTime.of(2, 59),
+            LocalTime.of(3, 48),
+            LocalTime.of(4, 11),
+            LocalTime.of(4, 18));
+        portal.registerRiderResultsInStage(
+            stageB, rider11Id, LocalTime.of(9, 0), LocalTime.of(9, 32));
+        portal.registerRiderResultsInStage(
+            stageC, rider11Id, LocalTime.of(10, 0), LocalTime.of(10, 9));
+        portal.registerRiderResultsInStage(
+            stageD, rider11Id, LocalTime.of(11, 0), LocalTime.of(11, 27));
+        portal.registerRiderResultsInStage(
+            stageE,
+            rider11Id,
+            LocalTime.of(12, 0),
+            LocalTime.of(12, 40),
+            LocalTime.of(13, 2),
+            LocalTime.of(13, 36));
+        portal.registerRiderResultsInStage(
+            stageF, rider11Id, LocalTime.of(13, 0), LocalTime.of(13, 13), LocalTime.of(13, 48));
+        portal.registerRiderResultsInStage(
+            stageA,
+            rider12Id,
+            LocalTime.of(1, 0),
+            LocalTime.of(1, 12),
+            LocalTime.of(1, 49),
+            LocalTime.of(2, 14),
+            LocalTime.of(2, 18),
+            LocalTime.of(2, 47),
+            LocalTime.of(3, 5),
+            LocalTime.of(3, 29));
+        portal.registerRiderResultsInStage(
+            stageB, rider12Id, LocalTime.of(9, 0), LocalTime.of(9, 30));
+        portal.registerRiderResultsInStage(
+            stageC, rider12Id, LocalTime.of(10, 0), LocalTime.of(10, 7));
+        portal.registerRiderResultsInStage(
+            stageD, rider12Id, LocalTime.of(11, 0), LocalTime.of(11, 47));
+        portal.registerRiderResultsInStage(
+            stageE,
+            rider12Id,
+            LocalTime.of(12, 0),
+            LocalTime.of(12, 34),
+            LocalTime.of(12, 57),
+            LocalTime.of(13, 44));
+        portal.registerRiderResultsInStage(
+            stageF, rider12Id, LocalTime.of(13, 0), LocalTime.of(13, 45), LocalTime.of(13, 52));
+        portal.registerRiderResultsInStage(
+            stageA,
+            rider13Id,
+            LocalTime.of(1, 0),
+            LocalTime.of(1, 35),
+            LocalTime.of(2, 2),
+            LocalTime.of(2, 28),
+            LocalTime.of(3, 5),
+            LocalTime.of(3, 10),
+            LocalTime.of(3, 31),
+            LocalTime.of(4, 1));
+        portal.registerRiderResultsInStage(
+            stageB, rider13Id, LocalTime.of(9, 0), LocalTime.of(9, 11));
+        portal.registerRiderResultsInStage(
+            stageC, rider13Id, LocalTime.of(10, 0), LocalTime.of(10, 39));
+        portal.registerRiderResultsInStage(
+            stageD, rider13Id, LocalTime.of(11, 0), LocalTime.of(11, 41));
+        portal.registerRiderResultsInStage(
+            stageE,
+            rider13Id,
+            LocalTime.of(12, 0),
+            LocalTime.of(12, 46),
+            LocalTime.of(13, 31),
+            LocalTime.of(14, 26));
+        portal.registerRiderResultsInStage(
+            stageF, rider13Id, LocalTime.of(13, 0), LocalTime.of(13, 43), LocalTime.of(13, 58));
+        portal.registerRiderResultsInStage(
+            stageA,
+            rider14Id,
+            LocalTime.of(1, 0),
+            LocalTime.of(1, 28),
+            LocalTime.of(1, 42),
+            LocalTime.of(1, 50),
+            LocalTime.of(2, 2),
+            LocalTime.of(2, 33),
+            LocalTime.of(2, 53),
+            LocalTime.of(3, 38));
+        portal.registerRiderResultsInStage(
+            stageB, rider14Id, LocalTime.of(9, 0), LocalTime.of(9, 31));
+        portal.registerRiderResultsInStage(
+            stageC, rider14Id, LocalTime.of(10, 0), LocalTime.of(10, 55));
+        portal.registerRiderResultsInStage(
+            stageD, rider14Id, LocalTime.of(11, 0), LocalTime.of(11, 2));
+        portal.registerRiderResultsInStage(
+            stageE,
+            rider14Id,
+            LocalTime.of(12, 0),
+            LocalTime.of(12, 7),
+            LocalTime.of(12, 19),
+            LocalTime.of(12, 52));
+        portal.registerRiderResultsInStage(
+            stageF, rider14Id, LocalTime.of(13, 0), LocalTime.of(13, 59), LocalTime.of(14, 23));
+        portal.registerRiderResultsInStage(
+            stageA,
+            rider15Id,
+            LocalTime.of(1, 0),
+            LocalTime.of(1, 4),
+            LocalTime.of(1, 9),
+            LocalTime.of(1, 36),
+            LocalTime.of(2, 16),
+            LocalTime.of(2, 25),
+            LocalTime.of(3, 0),
+            LocalTime.of(3, 12));
+        portal.registerRiderResultsInStage(
+            stageB, rider15Id, LocalTime.of(9, 0), LocalTime.of(9, 15));
+        portal.registerRiderResultsInStage(
+            stageC, rider15Id, LocalTime.of(10, 0), LocalTime.of(10, 48));
+        portal.registerRiderResultsInStage(
+            stageD, rider15Id, LocalTime.of(11, 0), LocalTime.of(11, 52));
+        portal.registerRiderResultsInStage(
+            stageE,
+            rider15Id,
+            LocalTime.of(12, 0),
+            LocalTime.of(12, 3),
+            LocalTime.of(12, 32),
+            LocalTime.of(12, 47));
+        portal.registerRiderResultsInStage(
+            stageF, rider15Id, LocalTime.of(13, 0), LocalTime.of(13, 37), LocalTime.of(14, 37));
+        portal.registerRiderResultsInStage(
+            stageA,
+            rider16Id,
+            LocalTime.of(1, 0),
+            LocalTime.of(1, 44),
+            LocalTime.of(2, 1),
+            LocalTime.of(2, 9),
+            LocalTime.of(2, 57),
+            LocalTime.of(3, 1),
+            LocalTime.of(3, 11),
+            LocalTime.of(3, 56));
+        portal.registerRiderResultsInStage(
+            stageB, rider16Id, LocalTime.of(9, 0), LocalTime.of(9, 7));
+        portal.registerRiderResultsInStage(
+            stageC, rider16Id, LocalTime.of(10, 0), LocalTime.of(10, 45));
+        portal.registerRiderResultsInStage(
+            stageD, rider16Id, LocalTime.of(11, 0), LocalTime.of(11, 48));
+        portal.registerRiderResultsInStage(
+            stageE,
+            rider16Id,
+            LocalTime.of(12, 0),
+            LocalTime.of(12, 13),
+            LocalTime.of(12, 34),
+            LocalTime.of(13, 4));
+        portal.registerRiderResultsInStage(
+            stageF, rider16Id, LocalTime.of(13, 0), LocalTime.of(13, 55), LocalTime.of(14, 19));
+        portal.registerRiderResultsInStage(
+            stageA,
+            rider17Id,
+            LocalTime.of(1, 0),
+            LocalTime.of(1, 19),
+            LocalTime.of(2, 6),
+            LocalTime.of(2, 51),
+            LocalTime.of(2, 56),
+            LocalTime.of(3, 8),
+            LocalTime.of(3, 19),
+            LocalTime.of(3, 26));
+        portal.registerRiderResultsInStage(
+            stageB, rider17Id, LocalTime.of(9, 0), LocalTime.of(9, 6));
+        portal.registerRiderResultsInStage(
+            stageC, rider17Id, LocalTime.of(10, 0), LocalTime.of(10, 33));
+        portal.registerRiderResultsInStage(
+            stageD, rider17Id, LocalTime.of(11, 0), LocalTime.of(11, 37));
+        portal.registerRiderResultsInStage(
+            stageE,
+            rider17Id,
+            LocalTime.of(12, 0),
+            LocalTime.of(12, 9),
+            LocalTime.of(12, 56),
+            LocalTime.of(13, 33));
+        portal.registerRiderResultsInStage(
+            stageF, rider17Id, LocalTime.of(13, 0), LocalTime.of(13, 3), LocalTime.of(13, 6));
+        portal.registerRiderResultsInStage(
+            stageA,
+            rider18Id,
+            LocalTime.of(1, 0),
+            LocalTime.of(1, 34),
+            LocalTime.of(1, 53),
+            LocalTime.of(2, 35),
+            LocalTime.of(3, 6),
+            LocalTime.of(3, 13),
+            LocalTime.of(3, 30),
+            LocalTime.of(3, 54));
+        portal.registerRiderResultsInStage(
+            stageB, rider18Id, LocalTime.of(9, 0), LocalTime.of(9, 49));
+        portal.registerRiderResultsInStage(
+            stageC, rider18Id, LocalTime.of(10, 0), LocalTime.of(10, 35));
+        portal.registerRiderResultsInStage(
+            stageD, rider18Id, LocalTime.of(11, 0), LocalTime.of(11, 9));
+        portal.registerRiderResultsInStage(
+            stageE,
+            rider18Id,
+            LocalTime.of(12, 0),
+            LocalTime.of(12, 42),
+            LocalTime.of(12, 47),
+            LocalTime.of(13, 15));
+        portal.registerRiderResultsInStage(
+            stageF, rider18Id, LocalTime.of(13, 0), LocalTime.of(13, 46), LocalTime.of(13, 50));
+        portal.registerRiderResultsInStage(
+            stageA,
+            rider19Id,
+            LocalTime.of(1, 0),
+            LocalTime.of(1, 30),
+            LocalTime.of(2, 11),
+            LocalTime.of(2, 34),
+            LocalTime.of(3, 8),
+            LocalTime.of(4, 2),
+            LocalTime.of(4, 55),
+            LocalTime.of(5, 6));
+        portal.registerRiderResultsInStage(
+            stageB, rider19Id, LocalTime.of(9, 0), LocalTime.of(9, 39));
+        portal.registerRiderResultsInStage(
+            stageC, rider19Id, LocalTime.of(10, 0), LocalTime.of(10, 10));
+        portal.registerRiderResultsInStage(
+            stageD, rider19Id, LocalTime.of(11, 0), LocalTime.of(11, 4));
+        portal.registerRiderResultsInStage(
+            stageE,
+            rider19Id,
+            LocalTime.of(12, 0),
+            LocalTime.of(12, 41),
+            LocalTime.of(13, 6),
+            LocalTime.of(13, 32));
+        portal.registerRiderResultsInStage(
+            stageF, rider19Id, LocalTime.of(13, 0), LocalTime.of(13, 5), LocalTime.of(13, 15));
+        portal.registerRiderResultsInStage(
+            stageA,
+            rider20Id,
+            LocalTime.of(1, 0),
+            LocalTime.of(1, 5),
+            LocalTime.of(1, 35),
+            LocalTime.of(1, 39),
+            LocalTime.of(2, 16),
+            LocalTime.of(2, 35),
+            LocalTime.of(3, 15),
+            LocalTime.of(3, 33));
+        portal.registerRiderResultsInStage(
+            stageB, rider20Id, LocalTime.of(9, 0), LocalTime.of(9, 27));
+        portal.registerRiderResultsInStage(
+            stageC, rider20Id, LocalTime.of(10, 0), LocalTime.of(10, 38));
+        portal.registerRiderResultsInStage(
+            stageD, rider20Id, LocalTime.of(11, 0), LocalTime.of(11, 51));
+        portal.registerRiderResultsInStage(
+            stageE,
+            rider20Id,
+            LocalTime.of(12, 0),
+            LocalTime.of(12, 44),
+            LocalTime.of(12, 50),
+            LocalTime.of(13, 19));
+        portal.registerRiderResultsInStage(
+            stageF, rider20Id, LocalTime.of(13, 0), LocalTime.of(13, 40), LocalTime.of(14, 10));
+
+        // !END OF INSERT
+      } catch (IDNotRecognisedException
+          | DuplicatedResultException
+          | InvalidCheckpointsException
+          | InvalidStageStateException e) {
         e.printStackTrace();
       }
     }
@@ -556,8 +1133,8 @@ class CyclingPortalTestApp {
         assertTrue(details.contains(String.valueOf(raceId)));
         assertTrue(details.contains("RacerRacer"));
         assertTrue(details.contains("racerRacingRace"));
-        assertTrue(details.contains("5"));
-        assertTrue(details.contains("210"));
+        assertTrue(details.contains("6"));
+        assertTrue(details.contains("218"));
       } catch (IDNotRecognisedException e) {
         e.printStackTrace();
       }
@@ -598,6 +1175,177 @@ class CyclingPortalTestApp {
           () -> {
             portal.removeRaceByName("AUniqueNameFSDljfsdljfasd");
           });
+    }
+
+    @Test
+    public void testRemoveSegment() {
+      try {
+        portal.removeSegment(segmentA3);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+
+    @Test
+    public void testRemoveRaceById() {
+      try {
+        portal.removeRaceById(raceId);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+
+    @Test
+    public void testRemoveStageById() {
+      try {
+        portal.removeStageById(stageA);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+
+    @Test
+    public void testRemoveTeam() {
+      try {
+        portal.removeTeam(teamId);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+
+    @Test
+    public void testRemoveRider() {
+      try {
+        portal.removeRider(rider4Id);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+
+    // @Test void result_
+
+    @Test
+    public void RESULT_GC() {
+      pointsTestResults();
+      int[] ranks = new int[] {};
+      int[] ans =
+          new int[] {
+            rider10Id, rider17Id, rider5Id, rider19Id, rider11Id, rider8Id, rider2Id, rider9Id,
+            rider7Id, rider1Id, rider15Id, rider20Id, rider4Id, rider3Id, rider13Id, rider12Id,
+            rider18Id, rider6Id, rider16Id, rider14Id
+          };
+      try {
+        ranks = portal.getRidersGeneralClassificationRank(raceId);
+      } catch (IDNotRecognisedException e) {
+        e.printStackTrace();
+      }
+      assertArrayEquals(ans, ranks);
+      // ! this does not test for adjusted elapsed times.
+    }
+
+    @Test
+    public void RESULT_GCTimes() {
+      pointsTestResults();
+      LocalTime[] times = new LocalTime[] {};
+      LocalTime[] ans =
+          new LocalTime[] {
+            LocalTime.of(7, 35),
+            LocalTime.of(6, 6),
+            LocalTime.of(8, 5),
+            LocalTime.of(6, 10),
+            LocalTime.of(8, 28),
+            LocalTime.of(6, 56),
+            LocalTime.of(6, 57),
+            LocalTime.of(8, 27),
+            LocalTime.of(6, 32),
+            LocalTime.of(6, 32),
+            LocalTime.of(6, 50),
+            LocalTime.of(6, 29),
+            LocalTime.of(7, 56),
+            LocalTime.of(6, 21),
+            LocalTime.of(6, 31),
+            LocalTime.of(6, 59),
+            LocalTime.of(5, 21),
+            LocalTime.of(6, 32),
+            LocalTime.of(6, 46),
+            LocalTime.of(6, 58)
+          };
+      try {
+        times = portal.getGeneralClassificationTimesInRace(raceId);
+      } catch (IDNotRecognisedException e) {
+        e.printStackTrace();
+      }
+      assertArrayEquals(ans, times);
+      // ! this does not test for adjusted elapsed times.
+    }
+
+    @Test
+    public void RESULT_GCPoint() {
+      pointsTestResults();
+      int[] points = new int[] {};
+      int[] ans =
+          new int[] {
+            89, 134, 52, 68, 55, 35, 120, 73, 75, 37, 142, 57, 87, 27, 33, 77, 56, 63, 63, 115
+          };
+      try {
+        points = portal.getRidersPointsInRace(raceId);
+      } catch (IDNotRecognisedException e) {
+        e.printStackTrace();
+      }
+      assertArrayEquals(ans, points);
+      // ! this does not test for adjusted elapsed times.
+    }
+
+    @Test
+    public void RESULT_GCMount() {
+      pointsTestResults();
+      int[] points = new int[] {};
+      int[] ans = new int[] {10, 8, 12, 4, 2, 1, 21, 21, 2, 0, 31, 10, 27, 0, 0, 6, 4, 2, 8, 31};
+      try {
+        points = portal.getRidersMountainPointsInRace(raceId);
+      } catch (IDNotRecognisedException e) {
+        e.printStackTrace();
+      }
+      assertArrayEquals(ans, points);
+      // ! this does not test for adjusted elapsed times.
+    }
+
+    @Test
+    public void RESULT_PointRank() {
+      pointsTestResults();
+      int[] points = new int[] {};
+      int[] ans =
+          new int[] {
+            rider15Id, rider17Id, rider2Id, rider14Id, rider10Id, rider4Id, rider12Id, rider7Id,
+            rider9Id, rider19Id, rider6Id, rider16Id, rider20Id, rider18Id, rider11Id, rider5Id,
+            rider1Id, rider8Id, rider13Id, rider3Id
+          };
+      try {
+        points = portal.getRidersPointClassificationRank(raceId);
+      } catch (IDNotRecognisedException e) {
+        e.printStackTrace();
+      }
+      assertArrayEquals(ans, points);
+      // ! this does not test for adjusted elapsed times.
+    }
+
+    @Test
+    public void RESULT_MountRank() {
+      pointsTestResults();
+      int[] points = new int[] {};
+      int[] ans =
+          new int[] {
+            rider14Id, rider15Id, rider4Id, rider2Id, rider9Id, rider5Id, rider10Id, rider20Id,
+            rider16Id, rider17Id, rider12Id, rider18Id, rider19Id, rider6Id, rider7Id, rider11Id,
+            rider8Id, rider1Id, rider3Id, rider13Id
+          };
+      try {
+        points = portal.getRidersMountainPointClassificationRank(raceId);
+      } catch (IDNotRecognisedException e) {
+        e.printStackTrace();
+      }
+      assertArrayEquals(ans, points);
+      // ! this does not test for adjusted elapsed times.
     }
   }
 
@@ -1214,18 +1962,20 @@ class CyclingPortalTestApp {
           });
     }
 
-    //		@Test
-    //		public void registerRiderResultsInStageThrowsDup() {
-    //			assertThrows(DuplicatedResultException.class, () -> {
-    //				portal.concludeStagePreparation(stage1Id);
-    //				portal.registerRiderResultsInStage(stage1Id, rider1IdR, LocalTime.of(0, 10, 00, 00),
-    //						LocalTime.of(0, 10, 11, 00),
-    //						LocalTime.of(0, 10, 17, 00), LocalTime.of(0, 10, 54, 00));
-    //				portal.registerRiderResultsInStage(stage1Id, rider1IdR, LocalTime.of(0, 10, 00, 00),
-    //						LocalTime.of(0, 10, 11, 00),
-    //						LocalTime.of(0, 10, 17, 00), LocalTime.of(0, 10, 54, 00));
-    //			});
-    //		}
+    // @Test
+    // public void registerRiderResultsInStageThrowsDup() {
+    // assertThrows(DuplicatedResultException.class, () -> {
+    // portal.concludeStagePreparation(stage1Id);
+    // portal.registerRiderResultsInStage(stage1Id, rider1IdR, LocalTime.of(0, 10,
+    // 00, 00),
+    // LocalTime.of(0, 10, 11, 00),
+    // LocalTime.of(0, 10, 17, 00), LocalTime.of(0, 10, 54, 00));
+    // portal.registerRiderResultsInStage(stage1Id, rider1IdR, LocalTime.of(0, 10,
+    // 00, 00),
+    // LocalTime.of(0, 10, 11, 00),
+    // LocalTime.of(0, 10, 17, 00), LocalTime.of(0, 10, 54, 00));
+    // });
+    // }
 
     @Test
     public void registerRiderResultsInStageThrowsCheckpoint() {
@@ -1254,23 +2004,6 @@ class CyclingPortalTestApp {
                 stage, rider1IdR, LocalTime.of(0, 10, 00, 00), LocalTime.of(0, 10, 11, 00));
           });
     }
-
-    ////		TODO: Why does this not work??
-    //		@Test
-    //		public void registerRiderResultsInStageDoesIt() {
-    //			LocalTime[] times = null;
-    //			LocalTime eTime = null;
-    //			try {
-    //				portal.registerRiderResultsInStage(stage2Id, rider1Id, LocalTime.of(0, 10, 00, 00),
-    //						LocalTime.of(0, 10, 11, 00));
-    //				 times = portal.getRiderResultsInStage(stage2Id, rider1Id);
-    //				 eTime = portal.getRiderAdjustedElapsedTimeInStage(stage2Id,rider1Id);
-    //			} catch (Exception e){}
-    //			assertArrayEquals(times, new LocalTime[]{LocalTime.of(0, 10, 00, 00), LocalTime.of(0, 10,
-    // 11, 00), eTime});
-    //		}
-
-    // getRiderResultsInStage
 
     @Test
     public void getRiderResultsInStageThrowsSId() {

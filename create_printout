@@ -9,6 +9,7 @@ google-java-format -r ./CyclingPortal/src/cycling/IntermediateSprint.java
 google-java-format -r ./CyclingPortal/src/cycling/Race.java
 google-java-format -r ./CyclingPortal/src/cycling/RaceResult.java
 google-java-format -r ./CyclingPortal/src/cycling/Rider.java
+google-java-format -r ./CyclingPortal/src/cycling/SavedCyclingPortal.java
 google-java-format -r ./CyclingPortal/src/cycling/Segment.java
 google-java-format -r ./CyclingPortal/src/cycling/SegmentResult.java
 google-java-format -r ./CyclingPortal/src/cycling/Stage.java

@@ -1,10 +1,11 @@
 package cycling;
 
+import java.io.Serializable;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.Comparator;
 
-public class StageResult {
+public class StageResult implements Serializable {
   private final LocalTime[] checkpoints;
   private final Duration elapsedTime;
   private Duration adjustedElapsedTime;

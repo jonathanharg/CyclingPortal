@@ -1,5 +1,6 @@
 package cycling;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -8,7 +9,7 @@ import java.util.stream.Collectors;
  * Race Class. This represents a Race that holds a Race's Stages and Riders, and also contains
  * methods that deal with these.
  */
-public class Race {
+public class Race implements Serializable {
 
   private final String name;
   private final String description;

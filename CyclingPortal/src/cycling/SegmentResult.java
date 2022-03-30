@@ -1,9 +1,10 @@
 package cycling;
 
+import java.io.Serializable;
 import java.time.LocalTime;
 import java.util.Comparator;
 
-public class SegmentResult {
+public class SegmentResult implements Serializable {
   private final LocalTime finishTime;
   private int position;
   private int sprintersPoints;

@@ -24,19 +24,6 @@ public class CyclingPortal implements CyclingPortalInterface {
   private ArrayList<Stage> stages = new ArrayList<>();
   private ArrayList<Segment> segments = new ArrayList<>();
 
-  // Record that will hold all the CyclingPortals teams, riders, races, stages & segments as well as
-  // all the Id counts for each object.
-  private record SavedCyclingPortal(
-      ArrayList<Team> teams,
-      ArrayList<Rider> riders,
-      ArrayList<Race> races,
-      ArrayList<Stage> stages,
-      ArrayList<Segment> segments,
-      int teamIdCount,
-      int riderIdCount,
-      int raceIdCount,
-      int stageIdCount,
-      int segmentIdCount) {}
 
   /**
    * Determine if a string contains any illegal whitespace characters.

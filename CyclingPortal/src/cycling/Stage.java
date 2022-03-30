@@ -1,5 +1,6 @@
 package cycling;
 
+import java.io.Serializable;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -9,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class Stage {
+public class Stage implements Serializable {
   private final Race race;
   private final String name;
   private final String description;

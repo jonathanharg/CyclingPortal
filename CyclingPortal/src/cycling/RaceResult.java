@@ -1,10 +1,11 @@
 package cycling;
 
+import java.io.Serializable;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.Comparator;
 
-public class RaceResult {
+public class RaceResult implements Serializable {
   private Duration cumulativeAdjustedElapsedTime = Duration.ZERO;
   private int cumulativeSprintersPoints = 0;
   private int cumulativeMountainPoints = 0;

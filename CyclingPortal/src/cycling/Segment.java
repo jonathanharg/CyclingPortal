@@ -1,12 +1,13 @@
 package cycling;
 
+import java.io.Serializable;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class Segment {
+public class Segment implements Serializable {
   private static int count = 0;
   private final Stage stage;
   private final int id;
