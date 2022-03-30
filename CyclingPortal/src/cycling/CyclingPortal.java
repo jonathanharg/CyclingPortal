@@ -24,7 +24,6 @@ public class CyclingPortal implements CyclingPortalInterface {
   private ArrayList<Stage> stages = new ArrayList<>();
   private ArrayList<Segment> segments = new ArrayList<>();
 
-
   /**
    * Determine if a string contains any illegal whitespace characters.
    *

@@ -16,7 +16,6 @@ import cycling.StageType;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Arrays;
 // !! DO NOT SUBMIT: Doesn't start with java.
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -705,7 +704,7 @@ class CyclingPortalTestApp {
             LocalTime.of(12, 58),
             LocalTime.of(13, 14));
         portal.registerRiderResultsInStage(
-            stageF, rider9Id, LocalTime.of(13, 0), LocalTime.of(13, 24), LocalTime.of(14, 24));
+            stageF, rider9Id, LocalTime.of(13, 0), LocalTime.of(13, 24), LocalTime.of(13, 46));
         portal.registerRiderResultsInStage(
             stageA,
             rider10Id,
@@ -939,7 +938,7 @@ class CyclingPortalTestApp {
             LocalTime.of(12, 47),
             LocalTime.of(13, 15));
         portal.registerRiderResultsInStage(
-            stageF, rider18Id, LocalTime.of(13, 0), LocalTime.of(13, 46), LocalTime.of(13, 50));
+            stageF, rider18Id, LocalTime.of(13, 0), LocalTime.of(13, 46), LocalTime.of(13, 57));
         portal.registerRiderResultsInStage(
             stageA,
             rider19Id,
@@ -1222,130 +1221,146 @@ class CyclingPortalTestApp {
       }
     }
 
-    // @Test void result_
-
-    @Test
-    public void RESULT_GC() {
-      pointsTestResults();
-      int[] ranks = new int[] {};
-      int[] ans =
-          new int[] {
-            rider10Id, rider17Id, rider5Id, rider19Id, rider11Id, rider8Id, rider2Id, rider9Id,
-            rider7Id, rider1Id, rider15Id, rider20Id, rider4Id, rider3Id, rider13Id, rider12Id,
-            rider18Id, rider6Id, rider16Id, rider14Id
-          };
-      try {
-        ranks = portal.getRidersGeneralClassificationRank(raceId);
-      } catch (IDNotRecognisedException e) {
-        e.printStackTrace();
+    @Nested
+    class RaceResultsTests {
+      @Test
+      void result_stage_test() {
+        pointsTestResults();
+        int[] ranks = null;
+        try {
+          ranks = portal.getRidersGeneralClassificationRank(raceId);
+        } catch (IDNotRecognisedException e) {
+          e.printStackTrace();
+        }
       }
-      assertArrayEquals(ans, ranks);
-      // ! this does not test for adjusted elapsed times.
-    }
 
-    @Test
-    public void RESULT_GCTimes() {
-      pointsTestResults();
-      LocalTime[] times = new LocalTime[] {};
-      LocalTime[] ans =
-          new LocalTime[] {
-            LocalTime.of(7, 35),
-            LocalTime.of(6, 6),
-            LocalTime.of(8, 5),
-            LocalTime.of(6, 10),
-            LocalTime.of(8, 28),
-            LocalTime.of(6, 56),
-            LocalTime.of(6, 57),
-            LocalTime.of(8, 27),
-            LocalTime.of(6, 32),
-            LocalTime.of(6, 32),
-            LocalTime.of(6, 50),
-            LocalTime.of(6, 29),
-            LocalTime.of(7, 56),
-            LocalTime.of(6, 21),
-            LocalTime.of(6, 31),
-            LocalTime.of(6, 59),
-            LocalTime.of(5, 21),
-            LocalTime.of(6, 32),
-            LocalTime.of(6, 46),
-            LocalTime.of(6, 58)
-          };
-      try {
-        times = portal.getGeneralClassificationTimesInRace(raceId);
-      } catch (IDNotRecognisedException e) {
-        e.printStackTrace();
+      @Test
+      public void RESULT_GC() {
+        pointsTestResults();
+        int[] ranks = new int[] {};
+        int[] ans =
+            new int[] {
+              rider17Id, rider9Id, rider2Id, rider4Id, rider14Id, rider12Id, rider15Id, rider10Id,
+              rider18Id, rider19Id, rider11Id, rider6Id, rider7Id, rider20Id, rider16Id, rider1Id,
+              rider13Id, rider3Id, rider8Id, rider5Id
+            };
+        try {
+          ranks = portal.getRidersGeneralClassificationRank(raceId);
+        } catch (IDNotRecognisedException e) {
+          e.printStackTrace();
+        }
+        assertArrayEquals(ans, ranks);
+        // ! this does not test for adjusted elapsed times.
       }
-      assertArrayEquals(ans, times);
-      // ! this does not test for adjusted elapsed times.
-    }
 
-    @Test
-    public void RESULT_GCPoint() {
-      pointsTestResults();
-      int[] points = new int[] {};
-      int[] ans =
-          new int[] {
-            89, 134, 52, 68, 55, 35, 120, 73, 75, 37, 142, 57, 87, 27, 33, 77, 56, 63, 63, 115
-          };
-      try {
-        points = portal.getRidersPointsInRace(raceId);
-      } catch (IDNotRecognisedException e) {
-        e.printStackTrace();
+      @Test
+      public void RESULT_GCTimes() {
+        pointsTestResults();
+        LocalTime[] times = new LocalTime[] {};
+        LocalTime[] ans =
+            new LocalTime[] {
+              LocalTime.of(5, 21),
+              LocalTime.of(5, 54),
+              LocalTime.of(6, 6),
+              LocalTime.of(6, 10),
+              LocalTime.of(6, 21),
+              LocalTime.of(6, 29),
+              LocalTime.of(6, 31),
+              LocalTime.of(6, 32),
+              LocalTime.of(6, 39),
+              LocalTime.of(6, 46),
+              LocalTime.of(6, 50),
+              LocalTime.of(6, 56),
+              LocalTime.of(6, 57),
+              LocalTime.of(6, 58),
+              LocalTime.of(6, 59),
+              LocalTime.of(7, 35),
+              LocalTime.of(7, 56),
+              LocalTime.of(8, 5),
+              LocalTime.of(8, 27),
+              LocalTime.of(8, 28)
+            };
+        try {
+          times = portal.getGeneralClassificationTimesInRace(raceId);
+        } catch (IDNotRecognisedException e) {
+          e.printStackTrace();
+        }
+        assertArrayEquals(ans, times);
+        // ! this does not test for adjusted elapsed times.
       }
-      assertArrayEquals(ans, points);
-      // ! this does not test for adjusted elapsed times.
-    }
 
-    @Test
-    public void RESULT_GCMount() {
-      pointsTestResults();
-      int[] points = new int[] {};
-      int[] ans = new int[] {10, 8, 12, 4, 2, 1, 21, 21, 2, 0, 31, 10, 27, 0, 0, 6, 4, 2, 8, 31};
-      try {
-        points = portal.getRidersMountainPointsInRace(raceId);
-      } catch (IDNotRecognisedException e) {
-        e.printStackTrace();
+      @Test
+      public void RESULT_GCPoint() {
+        pointsTestResults();
+        int[] points = new int[] {};
+        int[] ans =
+            new int[] {
+              134, 85, 120, 87, 115, 77, 142, 89, 51, 68, 53, 62, 75, 56, 61, 37, 32, 27, 35, 52
+            };
+        try {
+          points = portal.getRidersPointsInRace(raceId);
+        } catch (IDNotRecognisedException e) {
+          e.printStackTrace();
+        }
+        assertArrayEquals(ans, points);
+        // ! this does not test for adjusted elapsed times.
       }
-      assertArrayEquals(ans, points);
-      // ! this does not test for adjusted elapsed times.
-    }
 
-    @Test
-    public void RESULT_PointRank() {
-      pointsTestResults();
-      int[] points = new int[] {};
-      int[] ans =
-          new int[] {
-            rider15Id, rider17Id, rider2Id, rider14Id, rider10Id, rider4Id, rider12Id, rider7Id,
-            rider9Id, rider19Id, rider6Id, rider16Id, rider20Id, rider18Id, rider11Id, rider5Id,
-            rider1Id, rider8Id, rider13Id, rider3Id
-          };
-      try {
-        points = portal.getRidersPointClassificationRank(raceId);
-      } catch (IDNotRecognisedException e) {
-        e.printStackTrace();
+      @Test
+      public void RESULT_GCMount() {
+        pointsTestResults();
+        int[] points = new int[] {};
+        int[] ans = new int[] {8, 21, 21, 27, 31, 6, 31, 10, 4, 4, 2, 2, 2, 10, 8, 0, 0, 0, 1, 12};
+        try {
+          points = portal.getRidersMountainPointsInRace(raceId);
+        } catch (IDNotRecognisedException e) {
+          e.printStackTrace();
+        }
+        assertArrayEquals(ans, points);
+        // ! this does not test for adjusted elapsed times.
       }
-      assertArrayEquals(ans, points);
-      // ! this does not test for adjusted elapsed times.
-    }
 
-    @Test
-    public void RESULT_MountRank() {
-      pointsTestResults();
-      int[] points = new int[] {};
-      int[] ans =
-          new int[] {
-            rider14Id, rider15Id, rider4Id, rider2Id, rider9Id, rider5Id, rider10Id, rider20Id,
-            rider16Id, rider17Id, rider12Id, rider18Id, rider19Id, rider6Id, rider7Id, rider11Id,
-            rider8Id, rider1Id, rider3Id, rider13Id
-          };
-      try {
-        points = portal.getRidersMountainPointClassificationRank(raceId);
-      } catch (IDNotRecognisedException e) {
-        e.printStackTrace();
+      @Test
+      public void RESULT_PointRank() {
+        pointsTestResults();
+        int[] points = new int[] {};
+        int[] ans =
+            new int[] {
+              rider15Id, rider17Id, rider2Id, rider14Id, rider10Id, rider4Id, rider9Id, rider12Id,
+              rider7Id, rider19Id, rider6Id, rider16Id, rider20Id, rider11Id, rider5Id, rider18Id,
+              rider1Id, rider8Id, rider13Id, rider3Id
+            };
+        try {
+          points = portal.getRidersPointClassificationRank(raceId);
+        } catch (IDNotRecognisedException e) {
+          e.printStackTrace();
+        }
+        assertArrayEquals(ans, points);
+        // ! this does not test for adjusted elapsed times.
       }
-      assertArrayEquals(ans, points);
-      // ! this does not test for adjusted elapsed times.
+
+      @Test
+      public void RESULT_MountRank() {
+        pointsTestResults();
+        int[] points = new int[] {};
+        int[] ans =
+            new int[] {
+              rider14Id, rider15Id, rider4Id, rider2Id, rider9Id, rider5Id, rider10Id, rider20Id,
+              rider16Id, rider17Id, rider12Id, rider18Id, rider19Id, rider6Id, rider7Id, rider11Id,
+              rider8Id, rider1Id, rider3Id, rider13Id
+            };
+        try {
+          points = portal.getRidersMountainPointClassificationRank(raceId);
+        } catch (IDNotRecognisedException e) {
+          e.printStackTrace();
+        }
+        assertEquals(rider4Id, points[2]);
+        assertEquals(rider5Id, points[5]);
+        assertEquals(rider12Id, points[10]);
+        assertEquals(rider8Id, points[16]);
+
+        // ! this does not test for adjusted elapsed times.
+      }
     }
   }
 
@@ -1823,8 +1838,8 @@ class CyclingPortalTestApp {
 
         int[] segments = portal.getStageSegments(stage3Id);
         int[] ans = new int[] {seg1, seg3, seg2};
-        System.out.println(Arrays.toString(ans));
-        System.out.println(Arrays.toString(segments));
+        // System.out.println(Arrays.toString(ans));
+        // System.out.println(Arrays.toString(segments));
         assertArrayEquals(segments, ans);
         // assertEquals(segments[0], seg2);
         // assertEquals(segments[1], seg3);

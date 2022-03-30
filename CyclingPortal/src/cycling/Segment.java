@@ -52,10 +52,6 @@ public class Segment implements Serializable {
     count = newCount;
   }
 
-  public SegmentType getType() {
-    return type;
-  }
-
   public int getId() {
     return id;
   }

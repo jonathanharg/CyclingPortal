@@ -15,16 +15,18 @@ public class RaceResult implements Serializable {
       Comparator.comparing(RaceResult::getCumulativeAdjustedElapsedTime);
 
   // TODO: Test order Desc
+  // protected static final Comparator<RaceResult> sortBySprintersPoints =
+  //     Comparator.comparing(RaceResult::getCumulativeSprintersPoints).reversed();
   protected static final Comparator<RaceResult> sortBySprintersPoints =
-      Comparator.comparing(RaceResult::getCumulativeSprintersPoints).reversed();
-  // protected static final Comparator<RaceResult> sortBySprintersPoints = (RaceResult result1,
-  // 		RaceResult result2) -> Integer.compare(result2.getCumulativeSprintersPoints(),
-  // 				result1.getCumulativeSprintersPoints());
+      (RaceResult result1, RaceResult result2) ->
+          Integer.compare(
+              result2.getCumulativeSprintersPoints(), result1.getCumulativeSprintersPoints());
+  // protected static final Comparator<RaceResult> sortByMountainPoints =
+  //     Comparator.comparing(RaceResult::getCumulativeMountainPoints).reversed();
   protected static final Comparator<RaceResult> sortByMountainPoints =
-      Comparator.comparing(RaceResult::getCumulativeMountainPoints).reversed();
-  // protected static final Comparator<RaceResult> sortByMountainPoints = (RaceResult result1,
-  // 		RaceResult result2) -> Integer.compare(result2.getCumulativeMountainPoints(),
-  // 				result1.getCumulativeMountainPoints());
+      (RaceResult result1, RaceResult result2) ->
+          Integer.compare(
+              result2.getCumulativeMountainPoints(), result1.getCumulativeMountainPoints());
 
   public Duration getCumulativeAdjustedElapsedTime() {
     return this.cumulativeAdjustedElapsedTime;

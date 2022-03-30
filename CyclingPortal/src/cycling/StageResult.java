@@ -37,10 +37,6 @@ public class StageResult implements Serializable {
     this.adjustedElapsedTime = adjustedElapsedTime;
   }
 
-  public int getPosition() {
-    return position;
-  }
-
   public Duration getAdjustedElapsedTime() {
     return adjustedElapsedTime;
   }

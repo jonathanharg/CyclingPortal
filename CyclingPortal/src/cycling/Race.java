@@ -16,7 +16,7 @@ public class Race implements Serializable {
 
   private final ArrayList<Stage> stages = new ArrayList<>();
 
-  private final HashMap<Rider, RaceResult> results = new HashMap<>();
+  private HashMap<Rider, RaceResult> results = new HashMap<>();
 
   private static int count = 0;
   private final int id;
@@ -236,6 +236,7 @@ public class Race implements Serializable {
 
   /** Method that calculates the results for each Rider. */
   private void calculateResults() {
+    results = new HashMap<>();
     for (Stage stage : stages) {
       HashMap<Rider, StageResult> stageResults = stage.getStageResults();
       for (Rider rider : stageResults.keySet()) {

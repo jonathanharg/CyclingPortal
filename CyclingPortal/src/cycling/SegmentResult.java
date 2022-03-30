@@ -25,10 +25,6 @@ public class SegmentResult implements Serializable {
     this.position = position;
   }
 
-  public int getPosition() {
-    return position;
-  }
-
   public void setMountainPoints(int points) {
     this.mountainPoints = points;
   }
